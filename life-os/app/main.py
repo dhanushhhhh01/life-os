@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Starting Life OS API...")
     Base.metadata.create_all(bind=engine)
-    logger.info(f"Cache backend: {cache.stats().get(chr(39)+'backend'+chr(39), chr(39)+'unknown'+chr(39))}")
+    logger.info(f"Cache backend: {cache.stats().get('backend', 'unknown')}")
     yield
     logger.info("Shutting down Life OS API...")
 
