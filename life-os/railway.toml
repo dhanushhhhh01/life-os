@@ -2,8 +2,11 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2 --loop uvloop --log-level warning"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
+
+[environments.production.deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4 --loop uvloop --log-level warning"
