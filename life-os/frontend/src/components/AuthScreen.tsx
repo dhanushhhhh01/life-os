@@ -72,7 +72,7 @@ export function AuthScreen() {
           >
             <Sparkles className="w-8 h-8 text-accent-light" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Life OS</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">DEX - THE SECOND BRAIN</h1>
           <p className="text-white/40 mt-2">Your AI-powered second brain</p>
         </div>
 

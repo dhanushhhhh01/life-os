@@ -3,7 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
-  title: "Life OS — Your AI Second Brain",
+  title: "DEX - THE SECOND BRAIN",
   description: "AI-powered personal dashboard for goals, mood, habits, and life coaching.",
 };
 
