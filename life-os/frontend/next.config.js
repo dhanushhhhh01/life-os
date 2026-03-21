@@ -1,15 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // API proxy — points to Railway backend in production, localhost in dev
-  async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${apiUrl}/api/:path*`,
-      },
-    ]
-  },
+  // API routing handled by Vercel configuration (vercel.json)
+  // No rewrites needed - Vercel routes /api/* to the Python serverless function
 
   // Image optimisation
   images: {
