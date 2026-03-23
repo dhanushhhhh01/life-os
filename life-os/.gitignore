@@ -1,3 +1,7 @@
+# Root
+node_modules/
+.next/
+
 # Environment
 .env
 .env.local
