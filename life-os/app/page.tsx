@@ -1,16 +1,13 @@
-'use client'
+'use client';
 
 export default function Home() {
   return (
-    <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(to bottom, #3b82f6, #a855f7)', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '48px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Life OS</h1>
-        <p style={{ fontSize: '20px', color: '#dbeafe', marginBottom: '32px' }}>Welcome to your application</p>
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '32px', maxWidth: '448px' }}>
-          <p style={{ color: '#1f2937', marginBottom: '16px' }}>Your app is now deployed and running!</p>
-          <p style={{ color: '#4b5563' }}>Build amazing things here.</p>
-        </div>
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-blue-500 to-purple-600">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold text-white mb-4">Life OS</h1>
+        <p className="text-2xl text-blue-100 mb-8">Your Personal Operating System</p>
+        <p className="text-lg text-blue-50">Welcome to Life OS - Empower Your Life</p>
       </div>
     </main>
-  )
+  );
 }

@@ -1,9 +1,19 @@
-export const metadata = { title: 'Life OS', description: 'Life OS Application' }
+import type { Metadata } from 'next';
+import './globals.css';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const metadata: Metadata = {
+  title: 'Life OS',
+  description: 'Your Personal Operating System',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body>{children}</body>
     </html>
-  )
+  );
 }
