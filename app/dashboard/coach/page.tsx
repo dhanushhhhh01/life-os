@@ -19,13 +19,13 @@ const starterMessages: Message[] = [
 
 const DEX_RESPONSES: Record<string, string> = {
   default: "Great question! Based on your current progress, I think the key is consistency over intensity. What specific challenge are you facing?",
-  german: "Your German is at 30% — real progress! The Tandem method with Marco is solid. For B1 by August, you need ~45 mins daily. Try Anki for vocabulary and Deutsche Welle for listening. Wollen wir heute eine Ubung machen?",
-  fastapi: "FastAPI is your superpower right now. You are at 45% — keep building. Next milestone: deploy a real LLM-powered API to Railway. That alone will make your portfolio stand out to Siemens and Continental recruiters.",
+  german: "Your German is at 30%  -  real progress! The Tandem method with Marco is solid. For B1 by August, you need ~45 mins daily. Try Anki for vocabulary and Deutsche Welle for listening. Wollen wir heute eine Ubung machen?",
+  fastapi: "FastAPI is your superpower right now. You are at 45%  -  keep building. Next milestone: deploy a real LLM-powered API to Railway. That alone will make your portfolio stand out to Siemens and Continental recruiters.",
   internship: "For AI internships in Germany: Siemens, Continental, Bosch, and Volkswagen all hire Master students. Your FastAPI + Python stack is exactly what they want. Polish your GitHub README files and write a 1-page project summary. Timeline: apply by April.",
-  habits: "Your morning coding streak at 12 days is impressive! The compound effect is real — keep it above 10 days and it becomes identity-level. What habit are you struggling with most right now?",
-  goals: "Looking at your goals: Build Portfolio Projects is at 60% — almost there! Focus energy here this week. Master Thesis at 10% might need attention soon. Shall we break it into weekly milestones?",
+  habits: "Your morning coding streak at 12 days is impressive! The compound effect is real  -  keep it above 10 days and it becomes identity-level. What habit are you struggling with most right now?",
+  goals: "Looking at your goals: Build Portfolio Projects is at 60%  -  almost there! Focus energy here this week. Master Thesis at 10% might need attention soon. Shall we break it into weekly milestones?",
   mood: "How you feel matters. If your mood or energy is low, it usually means you need either rest, connection, or a small win. Tell me what is going on and we will figure it out together.",
-  berlin: "Berlin is the perfect city for your journey — the startup scene is incredible, Deutsche Bahn aside. Have you checked the Berlin AI meetups? Great way to network with engineers who can refer you.",
+  berlin: "Berlin is the perfect city for your journey  -  the startup scene is incredible, Deutsche Bahn aside. Have you checked the Berlin AI meetups? Great way to network with engineers who can refer you.",
 };
 
 function getDexResponse(input: string): string {
@@ -92,7 +92,7 @@ export default function CoachPage() {
           <div className="font-bold text-white">Dex</div>
           <div className="text-xs text-green-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
-            AI Life Coach — always on
+            AI Life Coach  -  always on
           </div>
         </div>
       </div>

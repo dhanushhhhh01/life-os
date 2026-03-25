@@ -4,23 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: "HOME" },
-  { href: "/dashboard/goals", label: "Goals", icon: "GOAL" },
-  { href: "/dashboard/checkin", label: "Check In", icon: "MOOD" },
-  { href: "/dashboard/journal", label: "Journal", icon: "BOOK" },
-  { href: "/dashboard/habits", label: "Habits", icon: "BOLT" },
-  { href: "/dashboard/coach", label: "AI Coach", icon: "DEX" },
+  { href: "/dashboard", label: "Dashboard", abbr: "HM" },
+  { href: "/dashboard/goals", label: "Goals", abbr: "GL" },
+  { href: "/dashboard/checkin", label: "Check In", abbr: "CI" },
+  { href: "/dashboard/journal", label: "Journal", abbr: "JN" },
+  { href: "/dashboard/habits", label: "Habits", abbr: "HB" },
+  { href: "/dashboard/coach", label: "AI Coach", abbr: "DX" },
 ];
-
-const iconMap: Record<string, string> = {
-  HOME: "⌂",
-  GOAL: "◎",
-  MOOD: "◉",
-#  BOOK: "
-",
-  BOLT: "⚡",
-  DEX: "★",
-};
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,9 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen bg-gray-950 overflow-hidden">
-      {/* Sidebar */}
       <aside className={`${collapsed ? "w-16" : "w-64"} transition-all duration-300 flex flex-col bg-gray-900/80 backdrop-blur-xl border-r border-white/10`}>
-        {/* Logo */}
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           {!collapsed && (
             <div>
@@ -40,13 +28,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all"
+            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all text-xs font-bold"
           >
-            {collapsed ? "→" : "←"}
+            {collapsed ? ">>" : "<<"}
           </button>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -60,8 +47,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     : "text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
               >
-                <span className={`text-lg ${isActive ? "text-purple-400" : "group-hover:text-purple-400"}`}>
-                  {iconMap[item.icon]}
+                <span className={`text-xs font-black w-6 text-center ${isActive ? "text-purple-400" : "group-hover:text-purple-400"}`}>
+                  {item.abbr}
                 </span>
                 {!collapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
@@ -74,7 +61,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        {/* User Footer */}
         {!collapsed && (
           <div className="p-4 border-t border-white/10">
             <div className="flex items-center gap-3">
@@ -90,7 +76,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       </aside>
 
-      {/* Main */}
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>

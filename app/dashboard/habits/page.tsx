@@ -90,7 +90,7 @@ export default function HabitsPage() {
                     ? "border-green-400 bg-green-400"
                     : "border-gray-600"
                 }`}>
-                  {habit.done && <span className="text-xs text-white font-bold">✓</span>}
+                  {habit.done && <span className="text-xs text-white font-bold">v</span>}
                 </div>
                 <div>
                   <div className={`font-semibold ${habit.done ? "text-gray-400 line-through" : "text-white"}`}>

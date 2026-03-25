@@ -253,14 +253,14 @@ export default function LoginPage() {
                 }}
                 className="text-xs text-gray-500 hover:text-purple-400 transition-colors"
               >
-                Demo mode — skip login
+                Demo mode  -  skip login
               </button>
             </div>
           )}
         </div>
 
         <p className="text-center text-gray-600 text-xs mt-6">
-          Built for Dhanush Ramesh Babu — Berlin 2026
+          Built for Dhanush Ramesh Babu  -  Berlin 2026
         </p>
       </div>
     </div>

@@ -13,8 +13,8 @@ interface JournalEntry {
 const sampleEntries: JournalEntry[] = [
   {
     id: 1,
-    title: "First week in Berlin — reflections",
-    body: "The city is everything I imagined — fast-paced, multicultural, and full of opportunities. SRH campus is well-equipped and the AI/Robotics cohort is top-tier. Need to push harder on German.",
+    title: "First week in Berlin  -  reflections",
+    body: "The city is everything I imagined  -  fast-paced, multicultural, and full of opportunities. SRH campus is well-equipped and the AI/Robotics cohort is top-tier. Need to push harder on German.",
     tags: ["Berlin", "Life", "Growth"],
     mood: 8,
     timestamp: "2026-03-20T09:00:00Z"
@@ -29,8 +29,8 @@ const sampleEntries: JournalEntry[] = [
   },
   {
     id: 3,
-    title: "German practice — Tandem session",
-    body: "Met Marco for a language exchange. He wants to learn Tamil, I want German B1. The exchange is great — 30 mins each language. Progress is slow but real.",
+    title: "German practice  -  Tandem session",
+    body: "Met Marco for a language exchange. He wants to learn Tamil, I want German B1. The exchange is great  -  30 mins each language. Progress is slow but real.",
     tags: ["German", "Language", "Berlin"],
     mood: 7,
     timestamp: "2026-03-24T18:00:00Z"

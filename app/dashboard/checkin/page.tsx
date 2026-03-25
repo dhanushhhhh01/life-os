@@ -42,7 +42,7 @@ export default function CheckinPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Mood</h2>
           <div className={`text-2xl font-black ${getMoodColor(mood)}`}>
-            {mood}/10 — {moodLabels[mood]}
+            {mood}/10  -  {moodLabels[mood]}
           </div>
         </div>
         <input
@@ -60,7 +60,7 @@ export default function CheckinPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Energy</h2>
           <div className={`text-2xl font-black ${getMoodColor(energy)}`}>
-            {energy}/10 — {energyLabels[energy]}
+            {energy}/10  -  {energyLabels[energy]}
           </div>
         </div>
         <input

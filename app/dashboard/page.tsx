@@ -35,7 +35,7 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-black text-white">
             Good morning, <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Dhanush</span>
           </h1>
-          <p className="text-gray-400 mt-1">Berlin, Germany — Your Second Brain is ready</p>
+          <p className="text-gray-400 mt-1">Berlin, Germany  -  Your Second Brain is ready</p>
         </div>
         <div className="text-right">
           <div className="text-5xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">{lifeScore}</div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             >
               <div className="text-sm font-medium text-white">{habit.name}</div>
               <div className="text-xs text-gray-400 mt-1">
-                {habit.streak} day streak {habit.done ? "✓" : ""}
+                {habit.streak} day streak {habit.done ? "v" : ""}
               </div>
             </div>
           ))}
@@ -141,7 +141,7 @@ export default function DashboardPage() {
             <div className="text-sm font-semibold text-purple-400 mb-1">Dex says</div>
             <p className="text-sm text-gray-300">
               You have 4 active goals this week. Your coding streak is strong at days 12 keep the momentum going!  
-              German practice is at 30% — consider scheduling 20 minutes daily to hit B1 by summer.
+              German practice is at 30%  -  consider scheduling 20 minutes daily to hit B1 by summer.
             </p>
           </div>
         </div>
