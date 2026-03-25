@@ -41,10 +41,10 @@ function getDexResponse(input: string): string {
 }
 
 export default function CoachPage() {
-  const [messages, setMessages] = useState<Message[]>(starterMessages);
+  const [messages, setMessages] = useState(starterMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

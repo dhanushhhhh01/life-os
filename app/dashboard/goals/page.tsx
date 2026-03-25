@@ -20,7 +20,7 @@ const defaultGoals: Goal[] = [
 ];
 
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<Goal[]>(defaultGoals);
+  const [goals, setGoals] = useState(defaultGoals);
   const [showAdd, setShowAdd] = useState(false);
   const [newGoal, setNewGoal] = useState({ name: "", category: "Tech", deadline: "" });
 

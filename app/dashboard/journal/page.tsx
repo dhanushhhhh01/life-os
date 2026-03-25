@@ -49,10 +49,10 @@ const TAG_COLORS: Record<string, string> = {
 };
 
 export default function JournalPage() {
-  const [entries, setEntries] = useState<JournalEntry[]>(sampleEntries);
+  const [entries, setEntries] = useState(sampleEntries);
   const [showNew, setShowNew] = useState(false);
   const [newEntry, setNewEntry] = useState({ title: "", body: "", tags: "", mood: 7 });
-  const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState(null);
 
   const saveEntry = () => {
     if (!newEntry.title.trim() || !newEntry.body.trim()) return;

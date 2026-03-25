@@ -19,7 +19,7 @@ const defaultHabits: Habit[] = [
 ];
 
 export default function HabitsPage() {
-  const [habits, setHabits] = useState<Habit[]>(defaultHabits);
+  const [habits, setHabits] = useState(defaultHabits);
   const [newHabit, setNewHabit] = useState("");
 
   const toggleHabit = (id: number) => {
