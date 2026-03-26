@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, Sparkles, Mic } from "lucide-react";
+import { Sparkles, Send, Mic, Volume2, VolumeX } from "lucide-react";
 
 var starterMessages = [
   {
@@ -16,14 +16,58 @@ export default function CoachPage() {
   var [input, setInput] = useState("");
   var [isTyping, setIsTyping] = useState(false);
   var [isListening, setIsListening] = useState(false);
+  var [ttsEnabled, setTtsEnabled] = useState(true);
+  var [speakingId, setSpeakingId] = useState(null);
   var bottomRef = useRef(null);
   var recognitionRef = useRef(null);
+  var synthRef = useRef(null);
+
+  useEffect(function() {
+    if (typeof window !== "undefined") {
+      synthRef.current = window.speechSynthesis;
+    }
+  }, []);
 
   useEffect(function() {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isTyping]);
+
+  // Speak a message using Web Speech API
+  function speakMessage(text, msgId) {
+    if (!synthRef.current || !ttsEnabled) return;
+    synthRef.current.cancel();
+    // Strip markdown-style formatting for cleaner speech
+    var cleanText = text.replace(/\*\*/g, "").replace(/\*/g, "").replace(/#+\s/g, "").slice(0, 500);
+    var utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    // Pick a good voice - prefer Google UK English or Samantha
+    var voices = synthRef.current.getVoices();
+    var preferred = voices.find(function(v) { return v.name.includes("Google UK English Female"); })
+      || voices.find(function(v) { return v.name.includes("Samantha"); })
+      || voices.find(function(v) { return v.name.includes("Google US English"); })
+      || voices.find(function(v) { return v.lang === "en-US" && v.localService; })
+      || voices[0];
+    if (preferred) utterance.voice = preferred;
+    utterance.onstart = function() { setSpeakingId(msgId); };
+    utterance.onend = function() { setSpeakingId(null); };
+    utterance.onerror = function() { setSpeakingId(null); };
+    synthRef.current.speak(utterance);
+  }
+
+  function stopSpeaking() {
+    if (synthRef.current) synthRef.current.cancel();
+    setSpeakingId(null);
+  }
+
+  function toggleTts() {
+    if (ttsEnabled && synthRef.current) synthRef.current.cancel();
+    setSpeakingId(null);
+    setTtsEnabled(function(prev) { return !prev; });
+  }
 
   async function sendMessage() {
     if (!input.trim() || isTyping) return;
@@ -52,6 +96,11 @@ export default function CoachPage() {
         timestamp: new Date().toISOString(),
       };
       setMessages(function(prev) { return [].concat(prev, [dexMsg]); });
+      // Auto-speak Dex reply if TTS is on
+      if (ttsEnabled) {
+        // Small delay so voices are loaded
+        setTimeout(function() { speakMessage(dexMsg.content, dexMsg.id); }, 300);
+      }
     } catch (err) {
       var errorMsg = {
         id: Date.now() + 1,
@@ -100,38 +149,71 @@ export default function CoachPage() {
       {/* Header */}
       <div className="p-5 border-b border-white/[0.06] flex items-center gap-4 bg-[#0e0d20]/60 backdrop-blur-xl">
         <div className="relative">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white font-black text-lg shadow-lg shadow-[#46F0D2]/20 animate-pulse-glow">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white font-black text-lg shadow-lg shadow-[#46F0D2]/20">
             <Sparkles size={20} />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-[#080818] shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
         </div>
-        <div>
+        <div className="flex-1">
           <div className="font-bold text-white text-sm">Dex</div>
           <div className="text-[11px] text-green-400 flex items-center gap-1.5">
-            <span className="inline-block">AI Life Coach - always on</span>
+            <span className="inline-block">
+              {speakingId ? "Speaking..." : "AI Life Coach - always on"}
+            </span>
+            {speakingId && (
+              <span className="flex gap-0.5 items-end h-3">
+                <span className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ height: "6px", animationDelay: "0ms" }} />
+                <span className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ height: "10px", animationDelay: "100ms" }} />
+                <span className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ height: "7px", animationDelay: "200ms" }} />
+                <span className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ height: "12px", animationDelay: "50ms" }} />
+                <span className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ height: "5px", animationDelay: "150ms" }} />
+              </span>
+            )}
           </div>
         </div>
+        {/* TTS Toggle */}
+        <button
+          onClick={toggleTts}
+          title={ttsEnabled ? "Mute Dex" : "Unmute Dex"}
+          className={"p-2.5 rounded-xl border transition-all " + (ttsEnabled
+            ? "bg-[#46F0D2]/10 border-[#46F0D2]/30 text-[#46F0D2] shadow-[0_0_12px_rgba(70,240,210,0.15)]"
+            : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-gray-400"
+          )}
+        >
+          {ttsEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        </button>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-hide">
         {messages.map(function(msg) {
+          var isSpeak = speakingId === msg.id;
           return (
             <div key={msg.id} className={"flex " + (msg.role === "user" ? "justify-end" : "justify-start") + " animate-slide-up"}>
               {msg.role === "dex" && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center text-[#46F0D2] shrink-0 mr-2.5 mt-0.5">
+                <div className={"w-8 h-8 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border flex items-center justify-center text-[#46F0D2] shrink-0 mr-2.5 mt-0.5 transition-all " + (isSpeak ? "border-[#46F0D2]/60 shadow-[0_0_10px_rgba(70,240,210,0.3)]" : "border-[#46F0D2]/20")}>
                   <Sparkles size={14} />
                 </div>
               )}
               <div className={"max-w-sm lg:max-w-md xl:max-w-lg flex flex-col " + (msg.role === "user" ? "items-end" : "items-start")}>
-                <div className={"px-4 py-3 rounded-2xl text-sm leading-relaxed " + (
+                <div className={"px-4 py-3 rounded-2xl text-sm leading-relaxed transition-all " + (
                   msg.role === "user"
                     ? "bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white rounded-br-md shadow-lg shadow-[#46F0D2]/10"
-                    : "bg-white/[0.04] border border-white/[0.08] text-gray-300 rounded-bl-md"
+                    : "bg-white/[0.04] border border-white/[0.08] text-gray-300 rounded-bl-md " + (isSpeak ? "border-[#46F0D2]/20 shadow-[0_0_15px_rgba(70,240,210,0.08)]" : "")
                 )}>
                   {msg.content}
                 </div>
-                <span className="text-[10px] text-gray-700 mt-1.5 px-1">{formatTime(msg.timestamp)}</span>
+                <div className="flex items-center gap-2 mt-1.5 px-1">
+                  <span className="text-[10px] text-gray-700">{formatTime(msg.timestamp)}</span>
+                  {msg.role === "dex" && (
+                    <button
+                      onClick={function() { isSpeak ? stopSpeaking() : speakMessage(msg.content, msg.id); }}
+                      className={"text-[10px] flex items-center gap-1 transition-all " + (isSpeak ? "text-[#46F0D2]" : "text-gray-700 hover:text-gray-500")}
+                    >
+                      {isSpeak ? <VolumeX size={10} /> : <Volume2 size={10} />}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -174,6 +256,7 @@ export default function CoachPage() {
         <div className="flex gap-3 mt-3">
           <button
             onClick={toggleVoice}
+            title="Voice input"
             className={"p-3 rounded-xl border transition-all " + (isListening ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse" : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-[#46F0D2] hover:border-[#46F0D2]/30")}
           >
             <Mic size={18} />

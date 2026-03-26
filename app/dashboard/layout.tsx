@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { getLevel, getXpProgress, getLevelTitle } from "../../lib/xp";
+import { registerServiceWorker, checkOverdueReminders } from "../../lib/notifications";
 import {
   LayoutDashboard,
   Target,
@@ -57,6 +58,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           setUserLevel(profileRes.data.level || 1);
         }
       }
+    });
+
+    // Register service worker for notifications
+    registerServiceWorker().then(function() {
+      // Check if user is overdue on check-ins/habits
+      supabase.from("checkins").select("created_at").order("created_at", { ascending: false }).limit(1).then(function(res) {
+        var lastCheckin = res.data && res.data[0] ? res.data[0].created_at : null;
+        supabase.from("habits").select("updated_at").order("updated_at", { ascending: false }).limit(1).then(function(hRes) {
+          var lastHabit = hRes.data && hRes.data[0] ? hRes.data[0].updated_at : null;
+          setTimeout(function() { checkOverdueReminders(lastCheckin, lastHabit); }, 3000);
+        });
+      });
     });
 
     var channel = supabase

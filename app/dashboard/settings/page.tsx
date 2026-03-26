@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Settings, Palette, User, Bell, Shield, ChevronRight, Check, Sparkles } from "lucide-react";
+import { Settings, Palette, User, Bell, Shield, ChevronRight, Check, Sparkles, BellRing, BellOff } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { requestNotificationPermission, registerServiceWorker, scheduleDaily, getNotificationPermission } from "../../../lib/notifications";
 
 var THEMES = [
   {
@@ -53,11 +54,28 @@ export default function SettingsPage() {
   var [userEmail, setUserEmail] = useState("");
   var [saved, setSaved] = useState(false);
   var [section, setSection] = useState("appearance");
+  var [notifPermission, setNotifPermission] = useState("default");
+  var [notifToggles, setNotifToggles] = useState({
+    checkin: true,
+    habits: true,
+    weekly: false,
+    xp: true,
+  });
+  var [notifSaved, setNotifSaved] = useState(false);
+  var [notifError, setNotifError] = useState("");
 
   useEffect(function() {
     setMounted(true);
-    var saved = typeof window !== "undefined" ? localStorage.getItem("life-os-theme") || "quantum" : "quantum";
-    setActiveTheme(saved);
+    var savedTheme = typeof window !== "undefined" ? localStorage.getItem("life-os-theme") || "quantum" : "quantum";
+    setActiveTheme(savedTheme);
+    // Load saved notification toggles
+    if (typeof window !== "undefined") {
+      try {
+        var saved = localStorage.getItem("life-os-notif-toggles");
+        if (saved) setNotifToggles(JSON.parse(saved));
+      } catch (e) {}
+      setNotifPermission(getNotificationPermission());
+    }
     supabase.auth.getSession().then(function(result) {
       if (result.data.session) {
         var user = result.data.session.user;
@@ -65,6 +83,7 @@ export default function SettingsPage() {
         setUserEmail(user.email || "");
       }
     });
+    registerServiceWorker();
   }, []);
 
   function selectTheme(key) {
@@ -74,6 +93,51 @@ export default function SettingsPage() {
     }
     setSaved(true);
     setTimeout(function() { setSaved(false); }, 2000);
+  }
+
+  function toggleNotif(key) {
+    var next = Object.assign({}, notifToggles, { [key]: !notifToggles[key] });
+    setNotifToggles(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("life-os-notif-toggles", JSON.stringify(next));
+    }
+  }
+
+  async function enableNotifications() {
+    setNotifError("");
+    var granted = await requestNotificationPermission();
+    if (granted) {
+      setNotifPermission("granted");
+      // Schedule daily reminders
+      if (notifToggles.checkin) {
+        await scheduleDaily(9, 0, "Life OS - Daily Check-in", "Good morning Dhanush! How are you feeling today?", "/dashboard/checkin", "checkin-reminder");
+      }
+      if (notifToggles.habits) {
+        await scheduleDaily(20, 0, "Life OS - Habit Tracker", "Don't forget your habits today! Keep that streak alive.", "/dashboard/habits", "habit-reminder");
+      }
+      if (notifToggles.weekly) {
+        await scheduleDaily(18, 0, "Life OS - Weekly Report", "Your weekly progress report is ready. Check your grades!", "/dashboard", "weekly-reminder");
+      }
+      setNotifSaved(true);
+      setTimeout(function() { setNotifSaved(false); }, 3000);
+    } else {
+      setNotifError("Notifications blocked. Please allow notifications in your browser settings, then reload.");
+    }
+  }
+
+  async function saveNotifications() {
+    if (notifPermission !== "granted") {
+      await enableNotifications();
+      return;
+    }
+    if (notifToggles.checkin) {
+      await scheduleDaily(9, 0, "Life OS - Daily Check-in", "Good morning Dhanush! Time for your daily check-in.", "/dashboard/checkin", "checkin-reminder");
+    }
+    if (notifToggles.habits) {
+      await scheduleDaily(20, 0, "Life OS - Habit Tracker", "Evening check: how many habits did you crush today?", "/dashboard/habits", "habit-reminder");
+    }
+    setNotifSaved(true);
+    setTimeout(function() { setNotifSaved(false); }, 3000);
   }
 
   var currentTheme = THEMES.find(function(t) { return t.key === activeTheme; }) || THEMES[0];
@@ -221,27 +285,71 @@ export default function SettingsPage() {
           )}
 
           {section === "notifications" && (
-            <div className="glass-card p-5 rounded-2xl border border-white/[0.06] space-y-4">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Notifications</h3>
-              {[
-                { label: "Daily check-in reminder", desc: "Remind me to check in each morning", enabled: true },
-                { label: "Habit streak alerts", desc: "Alert when a streak is at risk", enabled: true },
-                { label: "Weekly report", desc: "Summary every Sunday evening", enabled: false },
-                { label: "XP milestones", desc: "Celebrate level-ups and achievements", enabled: true },
-              ].map(function(item, i) {
-                return (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0">
-                    <div>
-                      <div className="text-sm text-white font-medium">{item.label}</div>
-                      <div className="text-xs text-gray-600 mt-0.5">{item.desc}</div>
+            <div className="space-y-4">
+              {notifSaved && (
+                <div className="px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/25 text-green-400 text-sm flex items-center gap-2">
+                  <BellRing size={15} /> Reminders scheduled! Dex will remind you at the right time.
+                </div>
+              )}
+              {notifError && (
+                <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+                  {notifError}
+                </div>
+              )}
+
+              {/* Permission status banner */}
+              <div className={"glass-card p-4 rounded-2xl border flex items-center justify-between " + (notifPermission === "granted" ? "border-green-500/20 bg-green-500/[0.04]" : "border-[#46F0D2]/20 bg-[#46F0D2]/[0.03]")}>
+                <div className="flex items-center gap-3">
+                  {notifPermission === "granted" ? <BellRing size={18} className="text-green-400" /> : <BellOff size={18} className="text-gray-500" />}
+                  <div>
+                    <div className={"text-sm font-semibold " + (notifPermission === "granted" ? "text-green-400" : "text-gray-300")}>
+                      {notifPermission === "granted" ? "Notifications enabled" : notifPermission === "denied" ? "Notifications blocked" : "Notifications off"}
                     </div>
-                    <div className={"w-11 h-6 rounded-full border transition-all cursor-pointer flex items-center px-0.5 " + (item.enabled ? "bg-[#46F0D2]/40 border-[#46F0D2]/40" : "bg-white/[0.05] border-white/[0.1]")}>
-                      <div className={"w-5 h-5 rounded-full transition-all shadow-sm " + (item.enabled ? "translate-x-5 bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4]" : "translate-x-0 bg-gray-600")} />
+                    <div className="text-xs text-gray-600 mt-0.5">
+                      {notifPermission === "granted" ? "Dex will remind you at the right moments." : notifPermission === "denied" ? "Allow in browser settings to enable reminders." : "Enable to get daily reminders from Dex."}
                     </div>
                   </div>
-                );
-              })}
-              <p className="text-xs text-gray-700">Push notification integration coming in Phase 4.</p>
+                </div>
+                {notifPermission !== "granted" && notifPermission !== "denied" && (
+                  <button onClick={enableNotifications}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white text-xs font-bold shadow-lg shadow-[#46F0D2]/20 hover:opacity-90 transition-all">
+                    Enable
+                  </button>
+                )}
+              </div>
+
+              {/* Toggles */}
+              <div className="glass-card p-5 rounded-2xl border border-white/[0.06] space-y-1">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em] mb-3">Reminder Types</h3>
+                {[
+                  { key: "checkin", label: "Daily check-in (9:00 AM)", desc: "Morning nudge to log your mood and energy" },
+                  { key: "habits", label: "Habit reminder (8:00 PM)", desc: "Evening check to track today's habits" },
+                  { key: "weekly", label: "Weekly report (Sunday 6 PM)", desc: "Review your weekly grades and progress" },
+                  { key: "xp", label: "XP milestones", desc: "Celebrate level-ups and badge unlocks" },
+                ].map(function(item) {
+                  var isOn = notifToggles[item.key];
+                  return (
+                    <div key={item.key} className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0">
+                      <div>
+                        <div className="text-sm text-white font-medium">{item.label}</div>
+                        <div className="text-xs text-gray-600 mt-0.5">{item.desc}</div>
+                      </div>
+                      <button onClick={function() { toggleNotif(item.key); }}
+                        className={"w-11 h-6 rounded-full border transition-all flex items-center px-0.5 " + (isOn ? "bg-[#46F0D2]/30 border-[#46F0D2]/40" : "bg-white/[0.05] border-white/[0.1]")}>
+                        <div className={"w-5 h-5 rounded-full transition-all shadow-sm " + (isOn ? "translate-x-5 bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4]" : "translate-x-0 bg-gray-600")} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Save */}
+              {notifPermission === "granted" && (
+                <button onClick={saveNotifications}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-[#46F0D2]/20">
+                  Save Notification Schedule
+                </button>
+              )}
             </div>
           )}
 
