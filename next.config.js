@@ -3,9 +3,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // Image optimisation
   images: {
     formats: ["image/avif", "image/webp"],
@@ -13,14 +10,9 @@ const nextConfig = {
     remotePatterns: [],
   },
 
-  // Compiler optimisations
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-  },
-
   // Reduce bundle size
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion", "date-fns"],
+    optimizePackageImports: ["lucide-react"],
   },
 }
 
