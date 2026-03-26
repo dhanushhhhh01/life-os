@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
+import { getLevel, getXpProgress, getLevelTitle } from "../../lib/xp";
 import {
   LayoutDashboard,
   Target,
@@ -15,9 +16,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
+  Trophy,
+  Zap,
 } from "lucide-react";
 
-const navItems = [
+var navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/goals", label: "Goals", icon: Target },
   { href: "/dashboard/checkin", label: "Check In", icon: CalendarCheck },
@@ -25,27 +28,55 @@ const navItems = [
   { href: "/dashboard/habits", label: "Habits", icon: Flame },
   { href: "/dashboard/focus", label: "Focus", icon: Timer },
   { href: "/dashboard/coach", label: "AI Coach", icon: Bot },
+  { href: "/dashboard/achievements", label: "Achievements", icon: Trophy },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
-  const [userName, setUserName] = useState("Dhanush");
-  const [userEmail, setUserEmail] = useState("");
+  var pathname = usePathname();
+  var router = useRouter();
+  var [collapsed, setCollapsed] = useState(false);
+  var [userName, setUserName] = useState("Dhanush");
+  var [userXp, setUserXp] = useState(0);
+  var [userLevel, setUserLevel] = useState(1);
+  var [mounted, setMounted] = useState(false);
 
   useEffect(function() {
-    supabase.auth.getSession().then(function(result) {
+    setMounted(true);
+    supabase.auth.getSession().then(async function(result) {
       if (!result.data.session) {
         router.push("/");
       } else {
         var user = result.data.session.user;
         var displayName = user.user_metadata?.name || user.email?.split("@")[0] || "Dhanush";
         setUserName(displayName);
-        setUserEmail(user.email || "");
+
+        // Load XP/level from profiles
+        var profileRes = await supabase.from("profiles").select("xp, level").eq("id", user.id).single();
+        if (profileRes.data) {
+          setUserXp(profileRes.data.xp || 0);
+          setUserLevel(profileRes.data.level || 1);
+        }
       }
     });
+
+    // Listen for profile updates (XP changes from other pages)
+    var channel = supabase
+      .channel("profile-xp")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles" }, function(payload) {
+        if (payload.new) {
+          setUserXp(payload.new.xp || 0);
+          setUserLevel(payload.new.level || 1);
+        }
+      })
+      .subscribe();
+
+    return function() { supabase.removeChannel(channel); };
   }, [router]);
+
+  var xpInLevel = getXpProgress(userXp);
+  var levelTitle = getLevelTitle(userLevel);
+
+  if (!mounted) return null;
 
   return (
     <div className="flex h-screen bg-[#050510] overflow-hidden">
@@ -56,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Sidebar */}
-      <aside className={`${collapsed ? "w-[72px]" : "w-[260px]"} transition-all duration-300 ease-out flex flex-col bg-[#080818]/90 backdrop-blur-2xl border-r border-white/[0.06] relative z-10`}>
+      <aside className={collapsed ? "w-[72px] transition-all duration-300 ease-out flex flex-col bg-[#080818]/90 backdrop-blur-2xl border-r border-white/[0.06] relative z-10" : "w-[260px] transition-all duration-300 ease-out flex flex-col bg-[#080818]/90 backdrop-blur-2xl border-r border-white/[0.06] relative z-10"}>
         {/* Logo */}
         <div className="p-4 h-16 border-b border-white/[0.06] flex items-center justify-between">
           {!collapsed && (
@@ -83,11 +114,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
+        {/* XP Bar (when expanded) */}
+        {!collapsed && (
+          <div className="px-4 py-3 border-b border-white/[0.04]">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
+                  <span className="text-[9px] font-black text-white">{userLevel}</span>
+                </div>
+                <span className="text-xs text-gray-400 font-medium">{levelTitle}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Zap size={10} className="text-yellow-400" />
+                <span className="text-[10px] text-yellow-400 font-bold font-display">{userXp} XP</span>
+              </div>
+            </div>
+            <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full transition-all duration-500 shadow-[0_0_6px_rgba(139,92,246,0.5)]"
+                style={{ width: xpInLevel + "%" }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-hide">
           {navItems.map(function(item) {
             var isActive = pathname === item.href;
             var Icon = item.icon;
+            var isAchievements = item.href === "/dashboard/achievements";
             return (
               <Link
                 key={item.href}
@@ -102,8 +158,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   size={18}
                   className={"transition-all duration-200 " + (
                     isActive
-                      ? "text-purple-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]"
-                      : "group-hover:text-purple-400 group-hover:drop-shadow-[0_0_6px_rgba(139,92,246,0.3)]"
+                      ? (isAchievements ? "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]" : "text-purple-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]")
+                      : (isAchievements ? "group-hover:text-yellow-400" : "group-hover:text-purple-400 group-hover:drop-shadow-[0_0_6px_rgba(139,92,246,0.3)]")
                   )}
                 />
                 {!collapsed && (

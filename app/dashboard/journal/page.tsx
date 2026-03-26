@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { BookOpen, Plus, X, ArrowLeft, Tag, Smile, Trash2 } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var TAG_COLORS = {
   Berlin: "bg-blue-500/15 text-blue-400 border-blue-500/20",
@@ -32,6 +33,7 @@ export default function JournalPage() {
   var [selectedEntry, setSelectedEntry] = useState(null);
   var [saving, setSaving] = useState(false);
   var [mounted, setMounted] = useState(false);
+  var [xpToast, setXpToast] = useState("");
 
   useEffect(function() { setMounted(true); }, []);
 
@@ -67,6 +69,20 @@ export default function JournalPage() {
       setEntries([result.data[0]].concat(entries));
       setShowNew(false);
       setNewEntry({ title: "", body: "", tags: "", mood: 7 });
+
+      // Award XP
+      try {
+        var profileRes = await supabase.from("profiles").select("xp, level, badges").eq("id", userId).single();
+        var curXp = profileRes.data?.xp || 0;
+        var curBadges = profileRes.data?.badges || [];
+        var xpResult = await awardXP(userId, XP_AWARDS.JOURNAL_ENTRY, curXp, curBadges);
+        var newJournalCount = entries.length + 1;
+        await checkAndAwardBadges(userId, xpResult.newBadges, { journals: newJournalCount });
+        var toastMsg = "+30 XP! Journal saved!";
+        if (xpResult.leveledUp) toastMsg = "Level Up! Level " + xpResult.newLevel + "! +30 XP";
+        setXpToast(toastMsg);
+        setTimeout(function() { setXpToast(""); }, 3000);
+      } catch(e) {}
     }
     setSaving(false);
   }
@@ -128,6 +144,13 @@ export default function JournalPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
+      {/* XP Toast */}
+      {xpToast && (
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+          <span className="text-yellow-300">⚡</span>
+          {xpToast}
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">

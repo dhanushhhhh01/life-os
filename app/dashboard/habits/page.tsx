@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Flame, Plus, Check, Trophy, TrendingUp, X } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var defaultHabits = [
   { name: "Morning Coding", streak: 12, done_today: false, color: "from-purple-500 to-pink-500" },
@@ -33,6 +34,7 @@ export default function HabitsPage() {
   var [newHabit, setNewHabit] = useState("");
   var [saving, setSaving] = useState(false);
   var [mounted, setMounted] = useState(false);
+  var [xpToast, setXpToast] = useState("");
 
   useEffect(function() { setMounted(true); }, []);
 
@@ -72,6 +74,22 @@ export default function HabitsPage() {
     var update = { done_today: newDone, streak: newStreak, last_done_date: newDone ? today : null };
     await supabase.from("habits").update(update).eq("id", id);
     setHabits(habits.map(function(h) { return h.id === id ? Object.assign({}, h, update, { done: newDone }) : h; }));
+
+    // Award XP when marking done (not when un-marking)
+    if (newDone && userId) {
+      try {
+        var profileRes = await supabase.from("profiles").select("xp, level, badges").eq("id", userId).single();
+        var curXp = profileRes.data?.xp || 0;
+        var curBadges = profileRes.data?.badges || [];
+        var xpResult = await awardXP(userId, XP_AWARDS.HABIT_DONE, curXp, curBadges);
+        var maxStreak = Math.max.apply(null, habits.map(function(h) { return h.id === id ? newStreak : h.streak; }));
+        await checkAndAwardBadges(userId, xpResult.newBadges, { maxHabitStreak: maxStreak });
+        var toastMsg = "+10 XP! Habit done!";
+        if (xpResult.leveledUp) toastMsg = "Level Up! Level " + xpResult.newLevel + "! +10 XP";
+        setXpToast(toastMsg);
+        setTimeout(function() { setXpToast(""); }, 2500);
+      } catch(e) {}
+    }
   }
 
   async function addHabit() {
@@ -108,6 +126,13 @@ export default function HabitsPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
+      {/* XP Toast */}
+      {xpToast && (
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+          <span className="text-yellow-300">⚡</span>
+          {xpToast}
+        </div>
+      )}
       <div className="flex items-center gap-2 mb-1">
         <Flame size={18} className="text-orange-400" />
         <h1 className="text-3xl font-black text-white">Habits</h1>

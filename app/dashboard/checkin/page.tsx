@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { CalendarCheck, Heart, Zap, Save, CheckCircle } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var moodLabels = ["", "Awful", "Bad", "Rough", "Meh", "Okay", "Good", "Great", "Amazing", "Excellent", "Perfect"];
 var energyLabels = ["", "Drained", "Low", "Tired", "Sluggish", "Neutral", "Active", "Energized", "Pumped", "Fired Up", "Max Power"];
@@ -48,6 +49,7 @@ export default function CheckinPage() {
   var [saving, setSaving] = useState(false);
   var [userId, setUserId] = useState(null);
   var [mounted, setMounted] = useState(false);
+  var [xpToast, setXpToast] = useState("");
 
   useEffect(function() { setMounted(true); }, []);
 
@@ -65,6 +67,26 @@ export default function CheckinPage() {
     if (!result.error) {
       setSubmitted(true);
       setNote("");
+
+      // Award XP
+      try {
+        var profileRes = await supabase.from("profiles").select("xp, level, badges").eq("id", userId).single();
+        var curXp = profileRes.data?.xp || 0;
+        var curBadges = profileRes.data?.badges || [];
+
+        // Get checkin count for badge checks
+        var countRes = await supabase.from("checkins").select("id", { count: "exact" }).eq("user_id", userId);
+        var checkinCount = (countRes.count || 0) + 1;
+
+        var xpResult = await awardXP(userId, XP_AWARDS.CHECKIN, curXp, curBadges, { type: "checkin", data: {} });
+        await checkAndAwardBadges(userId, xpResult.newBadges, { checkins: checkinCount });
+
+        var toastMsg = "+20 XP earned!";
+        if (xpResult.leveledUp) toastMsg = "Level Up! Now Level " + xpResult.newLevel + " - +20 XP!";
+        setXpToast(toastMsg);
+        setTimeout(function() { setXpToast(""); }, 3000);
+      } catch(e) {}
+
       setTimeout(function() { setSubmitted(false); }, 2500);
     }
     setSaving(false);
@@ -74,6 +96,13 @@ export default function CheckinPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
+      {/* XP Toast */}
+      {xpToast && (
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-sm font-bold shadow-2xl shadow-purple-500/30 animate-fade-in flex items-center gap-2">
+          <span className="text-yellow-300">⚡</span>
+          {xpToast}
+        </div>
+      )}
       <div className="flex items-center gap-2 mb-1">
         <CalendarCheck size={18} className="text-cyan-400" />
         <h1 className="text-3xl font-black text-white">Daily Check-In</h1>

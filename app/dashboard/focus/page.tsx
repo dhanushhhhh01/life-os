@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Coffee, BookOpen, Brain, Music, Volume2, VolumeX } from "lucide-react";
+import { supabase } from "../../../lib/supabase";
+import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var MODES = [
   { label: "Focus", minutes: 25, color: "from-purple-500 to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
@@ -34,6 +36,8 @@ export default function FocusPage() {
   var [quote, setQuote] = useState(motivationalQuotes[0]);
   var [soundOn, setSoundOn] = useState(false);
   var [mounted, setMounted] = useState(false);
+  var [userId, setUserId] = useState(null);
+  var [xpToast, setXpToast] = useState("");
   var intervalRef = useRef(null);
   var audioCtxRef = useRef(null);
   var nodesRef = useRef([]);
@@ -47,6 +51,9 @@ export default function FocusPage() {
   useEffect(function() {
     setMounted(true);
     setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
+    supabase.auth.getSession().then(function(res) {
+      if (res.data.session) setUserId(res.data.session.user.id);
+    });
   }, []);
 
   useEffect(function() {
@@ -59,6 +66,22 @@ export default function FocusPage() {
             if (modeIndex === 0) {
               setSessionsCompleted(function(c) { return c + 1; });
               setTotalFocusMinutes(function(t) { return t + MODES[0].minutes; });
+              // Award XP + save focus minutes to Supabase
+              supabase.auth.getSession().then(async function(res) {
+                if (!res.data.session) return;
+                var uid = res.data.session.user.id;
+                var profileRes = await supabase.from("profiles").select("xp, level, badges, total_focus_minutes").eq("id", uid).single();
+                var curXp = profileRes.data?.xp || 0;
+                var curBadges = profileRes.data?.badges || [];
+                var updatedFocusMin = (profileRes.data?.total_focus_minutes || 0) + MODES[0].minutes;
+                await supabase.from("profiles").update({ total_focus_minutes: updatedFocusMin }).eq("id", uid);
+                var xpResult = await awardXP(uid, XP_AWARDS.FOCUS_SESSION, curXp, curBadges);
+                await checkAndAwardBadges(uid, xpResult.newBadges, { focusMinutes: updatedFocusMin });
+                var msg = "+25 XP! Focus session complete!";
+                if (xpResult.leveledUp) msg = "Level Up! Level " + xpResult.newLevel + "! +25 XP";
+                setXpToast(msg);
+                setTimeout(function() { setXpToast(""); }, 3000);
+              });
             }
             setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
             // Browser notification if permitted
@@ -131,6 +154,13 @@ export default function FocusPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
+      {/* XP Toast */}
+      {xpToast && (
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+          <span className="text-yellow-300">⚡</span>
+          {xpToast}
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-white">Focus Timer</h1>
