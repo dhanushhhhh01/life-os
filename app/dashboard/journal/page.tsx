@@ -17,6 +17,38 @@ var TAG_COLORS = {
 
 var moodEmojis = ["", ":(", ":/", ":|", ":/", ":|", ":)", ":D", "XD", "<3", "!!!"];
 
+// Mini mood sparkline for journal list header
+function MoodSparkline(props) {
+  var data = props.data || [];
+  if (data.length < 2) return null;
+  var W = 120;
+  var H = 28;
+  var pad = 4;
+  var innerW = W - pad * 2;
+  var innerH = H - pad * 2;
+  var pts = data.map(function(d, i) {
+    var x = pad + (i / (data.length - 1)) * innerW;
+    var y = pad + innerH - ((d - 1) / 9) * innerH;
+    return x + "," + y;
+  });
+  var lastMood = data[data.length - 1];
+  var color = lastMood >= 8 ? "#46F0D2" : lastMood >= 6 ? "#86efac" : lastMood >= 4 ? "#fde047" : "#f87171";
+  return (
+    <div className="flex items-center gap-2">
+      <svg width={W} height={H} viewBox={"0 0 " + W + " " + H}>
+        <polyline points={pts.join(" ")} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+          style={{ filter: "drop-shadow(0 0 3px " + color + ")" }} />
+        {data.map(function(d, i) {
+          var x = pad + (i / (data.length - 1)) * innerW;
+          var y = pad + innerH - ((d - 1) / 9) * innerH;
+          return <circle key={i} cx={x} cy={y} r="2" fill={color} />;
+        })}
+      </svg>
+      <span className="text-[10px] text-gray-600">mood trend</span>
+    </div>
+  );
+}
+
 function getMoodColor(m) {
   if (m >= 9) return "text-[#46F0D2]";
   if (m >= 7) return "text-green-400";
@@ -68,7 +100,8 @@ export default function JournalPage() {
     };
     var result = await supabase.from("journal_entries").insert(data).select();
     if (!result.error) {
-      setEntries([result.data[0]].concat(entries));
+      var saved = result.data[0];
+      setEntries([saved].concat(entries));
       setShowNew(false);
       setNewEntry({ title: "", body: "", tags: "", mood: 7 });
 
@@ -85,6 +118,10 @@ export default function JournalPage() {
         setXpToast(toastMsg);
         setTimeout(function() { setXpToast(""); }, 3000);
       } catch(e) {}
+
+      // Auto-open entry and trigger Dex analysis
+      setSelectedEntry(saved);
+      askDexAboutEntry(saved);
     }
     setSaving(false);
   }
@@ -218,6 +255,11 @@ export default function JournalPage() {
             <h1 className="text-3xl font-black text-white">Journal</h1>
           </div>
           <p className="text-gray-500 text-sm">Capture your thoughts, wins, and reflections</p>
+          {entries.length >= 2 && (
+            <div className="mt-2">
+              <MoodSparkline data={entries.slice(0, 10).reverse().map(function(e) { return e.mood; })} />
+            </div>
+          )}
         </div>
         <button
           onClick={function() { setShowNew(!showNew); }}

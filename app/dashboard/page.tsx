@@ -205,6 +205,11 @@ export default function DashboardPage() {
   // Daily quote
   var [quote, setQuote] = useState("");
 
+  // Dex morning briefing
+  var [morningBriefing, setMorningBriefing] = useState("");
+  var [briefingLoading, setBriefingLoading] = useState(false);
+  var [briefingDismissed, setBriefingDismissed] = useState(false);
+
   useEffect(function() {
     setMounted(true);
     var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
@@ -275,6 +280,37 @@ export default function DashboardPage() {
       setMoodChartData(chartPoints);
 
       setLoading(false);
+
+      // Dex morning briefing — once per day
+      var today2 = new Date().toISOString().split("T")[0];
+      var savedBriefing = typeof window !== "undefined" ? localStorage.getItem("dex-briefing-" + today2) : null;
+      var dismissed = typeof window !== "undefined" ? localStorage.getItem("dex-briefing-dismissed-" + today2) : null;
+      if (dismissed) {
+        setBriefingDismissed(true);
+      } else if (savedBriefing) {
+        setMorningBriefing(savedBriefing);
+      } else {
+        setBriefingLoading(true);
+        var maxStreak2 = (habitsRes.data || []).reduce(function(m, h) { return h.streak > m ? h.streak : m; }, 0);
+        var topGoalName = (goalsRes.data || []).length > 0 ? goalsRes.data[0].name : "your goals";
+        var briefPrompt = "Give me a personalized morning briefing for today. I am Dhanush, studying AI/Robotics at SRH Berlin, targeting internships at Siemens/Tesla/Continental. My stats: longest habit streak is " + maxStreak2 + " days, top goal is '" + topGoalName + "', average mood this week is " + (avgMood || 0) + "/10, I've checked in " + (checkinData || []).length + " times this week. Be specific, motivating, and concise (2-3 sentences max). Reference Berlin or my AI goals.";
+        try {
+          var briefRes = await fetch("/api/coach", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: [{ id: 1, role: "user", content: briefPrompt }] }),
+          });
+          var briefData = await briefRes.json();
+          var briefing = briefData.response || "Good morning Dhanush! Ready to make progress on your goals today?";
+          setMorningBriefing(briefing);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("dex-briefing-" + today2, briefing);
+          }
+        } catch(e) {
+          setMorningBriefing("Good morning Dhanush! Berlin awaits — let's make today count.");
+        }
+        setBriefingLoading(false);
+      }
     });
   }, []);
 
@@ -325,6 +361,14 @@ export default function DashboardPage() {
     return insights[0];
   }
 
+  function dismissBriefing() {
+    setBriefingDismissed(true);
+    var today2 = new Date().toISOString().split("T")[0];
+    if (typeof window !== "undefined") {
+      localStorage.setItem("dex-briefing-dismissed-" + today2, "1");
+    }
+  }
+
   if (!mounted) return null;
 
   return (
@@ -351,6 +395,40 @@ export default function DashboardPage() {
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.2em] mt-1">Life Score</div>
         </div>
       </div>
+
+      {/* Dex Morning Briefing */}
+      {!briefingDismissed && (morningBriefing || briefingLoading) && (
+        <div className="glass-card p-5 rounded-2xl border border-[#46F0D2]/20 bg-[#46F0D2]/[0.03] animate-slide-up relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-[#46F0D2]" />
+          <div className="relative flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center shadow-lg shadow-[#46F0D2]/20 shrink-0">
+              <Sparkles size={18} className="text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-xs font-bold text-[#46F0D2] uppercase tracking-[0.15em]">Dex</span>
+                <span className="text-[10px] text-gray-600">Morning Briefing</span>
+                {briefingLoading && (
+                  <span className="flex gap-1">
+                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </span>
+                )}
+              </div>
+              {morningBriefing && (
+                <p className="text-sm text-gray-300 leading-relaxed">{morningBriefing}</p>
+              )}
+              {briefingLoading && !morningBriefing && (
+                <p className="text-sm text-gray-600 italic">Preparing your daily briefing...</p>
+              )}
+            </div>
+            <button onClick={dismissBriefing} className="text-gray-700 hover:text-gray-500 transition-colors shrink-0 ml-2">
+              <Star size={14} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* XP Level + Today's check-in */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">

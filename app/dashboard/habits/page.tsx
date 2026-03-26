@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Flame, Plus, Check, Trophy, TrendingUp, X } from "lucide-react";
+import { Flame, Plus, Check, Trophy, TrendingUp, X, Snowflake } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
@@ -72,8 +72,16 @@ export default function HabitsPage() {
   var [saving, setSaving] = useState(false);
   var [mounted, setMounted] = useState(false);
   var [xpToast, setXpToast] = useState("");
+  var [frozenHabits, setFrozenHabits] = useState({});
 
-  useEffect(function() { setMounted(true); }, []);
+  useEffect(function() {
+    setMounted(true);
+    var today = new Date().toISOString().split("T")[0];
+    var stored = typeof window !== "undefined" ? localStorage.getItem("life-os-frozen-" + today) : null;
+    if (stored) {
+      try { setFrozenHabits(JSON.parse(stored)); } catch(e) {}
+    }
+  }, []);
 
   useEffect(function() {
     supabase.auth.getSession().then(function(result) {
@@ -144,6 +152,26 @@ export default function HabitsPage() {
   async function deleteHabit(id) {
     await supabase.from("habits").delete().eq("id", id);
     setHabits(habits.filter(function(h) { return h.id !== id; }));
+  }
+
+  async function freezeHabit(id) {
+    if (!userId) return;
+    var profileRes = await supabase.from("profiles").select("xp").eq("id", userId).single();
+    var curXp = profileRes.data?.xp || 0;
+    if (curXp < 50) {
+      setXpToast("Need 50 XP to freeze!");
+      setTimeout(function() { setXpToast(""); }, 2000);
+      return;
+    }
+    await supabase.from("profiles").update({ xp: curXp - 50 }).eq("id", userId);
+    var today = new Date().toISOString().split("T")[0];
+    var next = Object.assign({}, frozenHabits, { [id]: today });
+    setFrozenHabits(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("life-os-frozen-" + today, JSON.stringify(next));
+    }
+    setXpToast("-50 XP - Streak frozen for today!");
+    setTimeout(function() { setXpToast(""); }, 2500);
   }
 
   var doneCount = habits.filter(function(h) { return h.done; }).length;
@@ -245,7 +273,20 @@ export default function HabitsPage() {
                     </div>
                   </div>
                 </button>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {frozenHabits[habit.id] ? (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-semibold">
+                      <Snowflake size={10} /> Frozen
+                    </div>
+                  ) : (
+                    <button
+                      onClick={function() { freezeHabit(habit.id); }}
+                      title="Freeze streak for today (-50 XP)"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-gray-600 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
+                    >
+                      <Snowflake size={13} />
+                    </button>
+                  )}
                   <div className={"text-2xl font-black bg-gradient-to-r " + habit.color + " bg-clip-text text-transparent font-display"}>
                     {habit.streak}
                   </div>
