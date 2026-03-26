@@ -66,7 +66,7 @@ export default function LoginPage() {
             ctx.beginPath();
             ctx.moveTo(pts[i].x, pts[i].y);
             ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.strokeStyle = "rgba(139, 92, 246, " + (0.06 * (1 - dist / 150)) + ")";
+            ctx.strokeStyle = "rgba(79, 70, 229, " + (0.06 * (1 - dist / 150)) + ")";
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -81,7 +81,7 @@ export default function LoginPage() {
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(139, 92, 246, " + p.a + ")";
+        ctx.fillStyle = "rgba(79, 70, 229, " + p.a + ")";
         ctx.fill();
       });
       id = requestAnimationFrame(draw);
@@ -151,29 +151,29 @@ export default function LoginPage() {
   }
 
   var faces = [
-    { t: "rotateY(0deg) translateZ(50px)", bg: "rgba(139,92,246,0.15)", border: "rgba(139,92,246,0.3)" },
-    { t: "rotateY(90deg) translateZ(50px)", bg: "rgba(34,211,238,0.1)", border: "rgba(34,211,238,0.25)" },
-    { t: "rotateY(180deg) translateZ(50px)", bg: "rgba(139,92,246,0.15)", border: "rgba(139,92,246,0.3)" },
-    { t: "rotateY(-90deg) translateZ(50px)", bg: "rgba(34,211,238,0.1)", border: "rgba(34,211,238,0.25)" },
+    { t: "rotateY(0deg) translateZ(50px)", bg: "rgba(79,70,229,0.15)", border: "rgba(79,70,229,0.3)" },
+    { t: "rotateY(90deg) translateZ(50px)", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
+    { t: "rotateY(180deg) translateZ(50px)", bg: "rgba(79,70,229,0.15)", border: "rgba(79,70,229,0.3)" },
+    { t: "rotateY(-90deg) translateZ(50px)", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
     { t: "rotateX(90deg) translateZ(50px)", bg: "rgba(236,72,153,0.1)", border: "rgba(236,72,153,0.25)" },
     { t: "rotateX(-90deg) translateZ(50px)", bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.25)" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#050510] flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen bg-[#030308] flex items-center justify-center overflow-hidden relative">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
 
       {/* Ambient orbs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          className="absolute w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] animate-morph"
+          className="absolute w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] animate-morph"
           style={{
             top: "15%", left: "20%",
             transform: "translate(" + (mousePos.x * 0.5) + "px, " + (mousePos.y * 0.5) + "px)",
           }}
         />
         <div
-          className="absolute w-[400px] h-[400px] bg-cyan-600/[0.06] rounded-full blur-[100px] animate-morph"
+          className="absolute w-[400px] h-[400px] bg-amber-600/[0.06] rounded-full blur-[100px] animate-morph"
           style={{
             bottom: "20%", right: "15%",
             animationDelay: "-4s",
@@ -211,7 +211,7 @@ export default function LoginPage() {
                     background: face.bg,
                     backdropFilter: "blur(8px)",
                     transform: face.t,
-                    boxShadow: "inset 0 0 30px rgba(139,92,246,0.1)",
+                    boxShadow: "inset 0 0 30px rgba(79,70,229,0.1)",
                   }} />
                 );
               })}
@@ -221,25 +221,25 @@ export default function LoginPage() {
 
         {/* Title */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-black text-gradient-cyan mb-3 font-display tracking-tight">
+          <h1 className="text-5xl font-black text-gradient-gold mb-3 font-display tracking-tight">
             Life OS
           </h1>
           <p className="text-gray-500 text-sm tracking-wide">Your Personal Second Brain & AI Life Coach</p>
         </div>
 
         {/* Form Card */}
-        <div className="glass-card-static p-8 rounded-3xl border border-white/[0.08] shadow-2xl shadow-purple-500/5">
+        <div className="glass-card-static p-8 rounded-3xl border border-white/[0.08] shadow-2xl shadow-indigo-500/5">
           {/* Tab Switcher */}
           <div className="flex bg-white/[0.04] rounded-2xl p-1 mb-7">
             <button
               onClick={function() { setMode("login"); setError(""); setMessage(""); }}
-              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "login" ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/20" : "text-gray-500 hover:text-white")}
+              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "login" ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white")}
             >
               Sign In
             </button>
             <button
               onClick={function() { setMode("register"); setError(""); setMessage(""); }}
-              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "register" ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/20" : "text-gray-500 hover:text-white")}
+              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "register" ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white")}
             >
               Register
             </button>
@@ -283,7 +283,7 @@ export default function LoginPage() {
               </div>
             )}
             <button type="submit" disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-purple-600 via-purple-500 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 mt-3 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 group">
+              className="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-600 text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 mt-3 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 group">
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -303,7 +303,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={function() { setMode(mode === "login" ? "register" : "login"); setError(""); setMessage(""); }}
-                className="text-purple-500 hover:text-purple-400 transition-colors font-medium"
+                className="text-indigo-500 hover:text-indigo-400 transition-colors font-medium"
               >
                 {mode === "login" ? "Register" : "Sign In"}
               </button>

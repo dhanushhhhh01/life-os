@@ -5,9 +5,9 @@ import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var MODES = [
-  { label: "Focus", minutes: 25, color: "from-purple-500 to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
+  { label: "Focus", minutes: 25, color: "from-indigo-500 to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
   { label: "Short Break", minutes: 5, color: "from-green-500 to-teal-500", glow: "rgba(20,184,166,0.3)", icon: Coffee },
-  { label: "Long Break", minutes: 15, color: "from-blue-500 to-cyan-500", glow: "rgba(34,211,238,0.3)", icon: BookOpen },
+  { label: "Long Break", minutes: 15, color: "from-blue-500 to-amber-500", glow: "rgba(245,158,11,0.3)", icon: BookOpen },
 ];
 
 var SOUNDS = [
@@ -156,7 +156,7 @@ export default function FocusPage() {
     <div className="p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-indigo-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">⚡</span>
           {xpToast}
         </div>
@@ -167,7 +167,7 @@ export default function FocusPage() {
           <p className="text-gray-500 text-sm mt-1">Deep work. No distractions. Just progress.</p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-indigo-400 to-amber-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-widest">Sessions Today</div>
         </div>
       </div>
@@ -210,8 +210,8 @@ export default function FocusPage() {
             />
             <defs>
               <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8b5cf6" />
-                <stop offset="100%" stopColor="#22d3ee" />
+                <stop offset="0%" stopColor="#4f46e5" />
+                <stop offset="100%" stopColor="#f59e0b" />
               </linearGradient>
             </defs>
           </svg>
@@ -240,7 +240,7 @@ export default function FocusPage() {
           </button>
           <button
             onClick={toggleSound}
-            className={"w-12 h-12 rounded-xl border flex items-center justify-center transition-all " + (soundOn ? "bg-purple-500/20 border-purple-500/40 text-purple-400" : "bg-white/[0.04] border-white/[0.08] text-gray-500 hover:text-white")}
+            className={"w-12 h-12 rounded-xl border flex items-center justify-center transition-all " + (soundOn ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-400" : "bg-white/[0.04] border-white/[0.08] text-gray-500 hover:text-white")}
           >
             {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
           </button>
@@ -248,9 +248,9 @@ export default function FocusPage() {
       </div>
 
       {/* Motivational Quote */}
-      <div className="glass-card p-5 rounded-2xl border border-purple-500/15 bg-purple-500/[0.03]">
+      <div className="glass-card p-5 rounded-2xl border border-indigo-500/15 bg-indigo-500/[0.03]">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500/20 to-amber-500/20 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 mt-0.5">
             <Brain size={14} />
           </div>
           <p className="text-sm text-gray-400 italic leading-relaxed">"{quote}"</p>
@@ -260,11 +260,11 @@ export default function FocusPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Sessions</div>
         </div>
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">{totalFocusMinutes}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-amber-400 to-blue-400 bg-clip-text text-transparent">{totalFocusMinutes}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Minutes</div>
         </div>
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
@@ -277,7 +277,7 @@ export default function FocusPage() {
       {typeof Notification !== "undefined" && Notification.permission === "default" && (
         <button
           onClick={function() { Notification.requestPermission(); }}
-          className="w-full py-2.5 text-xs text-gray-500 hover:text-purple-400 transition-colors text-center"
+          className="w-full py-2.5 text-xs text-gray-500 hover:text-indigo-400 transition-colors text-center"
         >
           Enable notifications for session alerts
         </button>

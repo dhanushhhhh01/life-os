@@ -5,12 +5,12 @@ import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var defaultHabits = [
-  { name: "Morning Coding", streak: 12, done_today: false, color: "from-purple-500 to-pink-500" },
+  { name: "Morning Coding", streak: 12, done_today: false, color: "from-indigo-500 to-pink-500" },
   { name: "Exercise", streak: 5, done_today: false, color: "from-orange-500 to-red-500" },
-  { name: "Read 30min", streak: 8, done_today: false, color: "from-blue-500 to-cyan-500" },
+  { name: "Read 30min", streak: 8, done_today: false, color: "from-blue-500 to-amber-500" },
   { name: "German Practice", streak: 3, done_today: false, color: "from-yellow-500 to-orange-500" },
   { name: "Meditate", streak: 2, done_today: false, color: "from-teal-500 to-green-500" },
-  { name: "Cold Shower", streak: 7, done_today: false, color: "from-cyan-500 to-blue-500" },
+  { name: "Cold Shower", streak: 7, done_today: false, color: "from-amber-500 to-blue-500" },
 ];
 
 function getStreakEmoji(streak) {
@@ -21,7 +21,7 @@ function getStreakEmoji(streak) {
 }
 
 function getStreakColor(streak) {
-  if (streak >= 14) return "text-purple-400";
+  if (streak >= 14) return "text-indigo-400";
   if (streak >= 7) return "text-orange-400";
   if (streak >= 3) return "text-yellow-400";
   return "text-gray-500";
@@ -53,7 +53,7 @@ export default function HabitsPage() {
     var today = new Date().toISOString().split("T")[0];
     var result = await supabase.from("habits").select("*").eq("user_id", uid).order("created_at", { ascending: true });
     if (!result.error && result.data.length === 0) {
-      var colors = ["from-purple-500 to-pink-500", "from-orange-500 to-red-500", "from-blue-500 to-cyan-500", "from-yellow-500 to-orange-500", "from-teal-500 to-green-500", "from-cyan-500 to-blue-500"];
+      var colors = ["from-indigo-500 to-pink-500", "from-orange-500 to-red-500", "from-blue-500 to-amber-500", "from-yellow-500 to-orange-500", "from-teal-500 to-green-500", "from-amber-500 to-blue-500"];
       var inserts = defaultHabits.map(function(h, i) {
         return Object.assign({}, h, { user_id: uid, color: colors[i % colors.length] });
       });
@@ -95,7 +95,7 @@ export default function HabitsPage() {
   async function addHabit() {
     if (!newHabit.trim() || !userId) return;
     setSaving(true);
-    var colors = ["from-purple-500 to-pink-500", "from-cyan-500 to-blue-500", "from-green-500 to-teal-500", "from-orange-500 to-red-500"];
+    var colors = ["from-indigo-500 to-pink-500", "from-amber-500 to-blue-500", "from-green-500 to-teal-500", "from-orange-500 to-red-500"];
     var color = colors[Math.floor(Math.random() * colors.length)];
     var data = { user_id: userId, name: newHabit.trim(), streak: 0, done_today: false, color: color };
     var result = await supabase.from("habits").insert(data).select();
@@ -128,7 +128,7 @@ export default function HabitsPage() {
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-indigo-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">⚡</span>
           {xpToast}
         </div>
@@ -142,7 +142,7 @@ export default function HabitsPage() {
       {/* Stats Banner */}
       <div className="grid grid-cols-3 gap-3">
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black text-gradient-cyan font-display">{doneCount}/{habits.length}</div>
+          <div className="text-2xl font-black text-gradient-gold font-display">{doneCount}/{habits.length}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Done Today</div>
         </div>
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
@@ -161,11 +161,11 @@ export default function HabitsPage() {
           <span className="text-sm font-medium text-gray-400 flex items-center gap-2">
             <TrendingUp size={14} /> Today&apos;s Progress
           </span>
-          <span className="text-lg font-black text-gradient-cyan font-display">{completionRate}%</span>
+          <span className="text-lg font-black text-gradient-gold font-display">{completionRate}%</span>
         </div>
         <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full transition-all duration-700"
+            className="h-full bg-gradient-to-r from-indigo-500 to-amber-500 rounded-full transition-all duration-700"
             style={{ width: mounted ? completionRate + "%" : "0%" }}
           />
         </div>
@@ -241,7 +241,7 @@ export default function HabitsPage() {
           <button
             onClick={addHabit}
             disabled={saving}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50"
+            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-amber-600 text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50"
           >
             {saving ? "..." : "Add"}
           </button>
