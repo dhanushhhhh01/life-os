@@ -43,6 +43,116 @@ function CircularProgress(props) {
   );
 }
 
+function MoodChart(props) {
+  var data = props.data || [];
+  var W = 480;
+  var H = 110;
+  var padL = 28;
+  var padR = 12;
+  var padT = 12;
+  var padB = 28;
+  var innerW = W - padL - padR;
+  var innerH = H - padT - padB;
+
+  function xPos(i) { return padL + (i / (data.length - 1)) * innerW; }
+  function yPos(val) { return padT + innerH - ((val - 1) / 9) * innerH; }
+
+  // Build polyline points for mood and energy (skip nulls — connect existing)
+  function buildPath(key) {
+    var pts = [];
+    for (var i = 0; i < data.length; i++) {
+      if (data[i][key] !== null) {
+        pts.push(xPos(i) + "," + yPos(data[i][key]));
+      }
+    }
+    return pts.join(" ");
+  }
+
+  var moodPts = buildPath("mood");
+  var energyPts = buildPath("energy");
+  var hasMood = moodPts.length > 0;
+  var hasEnergy = energyPts.length > 0;
+
+  // Y-axis grid lines at 2, 4, 6, 8, 10
+  var gridLines = [2, 4, 6, 8, 10];
+
+  return (
+    <svg viewBox={"0 0 " + W + " " + H} className="w-full" style={{ height: "110px" }}>
+      {/* Grid lines */}
+      {gridLines.map(function(v) {
+        return (
+          <line key={v}
+            x1={padL} y1={yPos(v)} x2={W - padR} y2={yPos(v)}
+            stroke="rgba(255,255,255,0.04)" strokeWidth="1"
+          />
+        );
+      })}
+
+      {/* Y-axis labels */}
+      {[2, 6, 10].map(function(v) {
+        return (
+          <text key={v} x={padL - 4} y={yPos(v) + 3} fill="rgba(255,255,255,0.2)" fontSize="8" textAnchor="end">{v}</text>
+        );
+      })}
+
+      {/* Mood line (#46F0D2) */}
+      {hasMood && (
+        <polyline
+          points={moodPts}
+          fill="none"
+          stroke="#46F0D2"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          style={{ filter: "drop-shadow(0 0 4px rgba(70,240,210,0.6))" }}
+        />
+      )}
+
+      {/* Energy line (#FBE2B4) */}
+      {hasEnergy && (
+        <polyline
+          points={energyPts}
+          fill="none"
+          stroke="#FBE2B4"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          style={{ filter: "drop-shadow(0 0 4px rgba(251,226,180,0.6))" }}
+        />
+      )}
+
+      {/* Mood dots */}
+      {data.map(function(d, i) {
+        if (d.mood === null) return null;
+        return (
+          <circle key={"m" + i} cx={xPos(i)} cy={yPos(d.mood)} r="3.5"
+            fill="#131321" stroke="#46F0D2" strokeWidth="1.5"
+            style={{ filter: "drop-shadow(0 0 3px rgba(70,240,210,0.8))" }}
+          />
+        );
+      })}
+
+      {/* Energy dots */}
+      {data.map(function(d, i) {
+        if (d.energy === null) return null;
+        return (
+          <circle key={"e" + i} cx={xPos(i)} cy={yPos(d.energy)} r="3.5"
+            fill="#131321" stroke="#FBE2B4" strokeWidth="1.5"
+            style={{ filter: "drop-shadow(0 0 3px rgba(251,226,180,0.8))" }}
+          />
+        );
+      })}
+
+      {/* X-axis day labels */}
+      {data.map(function(d, i) {
+        return (
+          <text key={"l" + i} x={xPos(i)} y={H - 6} fill="rgba(255,255,255,0.3)" fontSize="9" textAnchor="middle">{d.day}</text>
+        );
+      })}
+    </svg>
+  );
+}
+
 var MOOD_EMOJIS = ["", "😫", "😔", "😕", "😐", "🙂", "😊", "😄", "😁", "🤩", "🔥"];
 
 var DAILY_QUOTES = [
@@ -88,6 +198,9 @@ export default function DashboardPage() {
     avgMood: 0,
     avgEnergy: 0,
   });
+
+  // 7-day mood/energy chart data
+  var [moodChartData, setMoodChartData] = useState([]);
 
   // Daily quote
   var [quote, setQuote] = useState("");
@@ -147,6 +260,19 @@ export default function DashboardPage() {
         avgMood: avgMood,
         avgEnergy: avgEnergy,
       });
+
+      // Build 7-day chart data: one entry per day for the past 7 days
+      var DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      var chartPoints = [];
+      for (var di = 6; di >= 0; di--) {
+        var d = new Date(Date.now() - di * 24 * 60 * 60 * 1000);
+        var dateStr = d.toISOString().split("T")[0];
+        var dayCheckins = checkinData.filter(function(c) { return c.created_at && c.created_at.startsWith(dateStr); });
+        var dayMood = dayCheckins.length > 0 ? Math.round(dayCheckins.reduce(function(s, c) { return s + c.mood; }, 0) / dayCheckins.length) : null;
+        var dayEnergy = dayCheckins.length > 0 ? Math.round(dayCheckins.reduce(function(s, c) { return s + c.energy; }, 0) / dayCheckins.length) : null;
+        chartPoints.push({ day: DAY_LABELS[d.getDay()], mood: dayMood, energy: dayEnergy, date: dateStr });
+      }
+      setMoodChartData(chartPoints);
 
       setLoading(false);
     });
@@ -358,10 +484,27 @@ export default function DashboardPage() {
             );
           })}
         </div>
-        {weeklyStats.avgMood > 0 && (
-          <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
-            <span>Avg mood this week: <span className="text-[#46F0D2] font-bold">{weeklyStats.avgMood}/10</span></span>
-            <span>Avg energy: <span className="text-[#FBE2B4] font-bold">{weeklyStats.avgEnergy}/10</span></span>
+        {moodChartData.length > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-gray-600 uppercase tracking-[0.12em]">7-Day Trend</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "#46F0D2", boxShadow: "0 0 4px rgba(70,240,210,0.7)" }} />
+                  <span className="text-[10px] text-gray-600">Mood</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "#FBE2B4", boxShadow: "0 0 4px rgba(251,226,180,0.7)" }} />
+                  <span className="text-[10px] text-gray-600">Energy</span>
+                </div>
+                {weeklyStats.avgMood > 0 && (
+                  <span className="text-[10px] text-gray-600">avg <span className="text-[#46F0D2] font-bold">{weeklyStats.avgMood}</span> / <span className="text-[#FBE2B4] font-bold">{weeklyStats.avgEnergy}</span></span>
+                )}
+              </div>
+            </div>
+            <div className="rounded-xl bg-white/[0.02] border border-white/[0.04] px-2 py-1">
+              <MoodChart data={moodChartData} />
+            </div>
           </div>
         )}
       </div>

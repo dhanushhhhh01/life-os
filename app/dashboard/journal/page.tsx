@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { BookOpen, Plus, X, ArrowLeft, Tag, Smile, Trash2 } from "lucide-react";
+import { BookOpen, Plus, X, ArrowLeft, Tag, Smile, Trash2, Sparkles, Loader } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
@@ -34,6 +34,8 @@ export default function JournalPage() {
   var [saving, setSaving] = useState(false);
   var [mounted, setMounted] = useState(false);
   var [xpToast, setXpToast] = useState("");
+  var [dexInsight, setDexInsight] = useState("");
+  var [loadingInsight, setLoadingInsight] = useState(false);
 
   useEffect(function() { setMounted(true); }, []);
 
@@ -87,6 +89,24 @@ export default function JournalPage() {
     setSaving(false);
   }
 
+  async function askDexAboutEntry(entry) {
+    setLoadingInsight(true);
+    setDexInsight("");
+    try {
+      var prompt = "I just wrote a journal entry titled '" + entry.title + "'. Here's what I wrote: " + entry.body + "\n\nMy mood was " + entry.mood + "/10. Give me a brief, insightful reflection (2-3 sentences) about this entry as my AI coach Dex.";
+      var res = await fetch("/api/coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [{ id: 1, role: "user", content: prompt }] }),
+      });
+      var data = await res.json();
+      setDexInsight(data.response || "Great reflection! Keep journaling — it builds self-awareness.");
+    } catch(e) {
+      setDexInsight("Keep journaling! Reflection is one of the most powerful habits you can build.");
+    }
+    setLoadingInsight(false);
+  }
+
   async function deleteEntry(id) {
     await supabase.from("journal_entries").delete().eq("id", id);
     setEntries(entries.filter(function(e) { return e.id !== id; }));
@@ -112,10 +132,10 @@ export default function JournalPage() {
     return (
       <div className="p-6 lg:p-8 max-w-3xl mx-auto animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={function() { setSelectedEntry(null); }} className="text-gray-500 hover:text-white text-sm flex items-center gap-2 transition-colors group">
+          <button onClick={function() { setSelectedEntry(null); setDexInsight(""); }} className="text-gray-500 hover:text-white text-sm flex items-center gap-2 transition-colors group">
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Journal
           </button>
-          <button onClick={function() { deleteEntry(selectedEntry.id); }} className="text-gray-600 hover:text-red-400 transition-colors flex items-center gap-1.5 text-sm">
+          <button onClick={function() { deleteEntry(selectedEntry.id); setDexInsight(""); }} className="text-gray-600 hover:text-red-400 transition-colors flex items-center gap-1.5 text-sm">
             <Trash2 size={14} /> Delete
           </button>
         </div>
@@ -137,6 +157,46 @@ export default function JournalPage() {
             })}
           </div>
           <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-[15px]">{selectedEntry.body}</p>
+
+          {/* Ask Dex about this entry */}
+          <div className="mt-8 pt-6 border-t border-white/[0.06]">
+            {!dexInsight && !loadingInsight && (
+              <button
+                onClick={function() { askDexAboutEntry(selectedEntry); }}
+                className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2]/10 to-[#FBE2B4]/10 border border-[#46F0D2]/20 hover:border-[#46F0D2]/40 text-[#46F0D2] text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(70,240,210,0.12)]"
+              >
+                <Sparkles size={15} />
+                Ask Dex about this entry
+              </button>
+            )}
+            {loadingInsight && (
+              <div className="flex items-center gap-3 text-gray-500 text-sm">
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center">
+                  <Sparkles size={12} className="text-[#46F0D2] animate-pulse" />
+                </div>
+                Dex is thinking...
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            )}
+            {dexInsight && (
+              <div className="p-4 rounded-xl bg-[#46F0D2]/[0.04] border border-[#46F0D2]/15 animate-slide-up">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center">
+                    <Sparkles size={12} className="text-[#46F0D2]" />
+                  </div>
+                  <span className="text-xs font-semibold text-[#46F0D2]">Dex's Reflection</span>
+                </div>
+                <p className="text-sm text-gray-400 leading-relaxed">{dexInsight}</p>
+                <button onClick={function() { setDexInsight(""); }} className="mt-3 text-[10px] text-gray-700 hover:text-gray-500 transition-colors">
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

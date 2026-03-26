@@ -13,6 +13,43 @@ var defaultHabits = [
   { name: "Cold Shower", streak: 7, done_today: false, color: "from-[#FBE2B4] to-blue-500" },
 ];
 
+// 28-day heatmap built from streak count
+function HabitHeatmap(props) {
+  var streak = Math.min(props.streak || 0, 28);
+  var cells = 28;
+  // 4 rows x 7 cols
+  var cols = 7;
+  var rows = 4;
+  var cellSize = 10;
+  var gap = 3;
+  var W = cols * (cellSize + gap) - gap;
+  var H = rows * (cellSize + gap) - gap;
+
+  return (
+    <svg width={W} height={H} viewBox={"0 0 " + W + " " + H} style={{ display: "block" }}>
+      {Array.from({ length: cells }).map(function(_, i) {
+        var col = i % cols;
+        var row = Math.floor(i / cols);
+        var x = col * (cellSize + gap);
+        var y = row * (cellSize + gap);
+        // The last `streak` cells (right side) are done
+        var daysAgo = cells - 1 - i;
+        var isDone = daysAgo < streak;
+        return (
+          <rect
+            key={i}
+            x={x} y={y}
+            width={cellSize} height={cellSize}
+            rx="2" ry="2"
+            fill={isDone ? "#46F0D2" : "rgba(255,255,255,0.04)"}
+            style={isDone ? { filter: "drop-shadow(0 0 2px rgba(70,240,210,0.5))" } : {}}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
 function getStreakEmoji(streak) {
   if (streak >= 14) return "Unstoppable";
   if (streak >= 7) return "On fire!";
@@ -190,14 +227,14 @@ export default function HabitsPage() {
             >
               <div className="flex items-center justify-between">
                 <button className="flex items-center gap-4 flex-1" onClick={function() { toggleHabit(habit.id); }}>
-                  <div className={"w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all " + (
+                  <div className={"w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 " + (
                     habit.done
                       ? "border-green-400 bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.3)]"
                       : "border-gray-700 group-hover:border-gray-500"
                   )}>
                     {habit.done && <Check size={14} className="text-white" strokeWidth={3} />}
                   </div>
-                  <div className="text-left">
+                  <div className="text-left flex-1">
                     <div className={"font-semibold transition-all " + (habit.done ? "text-gray-500 line-through" : "text-white")}>
                       {habit.name}
                     </div>
@@ -219,6 +256,11 @@ export default function HabitsPage() {
                     <X size={14} />
                   </button>
                 </div>
+              </div>
+              {/* 28-day heatmap */}
+              <div className="mt-3 flex items-center gap-3">
+                <HabitHeatmap streak={habit.streak} />
+                <span className="text-[9px] text-gray-700 uppercase tracking-[0.1em]">28d</span>
               </div>
             </div>
           );

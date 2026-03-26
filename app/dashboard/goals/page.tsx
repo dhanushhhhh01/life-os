@@ -41,6 +41,47 @@ function CircularProgress(props) {
   );
 }
 
+// Parse "Jun 2026" or "2026-06-01" style deadlines
+function getDaysRemaining(deadline) {
+  if (!deadline) return null;
+  var d = new Date(deadline);
+  if (isNaN(d.getTime())) {
+    // Try "Mon YYYY" format like "Jun 2026"
+    var months = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+    var parts = deadline.trim().split(" ");
+    if (parts.length === 2) {
+      var month = months[parts[0]];
+      var year = parseInt(parts[1]);
+      if (month !== undefined && !isNaN(year)) {
+        d = new Date(year, month, 28); // end of that month
+      }
+    }
+  }
+  if (isNaN(d.getTime())) return null;
+  var diff = Math.ceil((d.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function deadlineColor(days) {
+  if (days === null) return "text-gray-600";
+  if (days < 0) return "text-red-500";
+  if (days <= 30) return "text-red-400";
+  if (days <= 90) return "text-orange-400";
+  if (days <= 180) return "text-yellow-400";
+  return "text-green-400";
+}
+
+function deadlineLabel(days) {
+  if (days === null) return "";
+  if (days < 0) return "Overdue";
+  if (days === 0) return "Due today!";
+  if (days === 1) return "1 day left";
+  if (days <= 7) return days + " days left";
+  if (days <= 30) return Math.ceil(days / 7) + " wks left";
+  if (days <= 365) return Math.ceil(days / 30) + " mo left";
+  return Math.round(days / 365 * 10) / 10 + " yrs";
+}
+
 var categoryColors = {
   Tech: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
   Career: "bg-orange-500/15 text-orange-400 border-orange-500/20",
@@ -220,13 +261,20 @@ export default function GoalsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-white truncate">{goal.name}</div>
-                  <div className="flex items-center gap-2 mt-1.5">
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <span className={"text-[10px] px-2 py-0.5 rounded-full border " + catStyle}>{goal.category}</span>
-                    {goal.deadline && (
-                      <span className="text-[11px] text-gray-600 flex items-center gap-1">
-                        <Clock size={10} /> {goal.deadline}
-                      </span>
-                    )}
+                    {goal.deadline && (function() {
+                      var days = getDaysRemaining(goal.deadline);
+                      var label = deadlineLabel(days);
+                      var dColor = deadlineColor(days);
+                      return (
+                        <span className={"text-[10px] flex items-center gap-1 font-medium " + dColor}>
+                          <Clock size={9} />
+                          <span>{goal.deadline}</span>
+                          {label && <span className="opacity-70">({label})</span>}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
                 <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
