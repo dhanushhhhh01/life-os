@@ -1,82 +1,149 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabase";
+import {
+  LayoutDashboard,
+  Target,
+  CalendarCheck,
+  BookOpen,
+  Flame,
+  Bot,
+  Timer,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+} from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", abbr: "HM" },
-  { href: "/dashboard/goals", label: "Goals", abbr: "GL" },
-  { href: "/dashboard/checkin", label: "Check In", abbr: "CI" },
-  { href: "/dashboard/journal", label: "Journal", abbr: "JN" },
-  { href: "/dashboard/habits", label: "Habits", abbr: "HB" },
-  { href: "/dashboard/coach", label: "AI Coach", abbr: "DX" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/goals", label: "Goals", icon: Target },
+  { href: "/dashboard/checkin", label: "Check In", icon: CalendarCheck },
+  { href: "/dashboard/journal", label: "Journal", icon: BookOpen },
+  { href: "/dashboard/habits", label: "Habits", icon: Flame },
+  { href: "/dashboard/focus", label: "Focus", icon: Timer },
+  { href: "/dashboard/coach", label: "AI Coach", icon: Bot },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [userName, setUserName] = useState("Dhanush");
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(function() {
+    supabase.auth.getSession().then(function(result) {
+      if (!result.data.session) {
+        router.push("/");
+      } else {
+        var user = result.data.session.user;
+        var displayName = user.user_metadata?.name || user.email?.split("@")[0] || "Dhanush";
+        setUserName(displayName);
+        setUserEmail(user.email || "");
+      }
+    });
+  }, [router]);
 
   return (
-    <div className="flex h-screen bg-gray-950 overflow-hidden">
-      <aside className={`${collapsed ? "w-16" : "w-64"} transition-all duration-300 flex flex-col bg-gray-900/80 backdrop-blur-xl border-r border-white/10`}>
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+    <div className="flex h-screen bg-[#050510] overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-purple-600/[0.04] rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-cyan-600/[0.03] rounded-full blur-[120px]" />
+      </div>
+
+      {/* Sidebar */}
+      <aside className={`${collapsed ? "w-[72px]" : "w-[260px]"} transition-all duration-300 ease-out flex flex-col bg-[#080818]/90 backdrop-blur-2xl border-r border-white/[0.06] relative z-10`}>
+        {/* Logo */}
+        <div className="p-4 h-16 border-b border-white/[0.06] flex items-center justify-between">
           {!collapsed && (
-            <div>
-              <div className="text-xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Life OS</div>
-              <div className="text-xs text-gray-500">Second Brain</div>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center animate-pulse-glow">
+                <Sparkles size={16} className="text-white" />
+              </div>
+              <div>
+                <div className="text-base font-bold text-gradient-cyan font-display">Life OS</div>
+                <div className="text-[10px] text-gray-600 uppercase tracking-[0.2em]">Second Brain</div>
+              </div>
+            </div>
+          )}
+          {collapsed && (
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center mx-auto animate-pulse-glow">
+              <Sparkles size={16} className="text-white" />
             </div>
           )}
           <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all text-xs font-bold"
+            onClick={function() { setCollapsed(!collapsed); }}
+            className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-gray-500 hover:text-white transition-all"
           >
-            {collapsed ? ">>" : "<<"}
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
+        {/* Nav */}
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-hide">
+          {navItems.map(function(item) {
+            var isActive = pathname === item.href;
+            var Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
+                className={"flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group " + (
                   isActive
-                    ? "bg-gradient-to-r from-purple-600/30 to-cyan-600/30 border border-purple-500/30 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
+                    ? "bg-gradient-to-r from-purple-600/20 to-cyan-600/10 border border-purple-500/20 text-white shadow-lg shadow-purple-500/5"
+                    : "text-gray-500 hover:text-white hover:bg-white/[0.04]"
+                )}
               >
-                <span className={`text-xs font-black w-6 text-center ${isActive ? "text-purple-400" : "group-hover:text-purple-400"}`}>
-                  {item.abbr}
-                </span>
+                <Icon
+                  size={18}
+                  className={"transition-all duration-200 " + (
+                    isActive
+                      ? "text-purple-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]"
+                      : "group-hover:text-purple-400 group-hover:drop-shadow-[0_0_6px_rgba(139,92,246,0.3)]"
+                  )}
+                />
                 {!collapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
                 )}
                 {!collapsed && isActive && (
-                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400" />
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
                 )}
               </Link>
             );
           })}
         </nav>
 
+        {/* User */}
         {!collapsed && (
-          <div className="p-4 border-t border-white/10">
+          <div className="p-4 border-t border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
-                D
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-purple-500/20">
+                {userName.charAt(0).toUpperCase()}
               </div>
-              <div>
-                <div className="text-xs font-medium text-white">Dhanush</div>
-                <div className="text-xs text-gray-500">Berlin, DE</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-white truncate">{userName}</div>
+                <div className="text-[11px] text-gray-600">Berlin, Germany</div>
               </div>
+              <button
+                onClick={async function() {
+                  await supabase.auth.signOut();
+                  router.push("/");
+                }}
+                className="p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+              >
+                <LogOut size={14} />
+              </button>
             </div>
           </div>
         )}
       </aside>
 
-      <main className="flex-1 overflow-y-auto">
+      {/* Main */}
+      <main className="flex-1 overflow-y-auto relative">
         {children}
       </main>
     </div>
