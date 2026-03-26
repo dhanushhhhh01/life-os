@@ -4,29 +4,29 @@ import { Target, Plus, X, Award, Clock, TrendingUp } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 
 var defaultGoals = [
-  { name: "Master FastAPI & LLMs", progress: 45, category: "Tech", deadline: "Jun 2026", color: "from-indigo-500 to-pink-500", ring: "#a855f7" },
+  { name: "Master FastAPI & LLMs", progress: 45, category: "Tech", deadline: "Jun 2026", color: "from-[#46F0D2] to-pink-500", ring: "#a855f7" },
   { name: "German to B1 Level", progress: 30, category: "Language", deadline: "Aug 2026", color: "from-yellow-500 to-orange-500", ring: "#f97316" },
   { name: "Land AI Internship", progress: 20, category: "Career", deadline: "May 2026", color: "from-orange-500 to-red-500", ring: "#ef4444" },
   { name: "Build Portfolio Projects", progress: 60, category: "Tech", deadline: "Apr 2026", color: "from-green-500 to-teal-500", ring: "#14b8a6" },
-  { name: "Complete Master Thesis", progress: 10, category: "Academic", deadline: "Dec 2026", color: "from-blue-500 to-amber-500", ring: "#f59e0b" },
-  { name: "Read 24 Books This Year", progress: 25, category: "Learning", deadline: "Dec 2026", color: "from-indigo-500 to-indigo-500", ring: "#4f46e5" },
+  { name: "Complete Master Thesis", progress: 10, category: "Academic", deadline: "Dec 2026", color: "from-blue-500 to-[#FBE2B4]", ring: "#FBE2B4" },
+  { name: "Read 24 Books This Year", progress: 25, category: "Learning", deadline: "Dec 2026", color: "from-[#46F0D2] to-[#46F0D2]", ring: "#46F0D2" },
 ];
 
 var ringColors = {
-  "from-indigo-500 to-pink-500": "#a855f7",
+  "from-[#46F0D2] to-pink-500": "#a855f7",
   "from-yellow-500 to-orange-500": "#f97316",
   "from-orange-500 to-red-500": "#ef4444",
   "from-green-500 to-teal-500": "#14b8a6",
-  "from-blue-500 to-amber-500": "#f59e0b",
-  "from-indigo-500 to-indigo-500": "#4f46e5",
-  "from-amber-500 to-blue-500": "#f59e0b",
+  "from-blue-500 to-[#FBE2B4]": "#FBE2B4",
+  "from-[#46F0D2] to-[#46F0D2]": "#46F0D2",
+  "from-[#FBE2B4] to-blue-500": "#FBE2B4",
 };
 
 function CircularProgress(props) {
   var size = props.size || 56;
   var strokeWidth = props.strokeWidth || 4;
   var progress = props.progress || 0;
-  var color = props.color || "#4f46e5";
+  var color = props.color || "#46F0D2";
   var radius = (size - strokeWidth) / 2;
   var circumference = radius * 2 * Math.PI;
   var offset = circumference - (progress / 100) * circumference;
@@ -42,11 +42,11 @@ function CircularProgress(props) {
 }
 
 var categoryColors = {
-  Tech: "bg-indigo-500/15 text-indigo-400 border-indigo-500/20",
+  Tech: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
   Career: "bg-orange-500/15 text-orange-400 border-orange-500/20",
   Language: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
   Academic: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Learning: "bg-indigo-500/15 text-indigo-400 border-indigo-500/20",
+  Learning: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
   Health: "bg-green-500/15 text-green-400 border-green-500/20",
 };
 
@@ -81,9 +81,9 @@ export default function GoalsPage() {
         return Object.assign({}, g, { user_id: uid, color: colorKey, ring: ringColors[colorKey] });
       });
       var seed = await supabase.from("goals").insert(inserts).select();
-      if (!seed.error) setGoals(seed.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#4f46e5" }); }));
+      if (!seed.error) setGoals(seed.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#46F0D2" }); }));
     } else if (!result.error) {
-      setGoals(result.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#4f46e5" }); }));
+      setGoals(result.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#46F0D2" }); }));
     }
     setLoading(false);
   }
@@ -122,7 +122,7 @@ export default function GoalsPage() {
     return (
       <div className="p-6 flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-[#46F0D2]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-500 text-sm">Loading goals...</p>
         </div>
       </div>
@@ -134,14 +134,14 @@ export default function GoalsPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Target size={18} className="text-indigo-400" />
+            <Target size={18} className="text-[#46F0D2]" />
             <h1 className="text-3xl font-black text-white">Goals</h1>
           </div>
           <p className="text-gray-500 text-sm">Track every target on the path to AI Engineer</p>
         </div>
         <button
           onClick={function() { setShowAdd(!showAdd); }}
-          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showAdd ? "bg-white/10" : "bg-gradient-to-r from-indigo-600 to-amber-600 shadow-indigo-500/20")}
+          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showAdd ? "bg-white/10" : "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] shadow-[#46F0D2]/20")}
         >
           {showAdd ? <><X size={14} /> Cancel</> : <><Plus size={14} /> New Goal</>}
         </button>
@@ -151,7 +151,7 @@ export default function GoalsPage() {
       <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
         <div className="flex items-center gap-6">
           <div className="relative">
-            <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="#4f46e5" />
+            <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="#46F0D2" />
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-xl font-black text-gradient-gold font-display">{avgProgress}%</span>
             </div>
@@ -169,8 +169,8 @@ export default function GoalsPage() {
 
       {/* Add Goal Form */}
       {showAdd && (
-        <div className="glass-card p-6 rounded-2xl border border-indigo-500/20 animate-slide-up">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-[0.15em] mb-4">New Goal</h2>
+        <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 animate-slide-up">
+          <h2 className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em] mb-4">New Goal</h2>
           <div className="space-y-3">
             <input
               value={newGoal.name}
@@ -198,7 +198,7 @@ export default function GoalsPage() {
                 className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm transition-all"
               />
             </div>
-            <button onClick={addGoal} disabled={saving} className="w-full py-3 bg-gradient-to-r from-indigo-600 to-amber-600 text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-indigo-500/20 disabled:opacity-50">
+            <button onClick={addGoal} disabled={saving} className="w-full py-3 bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50">
               {saving ? "Saving..." : "Add Goal"}
             </button>
           </div>
@@ -236,7 +236,7 @@ export default function GoalsPage() {
                   >-10</button>
                   <button
                     onClick={function() { updateProgress(goal.id, 10); }}
-                    className="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-xs transition-all"
+                    className="px-3 py-1.5 bg-[#46F0D2]/10 hover:bg-[#46F0D2]/20 text-[#46F0D2] rounded-lg text-xs transition-all"
                   >+10</button>
                   <button
                     onClick={function() { deleteGoal(goal.id); }}

@@ -8,9 +8,9 @@ var THEMES = [
     key: "quantum",
     name: "Quantum Gold",
     desc: "Deep indigo meets molten gold",
-    from: "#4f46e5",
-    to: "#f59e0b",
-    preview: ["#4f46e5", "#6366f1", "#f59e0b"],
+    from: "#46F0D2",
+    to: "#FBE2B4",
+    preview: ["#46F0D2", "#46F0D2", "#FBE2B4"],
   },
   {
     key: "aurora",
@@ -25,8 +25,8 @@ var THEMES = [
     name: "Matrix",
     desc: "Deep green neural network",
     from: "#10b981",
-    to: "#6366f1",
-    preview: ["#10b981", "#34d399", "#6366f1"],
+    to: "#46F0D2",
+    preview: ["#10b981", "#34d399", "#46F0D2"],
   },
   {
     key: "volcano",
@@ -84,13 +84,13 @@ export default function SettingsPage() {
     <div className="p-6 lg:p-8 max-w-4xl mx-auto space-y-6 stagger-children">
       {/* Save toast */}
       {saved && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-amber-500 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <Check size={15} /> Theme saved!
         </div>
       )}
 
       <div className="flex items-center gap-2 mb-1">
-        <Settings size={18} className="text-amber-400" />
+        <Settings size={18} className="text-[#FBE2B4]" />
         <h1 className="text-3xl font-black text-white">Settings</h1>
       </div>
       <p className="text-gray-500 text-sm -mt-4">Customize your Life OS experience</p>
@@ -110,10 +110,10 @@ export default function SettingsPage() {
               <button
                 key={item.key}
                 onClick={function() { setSection(item.key); }}
-                className={"w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all " + (isActive ? "bg-indigo-600/20 border border-indigo-500/25 text-white" : "text-gray-500 hover:text-white hover:bg-white/[0.04]")}
+                className={"w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all " + (isActive ? "bg-[#46F0D2]/20 border border-[#46F0D2]/25 text-white" : "text-gray-500 hover:text-white hover:bg-white/[0.04]")}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon size={15} className={isActive ? "text-indigo-400" : ""} />
+                  <Icon size={15} className={isActive ? "text-[#46F0D2]" : ""} />
                   {item.label}
                 </div>
                 <ChevronRight size={13} className="opacity-40" />
@@ -195,7 +195,7 @@ export default function SettingsPage() {
             <div className="glass-card p-5 rounded-2xl border border-white/[0.06] space-y-4">
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Profile Info</h3>
               <div className="flex items-center gap-4 pb-4 border-b border-white/[0.05]">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-amber-400 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-amber-400/15">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-[#FBE2B4]/15">
                   {userName.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -235,8 +235,8 @@ export default function SettingsPage() {
                       <div className="text-sm text-white font-medium">{item.label}</div>
                       <div className="text-xs text-gray-600 mt-0.5">{item.desc}</div>
                     </div>
-                    <div className={"w-11 h-6 rounded-full border transition-all cursor-pointer flex items-center px-0.5 " + (item.enabled ? "bg-indigo-600/40 border-indigo-500/40" : "bg-white/[0.05] border-white/[0.1]")}>
-                      <div className={"w-5 h-5 rounded-full transition-all shadow-sm " + (item.enabled ? "translate-x-5 bg-gradient-to-br from-indigo-400 to-amber-400" : "translate-x-0 bg-gray-600")} />
+                    <div className={"w-11 h-6 rounded-full border transition-all cursor-pointer flex items-center px-0.5 " + (item.enabled ? "bg-[#46F0D2]/40 border-[#46F0D2]/40" : "bg-white/[0.05] border-white/[0.1]")}>
+                      <div className={"w-5 h-5 rounded-full transition-all shadow-sm " + (item.enabled ? "translate-x-5 bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4]" : "translate-x-0 bg-gray-600")} />
                     </div>
                   </div>
                 );

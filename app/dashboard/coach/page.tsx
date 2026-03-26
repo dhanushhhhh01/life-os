@@ -98,9 +98,9 @@ export default function CoachPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-5 border-b border-white/[0.06] flex items-center gap-4 bg-[#07070e]/60 backdrop-blur-xl">
+      <div className="p-5 border-b border-white/[0.06] flex items-center gap-4 bg-[#0e0d20]/60 backdrop-blur-xl">
         <div className="relative">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-indigo-500/20 animate-pulse-glow">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white font-black text-lg shadow-lg shadow-[#46F0D2]/20 animate-pulse-glow">
             <Sparkles size={20} />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-[#080818] shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
@@ -119,14 +119,14 @@ export default function CoachPage() {
           return (
             <div key={msg.id} className={"flex " + (msg.role === "user" ? "justify-end" : "justify-start") + " animate-slide-up"}>
               {msg.role === "dex" && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-amber-500/20 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 mr-2.5 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center text-[#46F0D2] shrink-0 mr-2.5 mt-0.5">
                   <Sparkles size={14} />
                 </div>
               )}
               <div className={"max-w-sm lg:max-w-md xl:max-w-lg flex flex-col " + (msg.role === "user" ? "items-end" : "items-start")}>
                 <div className={"px-4 py-3 rounded-2xl text-sm leading-relaxed " + (
                   msg.role === "user"
-                    ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-br-md shadow-lg shadow-indigo-500/10"
+                    ? "bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white rounded-br-md shadow-lg shadow-[#46F0D2]/10"
                     : "bg-white/[0.04] border border-white/[0.08] text-gray-300 rounded-bl-md"
                 )}>
                   {msg.content}
@@ -139,14 +139,14 @@ export default function CoachPage() {
 
         {isTyping && (
           <div className="flex items-center gap-2.5 animate-slide-up">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-amber-500/20 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center text-[#46F0D2] shrink-0">
               <Sparkles size={14} />
             </div>
             <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl rounded-bl-md px-4 py-3">
               <div className="flex gap-1.5">
-                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function CoachPage() {
             <button
               key={prompt}
               onClick={function() { setInput(prompt); }}
-              className="text-xs px-3.5 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] text-gray-500 hover:text-white hover:border-indigo-500/30 hover:bg-indigo-500/[0.05] transition-all"
+              className="text-xs px-3.5 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] text-gray-500 hover:text-white hover:border-[#46F0D2]/30 hover:bg-[#46F0D2]/[0.05] transition-all"
             >
               {prompt}
             </button>
@@ -174,7 +174,7 @@ export default function CoachPage() {
         <div className="flex gap-3 mt-3">
           <button
             onClick={toggleVoice}
-            className={"p-3 rounded-xl border transition-all " + (isListening ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse" : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-indigo-400 hover:border-indigo-500/30")}
+            className={"p-3 rounded-xl border transition-all " + (isListening ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse" : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-[#46F0D2] hover:border-[#46F0D2]/30")}
           >
             <Mic size={18} />
           </button>
@@ -188,7 +188,7 @@ export default function CoachPage() {
           <button
             onClick={sendMessage}
             disabled={!input.trim() || isTyping}
-            className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-amber-600 text-white font-semibold rounded-xl hover:opacity-90 transition-all disabled:opacity-30 text-sm shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+            className="px-5 py-3 bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white font-semibold rounded-xl hover:opacity-90 transition-all disabled:opacity-30 text-sm shadow-lg shadow-[#46F0D2]/20 flex items-center gap-2"
           >
             <Send size={15} />
             <span className="hidden sm:inline">Send</span>

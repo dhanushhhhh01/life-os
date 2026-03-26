@@ -9,7 +9,7 @@ var moodOptions = [
   { value: 4, label: "Bad", color: "#f97316", bg: "rgba(249,115,22,0.12)", border: "rgba(249,115,22,0.35)", glow: "rgba(249,115,22,0.25)" },
   { value: 6, label: "Okay", color: "#eab308", bg: "rgba(234,179,8,0.12)", border: "rgba(234,179,8,0.35)", glow: "rgba(234,179,8,0.25)" },
   { value: 8, label: "Good", color: "#4ade80", bg: "rgba(74,222,128,0.12)", border: "rgba(74,222,128,0.35)", glow: "rgba(74,222,128,0.25)" },
-  { value: 10, label: "Amazing", color: "#818cf8", bg: "rgba(129,140,248,0.12)", border: "rgba(129,140,248,0.35)", glow: "rgba(129,140,248,0.25)" },
+  { value: 10, label: "Amazing", color: "#46F0D2", bg: "rgba(129,140,248,0.12)", border: "rgba(129,140,248,0.35)", glow: "rgba(129,140,248,0.25)" },
 ];
 
 var energyOptions = [
@@ -17,7 +17,7 @@ var energyOptions = [
   { value: 4, label: "Tired", color: "#f97316", bg: "rgba(249,115,22,0.12)", border: "rgba(249,115,22,0.35)", glow: "rgba(249,115,22,0.25)" },
   { value: 6, label: "Normal", color: "#eab308", bg: "rgba(234,179,8,0.12)", border: "rgba(234,179,8,0.35)", glow: "rgba(234,179,8,0.25)" },
   { value: 8, label: "Pumped", color: "#4ade80", bg: "rgba(74,222,128,0.12)", border: "rgba(74,222,128,0.35)", glow: "rgba(74,222,128,0.25)" },
-  { value: 10, label: "MAX!", color: "#f59e0b", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.35)", glow: "rgba(245,158,11,0.35)" },
+  { value: 10, label: "MAX!", color: "#FBE2B4", bg: "rgba(251,226,180,0.12)", border: "rgba(251,226,180,0.35)", glow: "rgba(251,226,180,0.35)" },
 ];
 
 // SVG face components
@@ -144,7 +144,7 @@ function CircularDisplay(props) {
   var size = props.size || 60;
   var sw = 4;
   var value = props.value || 1;
-  var color = props.color || "#4f46e5";
+  var color = props.color || "#46F0D2";
   var radius = (size - sw) / 2;
   var circumference = radius * 2 * Math.PI;
   var offset = circumference - (value / 10) * circumference;
@@ -212,14 +212,14 @@ export default function CheckinPage() {
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-5 stagger-children">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-amber-500 text-white text-sm font-bold shadow-2xl shadow-indigo-500/30 animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white text-sm font-bold shadow-2xl shadow-[#46F0D2]/30 animate-fade-in flex items-center gap-2">
           <span className="text-yellow-200">+</span>
           {xpToast}
         </div>
       )}
 
       <div className="flex items-center gap-2 mb-1">
-        <CalendarCheck size={18} className="text-amber-400" />
+        <CalendarCheck size={18} className="text-[#FBE2B4]" />
         <h1 className="text-3xl font-black text-white">Daily Check-In</h1>
       </div>
       <p className="text-gray-500 text-sm -mt-4">How are you feeling today, Dhanush?</p>
@@ -228,7 +228,7 @@ export default function CheckinPage() {
       <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Heart size={15} className="text-indigo-400" />
+            <Heart size={15} className="text-[#46F0D2]" />
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">How is your Mood?</h2>
           </div>
           <div className="text-sm font-bold" style={{ color: moodOpt.color }}>{moodOpt.label}</div>
@@ -264,7 +264,7 @@ export default function CheckinPage() {
       <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Zap size={15} className="text-amber-400" />
+            <Zap size={15} className="text-[#FBE2B4]" />
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Energy Level?</h2>
           </div>
           <div className="text-sm font-bold" style={{ color: energyOpt.color }}>{energyOpt.label}</div>
@@ -337,7 +337,7 @@ export default function CheckinPage() {
             className={"ml-auto px-6 py-3 text-white font-semibold rounded-xl transition-all text-sm flex items-center gap-2 " + (
               submitted
                 ? "bg-green-500/20 border border-green-500/30 text-green-400"
-                : "bg-gradient-to-r from-indigo-600 to-amber-500 hover:opacity-90 shadow-lg shadow-indigo-500/20 disabled:opacity-50"
+                : "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] hover:opacity-90 shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50"
             )}
           >
             {submitted ? (

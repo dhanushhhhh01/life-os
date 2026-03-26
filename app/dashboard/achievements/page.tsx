@@ -84,7 +84,7 @@ export default function AchievementsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#46F0D2] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -104,12 +104,12 @@ export default function AchievementsPage() {
       </div>
 
       {/* XP / Level card */}
-      <div className="glass-card p-6 rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.03] animate-fade-in">
+      <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 bg-[#46F0D2]/[0.03] animate-fade-in">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-5">
             {/* Level badge */}
             <div className="relative">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-600 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center shadow-lg shadow-[#46F0D2]/20">
                 <span className="text-3xl font-black text-white font-display">{level}</span>
               </div>
               <div className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
@@ -131,11 +131,11 @@ export default function AchievementsPage() {
           <div className="flex-1 min-w-[200px]">
             <div className="flex justify-between text-xs text-gray-500 mb-2">
               <span>Progress to Level {level + 1}</span>
-              <span className="font-display text-indigo-400">{xpInLevel}/100 XP</span>
+              <span className="font-display text-[#46F0D2]">{xpInLevel}/100 XP</span>
             </div>
             <div className="h-3 bg-white/[0.05] rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-amber-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(79,70,229,0.5)]"
+                className="h-full bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(70,240,210,0.5)]"
                 style={{ width: xpInLevel + "%" }}
               />
             </div>
@@ -150,8 +150,8 @@ export default function AchievementsPage() {
           {[
             { action: "Check-in", xp: "+20 XP", color: "text-green-400" },
             { action: "Habit done", xp: "+10 XP", color: "text-orange-400" },
-            { action: "Journal entry", xp: "+30 XP", color: "text-indigo-400" },
-            { action: "Focus session", xp: "+25 XP", color: "text-amber-400" },
+            { action: "Journal entry", xp: "+30 XP", color: "text-[#46F0D2]" },
+            { action: "Focus session", xp: "+25 XP", color: "text-[#FBE2B4]" },
           ].map(function(item) {
             return (
               <div key={item.action} className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] text-center">

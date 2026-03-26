@@ -66,7 +66,7 @@ export default function LoginPage() {
             ctx.beginPath();
             ctx.moveTo(pts[i].x, pts[i].y);
             ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.strokeStyle = "rgba(79, 70, 229, " + (0.06 * (1 - dist / 150)) + ")";
+            ctx.strokeStyle = "rgba(70, 240, 210, " + (0.08 * (1 - dist / 150)) + ")";
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -81,7 +81,7 @@ export default function LoginPage() {
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(79, 70, 229, " + p.a + ")";
+        ctx.fillStyle = "rgba(70, 240, 210, " + p.a + ")";
         ctx.fill();
       });
       id = requestAnimationFrame(draw);
@@ -151,29 +151,29 @@ export default function LoginPage() {
   }
 
   var faces = [
-    { t: "rotateY(0deg) translateZ(50px)", bg: "rgba(79,70,229,0.15)", border: "rgba(79,70,229,0.3)" },
-    { t: "rotateY(90deg) translateZ(50px)", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
-    { t: "rotateY(180deg) translateZ(50px)", bg: "rgba(79,70,229,0.15)", border: "rgba(79,70,229,0.3)" },
-    { t: "rotateY(-90deg) translateZ(50px)", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
-    { t: "rotateX(90deg) translateZ(50px)", bg: "rgba(236,72,153,0.1)", border: "rgba(236,72,153,0.25)" },
-    { t: "rotateX(-90deg) translateZ(50px)", bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.25)" },
+    { t: "rotateY(0deg) translateZ(50px)", bg: "rgba(70,240,210,0.12)", border: "rgba(70,240,210,0.38)" },
+    { t: "rotateY(90deg) translateZ(50px)", bg: "rgba(251,226,180,0.08)", border: "rgba(251,226,180,0.28)" },
+    { t: "rotateY(180deg) translateZ(50px)", bg: "rgba(70,240,210,0.12)", border: "rgba(70,240,210,0.38)" },
+    { t: "rotateY(-90deg) translateZ(50px)", bg: "rgba(251,226,180,0.08)", border: "rgba(251,226,180,0.28)" },
+    { t: "rotateX(90deg) translateZ(50px)", bg: "rgba(70,240,210,0.07)", border: "rgba(70,240,210,0.22)" },
+    { t: "rotateX(-90deg) translateZ(50px)", bg: "rgba(251,226,180,0.07)", border: "rgba(251,226,180,0.22)" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#030308] flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen bg-[#0f0e1e] flex items-center justify-center overflow-hidden relative">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
 
       {/* Ambient orbs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          className="absolute w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] animate-morph"
+          className="absolute w-[500px] h-[500px] bg-[#46F0D2]/10 rounded-full blur-[120px] animate-morph"
           style={{
             top: "15%", left: "20%",
             transform: "translate(" + (mousePos.x * 0.5) + "px, " + (mousePos.y * 0.5) + "px)",
           }}
         />
         <div
-          className="absolute w-[400px] h-[400px] bg-amber-600/[0.06] rounded-full blur-[100px] animate-morph"
+          className="absolute w-[400px] h-[400px] bg-[#FBE2B4]/[0.06] rounded-full blur-[100px] animate-morph"
           style={{
             bottom: "20%", right: "15%",
             animationDelay: "-4s",
@@ -181,7 +181,7 @@ export default function LoginPage() {
           }}
         />
         <div
-          className="absolute w-[300px] h-[300px] bg-pink-600/[0.05] rounded-full blur-[80px]"
+          className="absolute w-[300px] h-[300px] bg-[#46F0D2]/[0.04] rounded-full blur-[80px]"
           style={{
             top: "50%", left: "50%",
             transform: "translate(-50%, -50%) translate(" + (mousePos.x * 0.2) + "px, " + (mousePos.y * 0.2) + "px)",
@@ -211,7 +211,7 @@ export default function LoginPage() {
                     background: face.bg,
                     backdropFilter: "blur(8px)",
                     transform: face.t,
-                    boxShadow: "inset 0 0 30px rgba(79,70,229,0.1)",
+                    boxShadow: "inset 0 0 30px rgba(70,240,210,0.08)",
                   }} />
                 );
               })}
@@ -228,18 +228,18 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card-static p-8 rounded-3xl border border-white/[0.08] shadow-2xl shadow-indigo-500/5">
+        <div className="glass-card-static p-8 rounded-3xl border border-white/[0.08] shadow-2xl shadow-[#46F0D2]/5">
           {/* Tab Switcher */}
           <div className="flex bg-white/[0.04] rounded-2xl p-1 mb-7">
             <button
               onClick={function() { setMode("login"); setError(""); setMessage(""); }}
-              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "login" ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white")}
+              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "login" ? "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white shadow-lg shadow-[#46F0D2]/20" : "text-gray-500 hover:text-white")}
             >
               Sign In
             </button>
             <button
               onClick={function() { setMode("register"); setError(""); setMessage(""); }}
-              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "register" ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white")}
+              className={"flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 " + (mode === "register" ? "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white shadow-lg shadow-[#46F0D2]/20" : "text-gray-500 hover:text-white")}
             >
               Register
             </button>
@@ -283,7 +283,7 @@ export default function LoginPage() {
               </div>
             )}
             <button type="submit" disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-600 text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 mt-3 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 group">
+              className="w-full py-3.5 bg-gradient-to-r from-[#46F0D2] via-[#2dd8bc] to-[#FBE2B4] text-[#131321] font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 mt-3 flex items-center justify-center gap-2 shadow-lg shadow-[#46F0D2]/20 group">
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -303,7 +303,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={function() { setMode(mode === "login" ? "register" : "login"); setError(""); setMessage(""); }}
-                className="text-indigo-500 hover:text-indigo-400 transition-colors font-medium"
+                className="text-[#46F0D2] hover:text-[#46F0D2] transition-colors font-medium"
               >
                 {mode === "login" ? "Register" : "Sign In"}
               </button>

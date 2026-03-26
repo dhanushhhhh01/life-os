@@ -6,9 +6,9 @@ import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var TAG_COLORS = {
   Berlin: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Life: "bg-indigo-500/15 text-indigo-400 border-indigo-500/20",
+  Life: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
   Growth: "bg-green-500/15 text-green-400 border-green-500/20",
-  Tech: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+  Tech: "bg-[#FBE2B4]/15 text-[#FBE2B4] border-[#FBE2B4]/20",
   Win: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
   FastAPI: "bg-orange-500/15 text-orange-400 border-orange-500/20",
   German: "bg-red-500/15 text-red-400 border-red-500/20",
@@ -18,7 +18,7 @@ var TAG_COLORS = {
 var moodEmojis = ["", ":(", ":/", ":|", ":/", ":|", ":)", ":D", "XD", "<3", "!!!"];
 
 function getMoodColor(m) {
-  if (m >= 9) return "text-indigo-400";
+  if (m >= 9) return "text-[#46F0D2]";
   if (m >= 7) return "text-green-400";
   if (m >= 5) return "text-yellow-400";
   return "text-red-400";
@@ -101,7 +101,7 @@ export default function JournalPage() {
     return (
       <div className="p-6 flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-[#46F0D2]/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-500 text-sm">Loading journal...</p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function JournalPage() {
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-600 text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">⚡</span>
           {xpToast}
         </div>
@@ -154,14 +154,14 @@ export default function JournalPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <BookOpen size={18} className="text-indigo-400" />
+            <BookOpen size={18} className="text-[#46F0D2]" />
             <h1 className="text-3xl font-black text-white">Journal</h1>
           </div>
           <p className="text-gray-500 text-sm">Capture your thoughts, wins, and reflections</p>
         </div>
         <button
           onClick={function() { setShowNew(!showNew); }}
-          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showNew ? "bg-white/10" : "bg-gradient-to-r from-indigo-600 to-indigo-600 shadow-indigo-500/20")}
+          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showNew ? "bg-white/10" : "bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] shadow-[#46F0D2]/20")}
         >
           {showNew ? <><X size={14} /> Cancel</> : <><Plus size={14} /> New Entry</>}
         </button>
@@ -169,8 +169,8 @@ export default function JournalPage() {
 
       {/* New Entry Form */}
       {showNew && (
-        <div className="glass-card p-6 rounded-2xl border border-indigo-500/20 space-y-4 animate-slide-up">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-[0.15em]">New Journal Entry</h2>
+        <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 space-y-4 animate-slide-up">
+          <h2 className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em]">New Journal Entry</h2>
           <input
             value={newEntry.title}
             onChange={function(e) { setNewEntry(Object.assign({}, newEntry, { title: e.target.value })); }}
@@ -204,7 +204,7 @@ export default function JournalPage() {
               />
             </div>
           </div>
-          <button onClick={saveEntry} disabled={saving} className="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-indigo-500/20 disabled:opacity-50">
+          <button onClick={saveEntry} disabled={saving} className="w-full py-3 bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50">
             {saving ? "Saving..." : "Save Entry"}
           </button>
         </div>
@@ -221,7 +221,7 @@ export default function JournalPage() {
               style={{ animationDelay: (index * 0.05) + "s" }}
             >
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-bold text-white group-hover:text-indigo-300 transition-colors">{entry.title}</h3>
+                <h3 className="font-bold text-white group-hover:text-[#46F0D2] transition-colors">{entry.title}</h3>
                 <span className={"text-sm font-bold font-display shrink-0 ml-4 " + getMoodColor(entry.mood)}>{entry.mood}/10</span>
               </div>
               <p className="text-sm text-gray-600 line-clamp-2 mb-3">{entry.body}</p>
