@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Target, Plus, X, Award, Clock, TrendingUp } from "lucide-react";
+import { Target, Plus, X, Award, Clock, TrendingUp, BarChart2 } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 
 var defaultGoals = [
@@ -22,6 +22,15 @@ var ringColors = {
   "from-[#FBE2B4] to-blue-500": "#FBE2B4",
 };
 
+var categoryColors = {
+  Tech: { bg: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20", bar: "#46F0D2" },
+  Career: { bg: "bg-orange-500/15 text-orange-400 border-orange-500/20", bar: "#f97316" },
+  Language: { bg: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20", bar: "#eab308" },
+  Academic: { bg: "bg-blue-500/15 text-blue-400 border-blue-500/20", bar: "#3b82f6" },
+  Learning: { bg: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20", bar: "#46F0D2" },
+  Health: { bg: "bg-green-500/15 text-green-400 border-green-500/20", bar: "#22c55e" },
+};
+
 function CircularProgress(props) {
   var size = props.size || 56;
   var strokeWidth = props.strokeWidth || 4;
@@ -41,19 +50,17 @@ function CircularProgress(props) {
   );
 }
 
-// Parse "Jun 2026" or "2026-06-01" style deadlines
 function getDaysRemaining(deadline) {
   if (!deadline) return null;
   var d = new Date(deadline);
   if (isNaN(d.getTime())) {
-    // Try "Mon YYYY" format like "Jun 2026"
     var months = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
     var parts = deadline.trim().split(" ");
     if (parts.length === 2) {
       var month = months[parts[0]];
       var year = parseInt(parts[1]);
       if (month !== undefined && !isNaN(year)) {
-        d = new Date(year, month, 28); // end of that month
+        d = new Date(year, month, 28);
       }
     }
   }
@@ -82,14 +89,107 @@ function deadlineLabel(days) {
   return Math.round(days / 365 * 10) / 10 + " yrs";
 }
 
-var categoryColors = {
-  Tech: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
-  Career: "bg-orange-500/15 text-orange-400 border-orange-500/20",
-  Language: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
-  Academic: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Learning: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
-  Health: "bg-green-500/15 text-green-400 border-green-500/20",
-};
+function GoalProgressChart(props) {
+  var goals = props.goals;
+  var mounted = props.mounted;
+
+  if (!goals || goals.length === 0) return null;
+
+  // Sort goals by progress descending for the chart
+  var sorted = [].concat(goals).sort(function(a, b) { return b.progress - a.progress; });
+
+  // Category summary
+  var catMap = {};
+  goals.forEach(function(g) {
+    if (!catMap[g.category]) catMap[g.category] = { sum: 0, count: 0 };
+    catMap[g.category].sum += g.progress;
+    catMap[g.category].count += 1;
+  });
+  var cats = Object.keys(catMap).map(function(k) {
+    return { name: k, avg: Math.round(catMap[k].sum / catMap[k].count), count: catMap[k].count };
+  }).sort(function(a, b) { return b.avg - a.avg; });
+
+  return (
+    <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-5">
+      <div className="flex items-center gap-2">
+        <BarChart2 size={15} className="text-[#46F0D2]" />
+        <span className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em]">Progress Breakdown</span>
+      </div>
+
+      {/* Horizontal bar chart — all goals */}
+      <div className="space-y-2.5">
+        {sorted.map(function(goal) {
+          var barColor = goal.ring || "#46F0D2";
+          var pct = mounted ? goal.progress : 0;
+          var isComplete = goal.progress === 100;
+          return (
+            <div key={goal.id || goal.name}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[11px] text-gray-400 truncate max-w-[65%]">{goal.name}</span>
+                <span className="text-[11px] font-bold" style={{ color: barColor }}>{goal.progress}%</span>
+              </div>
+              <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{
+                    width: pct + "%",
+                    background: "linear-gradient(90deg, " + barColor + "aa, " + barColor + ")",
+                    boxShadow: isComplete ? "0 0 8px " + barColor : "none",
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/[0.04]" />
+
+      {/* Category averages */}
+      <div>
+        <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-3">By Category</div>
+        <div className="space-y-2">
+          {cats.map(function(cat) {
+            var catStyle = categoryColors[cat.name] || { bar: "#46F0D2", bg: "bg-white/10 text-gray-400" };
+            var pct = mounted ? cat.avg : 0;
+            return (
+              <div key={cat.name} className="flex items-center gap-3">
+                <div className="w-16 shrink-0 flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500">{cat.name}</span>
+                  <span className="text-[10px] font-semibold" style={{ color: catStyle.bar }}>{cat.avg}%</span>
+                </div>
+                <div className="flex-1 h-1 bg-white/[0.04] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000"
+                    style={{ width: pct + "%", background: catStyle.bar + "cc" }}
+                  />
+                </div>
+                <span className="text-[9px] text-gray-700 w-6 text-right">{cat.count}x</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mini milestone row */}
+      <div className="grid grid-cols-3 gap-2 pt-1">
+        {[
+          { label: "Not started", value: goals.filter(function(g) { return g.progress === 0; }).length, color: "text-gray-600" },
+          { label: "In progress", value: goals.filter(function(g) { return g.progress > 0 && g.progress < 100; }).length, color: "text-[#46F0D2]" },
+          { label: "Completed", value: goals.filter(function(g) { return g.progress === 100; }).length, color: "text-yellow-400" },
+        ].map(function(item) {
+          return (
+            <div key={item.label} className="text-center p-2 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+              <div className={"text-lg font-black " + item.color}>{item.value}</div>
+              <div className="text-[9px] text-gray-700 uppercase tracking-wider mt-0.5">{item.label}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function GoalsPage() {
   var [goals, setGoals] = useState([]);
@@ -99,8 +199,12 @@ export default function GoalsPage() {
   var [newGoal, setNewGoal] = useState({ name: "", category: "Tech", deadline: "" });
   var [saving, setSaving] = useState(false);
   var [mounted, setMounted] = useState(false);
+  var [showChart, setShowChart] = useState(false);
 
-  useEffect(function() { setMounted(true); }, []);
+  useEffect(function() {
+    setMounted(true);
+    setTimeout(function() { setShowChart(true); }, 300);
+  }, []);
 
   useEffect(function() {
     supabase.auth.getSession().then(function(result) {
@@ -208,6 +312,9 @@ export default function GoalsPage() {
         </div>
       </div>
 
+      {/* Progress Chart */}
+      {goals.length > 0 && <GoalProgressChart goals={goals} mounted={showChart} />}
+
       {/* Add Goal Form */}
       {showAdd && (
         <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 animate-slide-up">
@@ -249,7 +356,7 @@ export default function GoalsPage() {
       {/* Goals List */}
       <div className="space-y-4">
         {goals.map(function(goal) {
-          var catStyle = categoryColors[goal.category] || "bg-white/10 text-gray-400";
+          var catStyle = categoryColors[goal.category] || { bg: "bg-white/10 text-gray-400 border-white/10" };
           return (
             <div key={goal.id} className="glass-card p-5 rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all group">
               <div className="flex items-center gap-4">
@@ -262,7 +369,7 @@ export default function GoalsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-white truncate">{goal.name}</div>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                    <span className={"text-[10px] px-2 py-0.5 rounded-full border " + catStyle}>{goal.category}</span>
+                    <span className={"text-[10px] px-2 py-0.5 rounded-full border " + catStyle.bg}>{goal.category}</span>
                     {goal.deadline && (function() {
                       var days = getDaysRemaining(goal.deadline);
                       var label = deadlineLabel(days);

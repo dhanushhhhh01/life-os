@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw, Coffee, BookOpen, Brain, Music, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, RotateCcw, Coffee, BookOpen, Brain, Music, Volume2, VolumeX, Flame } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
@@ -8,12 +8,6 @@ var MODES = [
   { label: "Focus", minutes: 25, color: "from-[#46F0D2] to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
   { label: "Short Break", minutes: 5, color: "from-green-500 to-teal-500", glow: "rgba(20,184,166,0.3)", icon: Coffee },
   { label: "Long Break", minutes: 15, color: "from-blue-500 to-[#FBE2B4]", glow: "rgba(251,226,180,0.3)", icon: BookOpen },
-];
-
-var SOUNDS = [
-  { label: "Lo-Fi", emoji: "music", freq: [261, 329, 392, 523] },
-  { label: "Rain", emoji: "rain", freq: [150, 200, 250] },
-  { label: "Focus", emoji: "focus", freq: [432, 528] },
 ];
 
 var motivationalQuotes = [
@@ -27,6 +21,144 @@ var motivationalQuotes = [
   "FastAPI, German, AI - all built one session at a time.",
 ];
 
+var HISTORY_KEY = "focus_daily_history";
+
+function getTodayKey() {
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function getWeekHistory() {
+  var history = {};
+  try {
+    var raw = typeof window !== "undefined" ? window.localStorage.getItem(HISTORY_KEY) : null;
+    if (raw) history = JSON.parse(raw);
+  } catch(e) {}
+
+  // Build last 7 days
+  var days = [];
+  var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    days.push({
+      key: key,
+      label: i === 0 ? "Today" : dayNames[d.getDay()],
+      minutes: history[key] || 0,
+      isToday: i === 0,
+    });
+  }
+  return days;
+}
+
+function addFocusMinutesToHistory(minutes) {
+  try {
+    var raw = typeof window !== "undefined" ? window.localStorage.getItem(HISTORY_KEY) : null;
+    var history = raw ? JSON.parse(raw) : {};
+    var key = getTodayKey();
+    history[key] = (history[key] || 0) + minutes;
+    window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  } catch(e) {}
+}
+
+function FocusHistoryChart(props) {
+  var history = props.history;
+  var mounted = props.mounted;
+
+  if (!history || history.length === 0) return null;
+
+  var maxMin = Math.max.apply(null, history.map(function(d) { return d.minutes; })) || 1;
+  // Goal line: 100 min/day
+  var goalMin = 100;
+  var chartMax = Math.max(maxMin, goalMin) * 1.15;
+
+  var totalWeek = history.reduce(function(s, d) { return s + d.minutes; }, 0);
+  var daysWithFocus = history.filter(function(d) { return d.minutes > 0; }).length;
+  var bestDay = history.reduce(function(best, d) { return d.minutes > best.minutes ? d : best; }, history[0]);
+
+  return (
+    <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Flame size={15} className="text-[#FBE2B4]" />
+          <span className="text-xs font-semibold text-[#FBE2B4] uppercase tracking-[0.15em]">7-Day Focus History</span>
+        </div>
+        <div className="flex gap-4">
+          <div className="text-right">
+            <div className="text-sm font-black bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] bg-clip-text text-transparent">{Math.round(totalWeek / 60 * 10) / 10}h</div>
+            <div className="text-[9px] text-gray-700 uppercase tracking-wider">This week</div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-black text-[#46F0D2]">{daysWithFocus}/7</div>
+            <div className="text-[9px] text-gray-700 uppercase tracking-wider">Active days</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bar chart */}
+      <div className="relative">
+        {/* Goal line */}
+        <div
+          className="absolute left-0 right-0 border-t border-dashed border-[#FBE2B4]/20 flex items-center"
+          style={{ bottom: (goalMin / chartMax * 100) + "%" }}
+        >
+          <span className="text-[9px] text-[#FBE2B4]/40 ml-1 -mt-3">goal 100m</span>
+        </div>
+
+        <div className="flex items-end gap-1.5 h-28">
+          {history.map(function(day) {
+            var barH = mounted && day.minutes > 0 ? Math.max((day.minutes / chartMax) * 100, 3) : 0;
+            var isGoalMet = day.minutes >= goalMin;
+            var barColor = day.isToday
+              ? "linear-gradient(180deg, #46F0D2, #46F0D2aa)"
+              : isGoalMet
+              ? "linear-gradient(180deg, #FBE2B4, #FBE2B4aa)"
+              : "linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06))";
+
+            return (
+              <div key={day.key} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                <div className="relative w-full flex justify-center group">
+                  {/* Tooltip */}
+                  {day.minutes > 0 && (
+                    <div className="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-[#0c0c1d] border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white whitespace-nowrap shadow-xl">
+                      {day.minutes}m · {Math.round(day.minutes / 25)} session{Math.round(day.minutes / 25) !== 1 ? "s" : ""}
+                    </div>
+                  )}
+                  <div
+                    className="w-full rounded-t-lg transition-all duration-700"
+                    style={{
+                      height: barH + "%",
+                      minHeight: day.minutes > 0 ? "4px" : "0px",
+                      background: barColor,
+                      boxShadow: day.isToday ? "0 0 8px #46F0D2aa" : isGoalMet ? "0 0 8px #FBE2B4aa" : "none",
+                    }}
+                  />
+                </div>
+                <div className={"text-[9px] text-center " + (day.isToday ? "text-[#46F0D2] font-semibold" : "text-gray-700")}>{day.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Best day callout */}
+      {bestDay && bestDay.minutes > 0 && (
+        <div className="flex items-center justify-between pt-1 border-t border-white/[0.04]">
+          <span className="text-[10px] text-gray-600">Best day this week</span>
+          <span className="text-[10px] font-semibold text-[#FBE2B4]">{bestDay.label} — {bestDay.minutes}m ({Math.floor(bestDay.minutes / 25)} sessions)</span>
+        </div>
+      )}
+
+      {totalWeek === 0 && (
+        <div className="text-center py-4 text-gray-700 text-xs">
+          Complete your first focus session to start tracking history!
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FocusPage() {
   var [modeIndex, setModeIndex] = useState(0);
   var [secondsLeft, setSecondsLeft] = useState(MODES[0].minutes * 60);
@@ -38,6 +170,7 @@ export default function FocusPage() {
   var [mounted, setMounted] = useState(false);
   var [userId, setUserId] = useState(null);
   var [xpToast, setXpToast] = useState("");
+  var [weekHistory, setWeekHistory] = useState([]);
   var intervalRef = useRef(null);
   var audioCtxRef = useRef(null);
   var nodesRef = useRef([]);
@@ -51,6 +184,7 @@ export default function FocusPage() {
   useEffect(function() {
     setMounted(true);
     setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
+    setWeekHistory(getWeekHistory());
     supabase.auth.getSession().then(function(res) {
       if (res.data.session) setUserId(res.data.session.user.id);
     });
@@ -66,6 +200,11 @@ export default function FocusPage() {
             if (modeIndex === 0) {
               setSessionsCompleted(function(c) { return c + 1; });
               setTotalFocusMinutes(function(t) { return t + MODES[0].minutes; });
+
+              // Save to localStorage history
+              addFocusMinutesToHistory(MODES[0].minutes);
+              setWeekHistory(getWeekHistory());
+
               // Award XP + save focus minutes to Supabase
               supabase.auth.getSession().then(async function(res) {
                 if (!res.data.session) return;
@@ -84,7 +223,6 @@ export default function FocusPage() {
               });
             }
             setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
-            // Browser notification if permitted
             if (typeof Notification !== "undefined" && Notification.permission === "granted") {
               new Notification("Dex: Session complete!", { body: modeIndex === 0 ? "Focus session done! Take a break." : "Break over! Time to focus." });
             }
@@ -123,7 +261,6 @@ export default function FocusPage() {
       var AudioContext = (window as any).AudioContext || (window as any).webkitAudioContext;
       if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
       var ctx = audioCtxRef.current;
-      // Generate gentle white noise for ambient sound
       var bufferSize = ctx.sampleRate * 2;
       var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       var data = buffer.getChannelData(0);
@@ -147,7 +284,6 @@ export default function FocusPage() {
     }
   }
 
-  // SVG circle for timer
   var radius = 110;
   var circumference = radius * 2 * Math.PI;
   var strokeOffset = circumference - (progress / 100) * circumference;
@@ -157,7 +293,7 @@ export default function FocusPage() {
       {/* XP Toast */}
       {xpToast && (
         <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#FBE2B4] to-[#46F0D2] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
-          <span className="text-yellow-300">⚡</span>
+          <span className="text-yellow-300">*</span>
           {xpToast}
         </div>
       )}
@@ -272,6 +408,9 @@ export default function FocusPage() {
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Hours</div>
         </div>
       </div>
+
+      {/* 7-Day Focus History Chart */}
+      {mounted && <FocusHistoryChart history={weekHistory} mounted={mounted} />}
 
       {/* Request notification permission */}
       {typeof Notification !== "undefined" && Notification.permission === "default" && (
