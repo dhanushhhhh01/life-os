@@ -542,8 +542,8 @@ export default function DashboardPage() {
             { label: "Focus Hours", value: Math.round(weeklyStats.focusMinutes / 60 * 10) / 10, max: 20, color: "from-[#FBE2B4] to-blue-500", icon: "⚡" },
           ].map(function(stat) {
             var pct = Math.min(stat.max > 0 ? Math.round((stat.value / stat.max) * 100) : 0, 100);
-            var grade = pct >= 80 ? "A" : pct >= 60 ? "B" : pct >= 40 ? "C" : pct >= 20 ? "D" : "F";
-            var gradeColor = pct >= 80 ? "text-green-400" : pct >= 60 ? "text-yellow-400" : pct >= 40 ? "text-orange-400" : "text-red-400";
+            var grade = stat.value === 0 ? "—" : pct >= 90 ? "S" : pct >= 70 ? "A" : pct >= 50 ? "B" : pct >= 30 ? "C" : "D";
+            var gradeColor = stat.value === 0 ? "text-gray-700" : pct >= 90 ? "text-[#46F0D2]" : pct >= 70 ? "text-green-400" : pct >= 50 ? "text-yellow-400" : pct >= 30 ? "text-orange-400" : "text-[#FBE2B4]";
             return (
               <div key={stat.label} className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.04]">
                 <div className="flex items-center justify-between mb-2">
