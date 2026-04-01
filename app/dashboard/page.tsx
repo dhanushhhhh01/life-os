@@ -397,6 +397,43 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Life OS Overview */}
+      <EnhancedCard intensity={8}>
+        <div className="glass-card p-6 rounded-2xl border border-theme-primary/20 bg-gradient-to-br from-theme-primary/10 to-theme-secondary/5">
+          <div className="flex gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center shrink-0 shadow-lg shadow-theme-primary/30">
+              <Sparkles size={24} className="text-white" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-white mb-2">Your Personal Life OS</h2>
+              <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                Life OS is your personalized AI-powered life operating system designed to help you achieve your goals, build lasting habits, and optimize your wellbeing. Track everything that matters, get intelligent insights from Dex (your AI coach), and watch your life score grow as you progress.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <div className="flex items-center gap-2 text-theme-primary">
+                  <Target size={12} /> Goals
+                </div>
+                <div className="flex items-center gap-2 text-theme-secondary">
+                  <Flame size={12} /> Habits
+                </div>
+                <div className="flex items-center gap-2 text-amber-400">
+                  <BookOpen size={12} /> Journal
+                </div>
+                <div className="flex items-center gap-2 text-pink-400">
+                  <Heart size={12} /> Check-In
+                </div>
+                <div className="flex items-center gap-2 text-purple-400">
+                  <Bot size={12} /> AI Coach
+                </div>
+                <div className="flex items-center gap-2 text-yellow-400">
+                  <Trophy size={12} /> Achievements
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </EnhancedCard>
+
       {/* Dex Morning Briefing */}
       {!briefingDismissed && (morningBriefing || briefingLoading) && (
         <div className="glass-card p-5 rounded-2xl border border-theme-primary/20 bg-theme-primary/[0.03] animate-slide-up relative overflow-hidden">
@@ -435,7 +472,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
         {/* XP Card */}
         <EnhancedCard className="stagger-children" intensity={10}>
-          <Link href="/dashboard/achievements" className="glass-card p-5 rounded-2xl border border-theme-primary/15 hover:border-theme-primary/30 transition-all duration-300 group block h-full">
+          <Link href="/dashboard/achievements" className="glass-card p-5 rounded-2xl border border-theme-primary/15 hover:border-theme-primary/30 transition-all duration-300 group block h-full flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Star size={14} className="text-yellow-400" />
@@ -446,6 +483,7 @@ export default function DashboardPage() {
               <span className="text-sm font-bold text-yellow-400 font-display">{xp} XP</span>
             </div>
           </div>
+          <p className="text-xs text-gray-500 mb-3 flex-1">Earn XP by completing habits, goals, check-ins, and journal entries. Level up to unlock achievements and showcase your progress.</p>
           <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden mb-2">
             <div
               className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(70,240,210,0.4)]"
@@ -465,12 +503,17 @@ export default function DashboardPage() {
 
         {/* Mood/Energy today */}
         <EnhancedCard className="stagger-children" intensity={10}>
-          <div className="glass-card p-5 rounded-2xl border border-white/[0.06] h-full">
+          <div className="glass-card p-5 rounded-2xl border border-white/[0.06] h-full flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Heart size={14} className="text-theme-primary" />
               <span className="text-xs text-gray-500 uppercase tracking-[0.15em] font-medium">Today's Vibe</span>
             </div>
+            <Link href="/dashboard/checkin" className="text-xs text-theme-primary hover:text-theme-primary/80 transition-colors flex items-center gap-1">
+              Add Check-In <ChevronRight size={11} />
+            </Link>
+          </div>
+          <p className="text-xs text-gray-500 mb-3 flex-1">Track your daily mood (1-10) and energy levels to understand your emotional patterns and get personalized insights from Dex.</p>
             {!hasCheckinToday && (
               <Link href="/dashboard/checkin" className="text-[10px] text-green-400 hover:text-green-300 bg-green-500/10 px-2 py-1 rounded-full transition-colors">
                 Check in now
@@ -540,6 +583,7 @@ export default function DashboardPage() {
           </div>
           <span className="text-xs text-gray-600">Last 7 days</span>
         </div>
+        <p className="text-xs text-gray-500 mb-4">See how consistently you're tracking habits, check-ins, journals, and focus time. Grades are based on your weekly targets.</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: "Check-ins", value: weeklyStats.checkins, max: 7, color: "from-green-500 to-emerald-500", icon: "📅" },
@@ -597,8 +641,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Goals */}
         <EnhancedCard className="w-full" intensity={8}>
-          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
-          <div className="flex items-center justify-between mb-5">
+          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full flex flex-col">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Target size={16} className="text-theme-primary" />
               <h2 className="text-lg font-bold text-white">Goals</h2>
@@ -607,6 +651,7 @@ export default function DashboardPage() {
               View All <ChevronRight size={12} />
             </Link>
           </div>
+          <p className="text-xs text-gray-500 mb-4 flex-1">Set and track meaningful goals. Break them down into milestones, monitor progress, and celebrate achievements as you work toward your vision.</p>
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map(function(_, i) {
@@ -644,8 +689,8 @@ export default function DashboardPage() {
 
         {/* Habits */}
         <EnhancedCard className="w-full" intensity={8}>
-          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
-          <div className="flex items-center justify-between mb-5">
+          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full flex flex-col">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Flame size={16} className="text-orange-400" />
               <h2 className="text-lg font-bold text-white">Habits</h2>
@@ -654,6 +699,7 @@ export default function DashboardPage() {
               View All <ChevronRight size={12} />
             </Link>
           </div>
+          <p className="text-xs text-gray-500 mb-4 flex-1">Build a streak of daily habits. Check off habits each day to maintain consistency and watch your compound progress grow over time.</p>
           {loading ? (
             <div className="grid grid-cols-2 gap-3">
               {Array.from({ length: 4 }).map(function(_, i) {
@@ -700,6 +746,7 @@ export default function DashboardPage() {
       {/* Dex Insight */}
       <EnhancedCard className="w-full" intensity={8}>
         <div className="glass-card p-6 rounded-2xl border border-theme-primary/15 bg-theme-primary/[0.03] animate-fade-in" style={{ animationDelay: "0.3s" }}>
+        <p className="text-xs text-gray-500 mb-4">Your personal AI coach analyzes your activity patterns and provides intelligent insights to help you optimize your progress.</p>
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-theme-primary/20 animate-pulse-glow">
             <Sparkles size={18} />
