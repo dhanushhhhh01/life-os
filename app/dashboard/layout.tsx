@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { getLevel, getXpProgress, getLevelTitle } from "../../lib/xp";
 import { registerServiceWorker, checkOverdueReminders } from "../../lib/notifications";
-import { Particles, AmbientOrbs } from "../../lib/3d-components";
+import { EnhancedParticles, EnhancedAmbientOrbs } from "../../lib/3d-components-enhanced";
 import {
   LayoutDashboard,
   Target,
@@ -209,8 +209,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <main className="flex-1 overflow-y-auto relative" style={{ perspective: '1100px' }}>
-        <Particles />
-        <AmbientOrbs />
+        <EnhancedParticles particleCount={80} connectionDistance={130} mouseResponsive={true} />
+        <EnhancedAmbientOrbs />
         <div
           className="animate-page-in-r"
           key={pathname}

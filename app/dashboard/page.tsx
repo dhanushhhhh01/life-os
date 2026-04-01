@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
-import { Card } from "../../lib/3d-components";
+import { EnhancedCard, ScrollTriggerWrapper, StaggerContainer } from "../../lib/3d-components-enhanced";
 import { getLevel, getLevelTitle, getXpProgress, BADGES } from "../../lib/xp";
 import {
   Target,
@@ -434,7 +434,7 @@ export default function DashboardPage() {
       {/* XP Level + Today's check-in */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
         {/* XP Card */}
-        <Card className="stagger-children" intensity={10}>
+        <EnhancedCard className="stagger-children" intensity={10}>
           <Link href="/dashboard/achievements" className="glass-card p-5 rounded-2xl border border-theme-primary/15 hover:border-theme-primary/30 transition-all duration-300 group block h-full">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -461,10 +461,10 @@ export default function DashboardPage() {
             </div>
           </div>
           </Link>
-        </Card>
+        </EnhancedCard>
 
         {/* Mood/Energy today */}
-        <Card className="stagger-children" intensity={10}>
+        <EnhancedCard className="stagger-children" intensity={10}>
           <div className="glass-card p-5 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -510,7 +510,7 @@ export default function DashboardPage() {
             </div>
           )}
           </div>
-        </Card>
+        </EnhancedCard>
       </div>
 
       {/* Quick Actions */}
@@ -531,7 +531,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Weekly Report Card */}
-      <Card className="w-full" intensity={8}>
+      <EnhancedCard className="w-full" intensity={8}>
         <div className="glass-card p-5 rounded-2xl border border-theme-secondary/10 animate-fade-in" style={{ animationDelay: "0.1s" }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -592,11 +592,11 @@ export default function DashboardPage() {
           </div>
         )}
         </div>
-      </Card>
+      </EnhancedCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Goals */}
-        <Card className="w-full" intensity={8}>
+        <EnhancedCard className="w-full" intensity={8}>
           <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
@@ -640,10 +640,10 @@ export default function DashboardPage() {
             </div>
           )}
           </div>
-        </Card>
+        </EnhancedCard>
 
         {/* Habits */}
-        <Card className="w-full" intensity={8}>
+        <EnhancedCard className="w-full" intensity={8}>
           <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
@@ -694,11 +694,11 @@ export default function DashboardPage() {
             </div>
           )}
           </div>
-        </Card>
+        </EnhancedCard>
       </div>
 
       {/* Dex Insight */}
-      <Card className="w-full" intensity={8}>
+      <EnhancedCard className="w-full" intensity={8}>
         <div className="glass-card p-6 rounded-2xl border border-theme-primary/15 bg-theme-primary/[0.03] animate-fade-in" style={{ animationDelay: "0.3s" }}>
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-theme-primary/20 animate-pulse-glow">
@@ -717,7 +717,7 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
-      </Card>
+      </EnhancedCard>
     </div>
   );
 }
