@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
+import { Card } from "../../lib/3d-components";
 import { getLevel, getLevelTitle, getXpProgress, BADGES } from "../../lib/xp";
 import {
   Target,
@@ -25,7 +26,7 @@ function CircularProgress(props) {
   var size = props.size || 80;
   var strokeWidth = props.strokeWidth || 6;
   var progress = props.progress || 0;
-  var color = props.color || "#46F0D2";
+  var color = props.color || "var(--app-primary)";
   var radius = (size - strokeWidth) / 2;
   var circumference = radius * 2 * Math.PI;
   var offset = circumference - (progress / 100) * circumference;
@@ -95,12 +96,12 @@ function MoodChart(props) {
         );
       })}
 
-      {/* Mood line (#46F0D2) */}
+      {/* Mood line (var(--app-primary)) */}
       {hasMood && (
         <polyline
           points={moodPts}
           fill="none"
-          stroke="#46F0D2"
+          stroke="var(--app-primary)"
           strokeWidth="2"
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -108,12 +109,12 @@ function MoodChart(props) {
         />
       )}
 
-      {/* Energy line (#FBE2B4) */}
+      {/* Energy line (var(--app-secondary)) */}
       {hasEnergy && (
         <polyline
           points={energyPts}
           fill="none"
-          stroke="#FBE2B4"
+          stroke="var(--app-secondary)"
           strokeWidth="2"
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -126,7 +127,7 @@ function MoodChart(props) {
         if (d.mood === null) return null;
         return (
           <circle key={"m" + i} cx={xPos(i)} cy={yPos(d.mood)} r="3.5"
-            fill="#131321" stroke="#46F0D2" strokeWidth="1.5"
+            fill="#131321" stroke="var(--app-primary)" strokeWidth="1.5"
             style={{ filter: "drop-shadow(0 0 3px rgba(70,240,210,0.8))" }}
           />
         );
@@ -137,7 +138,7 @@ function MoodChart(props) {
         if (d.energy === null) return null;
         return (
           <circle key={"e" + i} cx={xPos(i)} cy={yPos(d.energy)} r="3.5"
-            fill="#131321" stroke="#FBE2B4" strokeWidth="1.5"
+            fill="#131321" stroke="var(--app-secondary)" strokeWidth="1.5"
             style={{ filter: "drop-shadow(0 0 3px rgba(251,226,180,0.8))" }}
           />
         );
@@ -330,9 +331,9 @@ export default function DashboardPage() {
 
   var quickActions = [
     { label: "Check In", href: "/dashboard/checkin", color: "from-green-500 to-emerald-600", icon: CalendarCheck },
-    { label: "New Journal", href: "/dashboard/journal", color: "from-[#46F0D2] to-[#46F0D2]", icon: BookOpen },
-    { label: "Focus Timer", href: "/dashboard/focus", color: "from-[#FBE2B4] to-blue-500", icon: Timer },
-    { label: "Ask Dex", href: "/dashboard/coach", color: "from-[#46F0D2] to-pink-500", icon: Bot },
+    { label: "New Journal", href: "/dashboard/journal", color: "from-theme-primary to-theme-primary", icon: BookOpen },
+    { label: "Focus Timer", href: "/dashboard/focus", color: "from-theme-secondary to-blue-500", icon: Timer },
+    { label: "Ask Dex", href: "/dashboard/coach", color: "from-theme-primary to-pink-500", icon: Bot },
   ];
 
   // Dex insight based on actual data
@@ -387,7 +388,7 @@ export default function DashboardPage() {
         </div>
         <div className="text-right relative shrink-0 ml-4">
           <div className="relative inline-flex items-center justify-center">
-            <CircularProgress size={90} strokeWidth={5} progress={lifeScore} color="#46F0D2" />
+            <CircularProgress size={90} strokeWidth={5} progress={lifeScore} color="var(--app-primary)" />
             <div className="absolute">
               <div className="text-3xl font-black text-gradient-gold font-display">{lifeScore}</div>
             </div>
@@ -398,21 +399,21 @@ export default function DashboardPage() {
 
       {/* Dex Morning Briefing */}
       {!briefingDismissed && (morningBriefing || briefingLoading) && (
-        <div className="glass-card p-5 rounded-2xl border border-[#46F0D2]/20 bg-[#46F0D2]/[0.03] animate-slide-up relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-[#46F0D2]" />
+        <div className="glass-card p-5 rounded-2xl border border-theme-primary/20 bg-theme-primary/[0.03] animate-slide-up relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-theme-primary" />
           <div className="relative flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center shadow-lg shadow-[#46F0D2]/20 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center shadow-lg shadow-theme-primary/20 shrink-0">
               <Sparkles size={18} className="text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-xs font-bold text-[#46F0D2] uppercase tracking-[0.15em]">Dex</span>
+                <span className="text-xs font-bold text-theme-primary uppercase tracking-[0.15em]">Dex</span>
                 <span className="text-[10px] text-gray-600">Morning Briefing</span>
                 {briefingLoading && (
                   <span className="flex gap-1">
-                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1 h-1 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1 h-1 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1 h-1 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1 h-1 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                   </span>
                 )}
               </div>
@@ -433,7 +434,8 @@ export default function DashboardPage() {
       {/* XP Level + Today's check-in */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
         {/* XP Card */}
-        <Link href="/dashboard/achievements" className="glass-card p-5 rounded-2xl border border-[#46F0D2]/15 hover:border-[#46F0D2]/30 transition-all duration-300 group">
+        <Card className="stagger-children" intensity={10}>
+          <Link href="/dashboard/achievements" className="glass-card p-5 rounded-2xl border border-theme-primary/15 hover:border-theme-primary/30 transition-all duration-300 group block h-full">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Star size={14} className="text-yellow-400" />
@@ -446,25 +448,27 @@ export default function DashboardPage() {
           </div>
           <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden mb-2">
             <div
-              className="h-full bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(70,240,210,0.4)]"
+              className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(70,240,210,0.4)]"
               style={{ width: mounted ? xpInLevel + "%" : "0%" }}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-600">{xpInLevel}/100 to next level</span>
-            <div className="flex items-center gap-1 text-xs text-[#46F0D2] group-hover:text-[#46F0D2] transition-colors">
+            <div className="flex items-center gap-1 text-xs text-theme-primary group-hover:text-theme-primary transition-colors">
               <Trophy size={11} />
               <span>{badges.length} badges</span>
               <ChevronRight size={11} />
             </div>
           </div>
-        </Link>
+          </Link>
+        </Card>
 
         {/* Mood/Energy today */}
-        <div className="glass-card p-5 rounded-2xl border border-white/[0.06]">
+        <Card className="stagger-children" intensity={10}>
+          <div className="glass-card p-5 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Heart size={14} className="text-[#46F0D2]" />
+              <Heart size={14} className="text-theme-primary" />
               <span className="text-xs text-gray-500 uppercase tracking-[0.15em] font-medium">Today's Vibe</span>
             </div>
             {!hasCheckinToday && (
@@ -482,17 +486,17 @@ export default function DashboardPage() {
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs text-gray-500">Mood</span>
-                  <span className="text-xs text-[#46F0D2] font-bold font-display">{todayMood}/10</span>
+                  <span className="text-xs text-theme-primary font-bold font-display">{todayMood}/10</span>
                 </div>
                 <div className="h-1.5 bg-white/[0.04] rounded-full mb-2">
-                  <div className="h-full bg-gradient-to-r from-[#46F0D2] to-pink-500 rounded-full" style={{ width: (todayMood * 10) + "%" }} />
+                  <div className="h-full bg-gradient-to-r from-theme-primary to-pink-500 rounded-full" style={{ width: (todayMood * 10) + "%" }} />
                 </div>
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs text-gray-500">Energy</span>
-                  <span className="text-xs text-[#FBE2B4] font-bold font-display">{todayEnergy}/10</span>
+                  <span className="text-xs text-theme-secondary font-bold font-display">{todayEnergy}/10</span>
                 </div>
                 <div className="h-1.5 bg-white/[0.04] rounded-full">
-                  <div className="h-full bg-gradient-to-r from-[#FBE2B4] to-blue-500 rounded-full" style={{ width: (todayEnergy * 10) + "%" }} />
+                  <div className="h-full bg-gradient-to-r from-theme-secondary to-blue-500 rounded-full" style={{ width: (todayEnergy * 10) + "%" }} />
                 </div>
               </div>
             </div>
@@ -505,7 +509,8 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
-        </div>
+          </div>
+        </Card>
       </div>
 
       {/* Quick Actions */}
@@ -526,10 +531,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Weekly Report Card */}
-      <div className="glass-card p-5 rounded-2xl border border-[#FBE2B4]/10 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+      <Card className="w-full" intensity={8}>
+        <div className="glass-card p-5 rounded-2xl border border-theme-secondary/10 animate-fade-in" style={{ animationDelay: "0.1s" }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <TrendingUp size={16} className="text-[#FBE2B4]" />
+            <TrendingUp size={16} className="text-theme-secondary" />
             <h2 className="text-base font-bold text-white">This Week's Report Card</h2>
           </div>
           <span className="text-xs text-gray-600">Last 7 days</span>
@@ -537,13 +543,13 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: "Check-ins", value: weeklyStats.checkins, max: 7, color: "from-green-500 to-emerald-500", icon: "📅" },
-            { label: "Journals", value: weeklyStats.journalEntries, max: 7, color: "from-[#46F0D2] to-[#46F0D2]", icon: "📖" },
+            { label: "Journals", value: weeklyStats.journalEntries, max: 7, color: "from-theme-primary to-theme-primary", icon: "📖" },
             { label: "Habits Today", value: weeklyStats.habitsDoneToday, max: weeklyStats.totalHabits || 1, color: "from-orange-500 to-red-500", icon: "🔥" },
-            { label: "Focus Hours", value: Math.round(weeklyStats.focusMinutes / 60 * 10) / 10, max: 20, color: "from-[#FBE2B4] to-blue-500", icon: "⚡" },
+            { label: "Focus Hours", value: Math.round(weeklyStats.focusMinutes / 60 * 10) / 10, max: 20, color: "from-theme-secondary to-blue-500", icon: "⚡" },
           ].map(function(stat) {
             var pct = Math.min(stat.max > 0 ? Math.round((stat.value / stat.max) * 100) : 0, 100);
             var grade = stat.value === 0 ? "—" : pct >= 90 ? "S" : pct >= 70 ? "A" : pct >= 50 ? "B" : pct >= 30 ? "C" : "D";
-            var gradeColor = stat.value === 0 ? "text-gray-700" : pct >= 90 ? "text-[#46F0D2]" : pct >= 70 ? "text-green-400" : pct >= 50 ? "text-yellow-400" : pct >= 30 ? "text-orange-400" : "text-[#FBE2B4]";
+            var gradeColor = stat.value === 0 ? "text-gray-700" : pct >= 90 ? "text-theme-primary" : pct >= 70 ? "text-green-400" : pct >= 50 ? "text-yellow-400" : pct >= 30 ? "text-orange-400" : "text-theme-secondary";
             return (
               <div key={stat.label} className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.04]">
                 <div className="flex items-center justify-between mb-2">
@@ -568,15 +574,15 @@ export default function DashboardPage() {
               <span className="text-xs text-gray-600 uppercase tracking-[0.12em]">7-Day Trend</span>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "#46F0D2", boxShadow: "0 0 4px rgba(70,240,210,0.7)" }} />
+                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "var(--app-primary)", boxShadow: "0 0 4px rgba(70,240,210,0.7)" }} />
                   <span className="text-[10px] text-gray-600">Mood</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "#FBE2B4", boxShadow: "0 0 4px rgba(251,226,180,0.7)" }} />
+                  <span className="w-3 h-0.5 rounded-full inline-block" style={{ background: "var(--app-secondary)", boxShadow: "0 0 4px rgba(251,226,180,0.7)" }} />
                   <span className="text-[10px] text-gray-600">Energy</span>
                 </div>
                 {weeklyStats.avgMood > 0 && (
-                  <span className="text-[10px] text-gray-600">avg <span className="text-[#46F0D2] font-bold">{weeklyStats.avgMood}</span> / <span className="text-[#FBE2B4] font-bold">{weeklyStats.avgEnergy}</span></span>
+                  <span className="text-[10px] text-gray-600">avg <span className="text-theme-primary font-bold">{weeklyStats.avgMood}</span> / <span className="text-theme-secondary font-bold">{weeklyStats.avgEnergy}</span></span>
                 )}
               </div>
             </div>
@@ -585,17 +591,19 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Goals */}
-        <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
+        <Card className="w-full" intensity={8}>
+          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <Target size={16} className="text-[#46F0D2]" />
+              <Target size={16} className="text-theme-primary" />
               <h2 className="text-lg font-bold text-white">Goals</h2>
             </div>
-            <Link href="/dashboard/goals" className="text-xs text-[#46F0D2] hover:text-[#46F0D2] flex items-center gap-1 transition-colors">
+            <Link href="/dashboard/goals" className="text-xs text-theme-primary hover:text-theme-primary flex items-center gap-1 transition-colors">
               View All <ChevronRight size={12} />
             </Link>
           </div>
@@ -609,7 +617,7 @@ export default function DashboardPage() {
             <div className="text-center py-6 text-gray-600">
               <Target size={24} className="mx-auto mb-2 opacity-30" />
               <div className="text-sm">No goals yet</div>
-              <Link href="/dashboard/goals" className="text-xs text-[#46F0D2] mt-1 block">Add your first goal →</Link>
+              <Link href="/dashboard/goals" className="text-xs text-theme-primary mt-1 block">Add your first goal →</Link>
             </div>
           ) : (
             <div className="space-y-4">
@@ -622,7 +630,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
                       <div
-                        className={"h-full rounded-full transition-all duration-1000 " + (goal.color || "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4]")}
+                        className={"h-full rounded-full transition-all duration-1000 " + (goal.color || "bg-gradient-to-r from-theme-primary to-theme-secondary")}
                         style={{ width: mounted ? goal.progress + "%" : "0%" }}
                       />
                     </div>
@@ -631,16 +639,18 @@ export default function DashboardPage() {
               })}
             </div>
           )}
-        </div>
+          </div>
+        </Card>
 
         {/* Habits */}
-        <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
+        <Card className="w-full" intensity={8}>
+          <div className="glass-card p-6 rounded-2xl border border-white/[0.06] h-full">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <Flame size={16} className="text-orange-400" />
               <h2 className="text-lg font-bold text-white">Habits</h2>
             </div>
-            <Link href="/dashboard/habits" className="text-xs text-[#FBE2B4] hover:text-[#FBE2B4] flex items-center gap-1 transition-colors">
+            <Link href="/dashboard/habits" className="text-xs text-theme-secondary hover:text-theme-secondary flex items-center gap-1 transition-colors">
               View All <ChevronRight size={12} />
             </Link>
           </div>
@@ -683,29 +693,31 @@ export default function DashboardPage() {
               })}
             </div>
           )}
-        </div>
+          </div>
+        </Card>
       </div>
 
       {/* Dex Insight */}
-      <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/15 bg-[#46F0D2]/[0.03] animate-fade-in" style={{ animationDelay: "0.3s" }}>
+      <Card className="w-full" intensity={8}>
+        <div className="glass-card p-6 rounded-2xl border border-theme-primary/15 bg-theme-primary/[0.03] animate-fade-in" style={{ animationDelay: "0.3s" }}>
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-[#46F0D2]/20 animate-pulse-glow">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-theme-primary/20 animate-pulse-glow">
             <Sparkles size={18} />
           </div>
           <div className="flex-1">
-            <div className="text-sm font-semibold text-[#46F0D2] mb-1.5 flex items-center gap-2">
+            <div className="text-sm font-semibold text-theme-primary mb-1.5 flex items-center gap-2">
               Dex says
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
               {getDexInsight()}
             </p>
-            <Link href="/dashboard/coach" className="inline-flex items-center gap-1.5 mt-3 text-xs text-[#46F0D2] hover:text-[#46F0D2] transition-colors">
+            <Link href="/dashboard/coach" className="inline-flex items-center gap-1.5 mt-3 text-xs text-theme-primary hover:text-theme-primary transition-colors">
               Talk to Dex <ChevronRight size={12} />
             </Link>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

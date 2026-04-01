@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { getLevel, getXpProgress, getLevelTitle } from "../../lib/xp";
 import { registerServiceWorker, checkOverdueReminders } from "../../lib/notifications";
+import { Particles, AmbientOrbs } from "../../lib/3d-components";
 import {
   LayoutDashboard,
   Target,
@@ -91,19 +92,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!mounted) return null;
 
   return (
-    <div className="flex h-screen bg-[#131321] overflow-hidden">
+    <div className="flex h-screen bg-theme-bg overflow-hidden transition-colors duration-500">
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-[#46F0D2]/[0.05] rounded-full blur-[140px]" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#FBE2B4]/[0.04] rounded-full blur-[140px]" />
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-[#46F0D2]/[0.02] rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-theme-primary/[0.05] rounded-full blur-[140px] transition-colors duration-500" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-theme-secondary/[0.04] rounded-full blur-[140px] transition-colors duration-500" />
+        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-theme-primary/[0.02] rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 transition-colors duration-500" />
       </div>
 
-      <aside className={collapsed ? "w-[72px] transition-all duration-300 ease-out flex flex-col bg-[#0e0d20]/95 backdrop-blur-2xl border-r border-white/[0.05] relative z-10" : "w-[260px] transition-all duration-300 ease-out flex flex-col bg-[#0e0d20]/95 backdrop-blur-2xl border-r border-white/[0.05] relative z-10"}>
+      <aside className={collapsed ? "w-[72px] transition-all duration-300 ease-out flex flex-col bg-theme-surface/95 backdrop-blur-2xl border-r border-theme-border relative z-10" : "w-[260px] transition-all duration-300 ease-out flex flex-col bg-theme-surface/95 backdrop-blur-2xl border-r border-theme-border relative z-10"}>
 
         <div className="p-4 h-16 border-b border-white/[0.05] flex items-center justify-between">
           {!collapsed && (
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center animate-pulse-gold shadow-lg shadow-[#FBE2B4]/20">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center animate-pulse-gold shadow-lg shadow-theme-secondary/20">
                 <Sparkles size={16} className="text-white" />
               </div>
               <div>
@@ -113,7 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           )}
           {collapsed && (
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center mx-auto animate-pulse-gold shadow-lg shadow-[#FBE2B4]/20">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center mx-auto animate-pulse-gold shadow-lg shadow-theme-secondary/20">
               <Sparkles size={16} className="text-white" />
             </div>
           )}
@@ -129,19 +130,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="px-4 py-3 border-b border-white/[0.04]">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center shadow-sm shadow-[#FBE2B4]/20">
+                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center shadow-sm shadow-theme-secondary/20">
                   <span className="text-[9px] font-black text-white">{userLevel}</span>
                 </div>
                 <span className="text-xs text-gray-400 font-medium">{levelTitle}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Zap size={10} className="text-[#FBE2B4]" />
-                <span className="text-[10px] text-[#FBE2B4] font-bold font-display">{userXp} XP</span>
+                <Zap size={10} className="text-theme-secondary" />
+                <span className="text-[10px] text-theme-secondary font-bold font-display">{userXp} XP</span>
               </div>
             </div>
-            <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-theme-border rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] rounded-full transition-all duration-700 shadow-[0_0_8px_rgba(251,226,180,0.4)]"
+                className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-700 shadow-md shadow-theme-secondary/40"
                 style={{ width: xpInLevel + "%" }}
               />
             </div>
@@ -158,25 +159,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={"flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group " + (
+                className={"flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 group " + (
                   isActive
-                    ? "bg-gradient-to-r from-[#46F0D2]/25 to-[#FBE2B4]/10 border border-[#46F0D2]/25 text-white shadow-lg shadow-[#46F0D2]/10"
-                    : "text-gray-600 hover:text-white hover:bg-white/[0.04]"
+                    ? "bg-theme-glassBg border border-theme-glassBorder text-white shadow-lg shadow-theme-primary/10"
+                    : "text-gray-500 hover:text-white hover:bg-theme-glassBg"
                 )}
               >
                 <Icon
                   size={17}
-                  className={"transition-all duration-200 " + (
+                  className={"transition-colors duration-200 " + (
                     isActive
-                      ? (isAchievements ? "text-[#FBE2B4] drop-shadow-[0_0_8px_rgba(251,226,180,0.6)]" : isSettings ? "text-gray-300" : "text-[#46F0D2] drop-shadow-[0_0_8px_rgba(70,240,210,0.6)]")
-                      : (isAchievements ? "group-hover:text-[#FBE2B4]" : isSettings ? "group-hover:text-gray-300" : "group-hover:text-[#46F0D2]")
+                      ? (isAchievements ? "text-theme-secondary drop-shadow-[0_0_8px_rgba(var(--app-secondary),0.6)]" : isSettings ? "text-gray-300" : "text-theme-primary drop-shadow-[0_0_8px_rgba(var(--app-primary),0.6)]")
+                      : (isAchievements ? "group-hover:text-theme-secondary" : isSettings ? "group-hover:text-gray-300" : "group-hover:text-theme-primary")
                   )}
                 />
                 {!collapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
                 )}
                 {!collapsed && isActive && (
-                  <span className={"ml-auto w-1.5 h-1.5 rounded-full " + (isAchievements ? "bg-[#FBE2B4] shadow-[0_0_8px_rgba(251,226,180,0.6)]" : "bg-[#46F0D2] shadow-[0_0_8px_rgba(70,240,210,0.6)]")} />
+                  <span className={"ml-auto w-1.5 h-1.5 rounded-full " + (isAchievements ? "bg-theme-secondary shadow-[0_0_8px_rgba(var(--app-secondary),0.6)]" : "bg-theme-primary shadow-[0_0_8px_rgba(var(--app-primary),0.6)]")} />
                 )}
               </Link>
             );
@@ -184,9 +185,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {!collapsed && (
-          <div className="p-4 border-t border-white/[0.05]">
+          <div className="p-4 border-t border-theme-border">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#46F0D2] to-[#FBE2B4] flex items-center justify-center text-white text-sm font-black shadow-lg shadow-[#FBE2B4]/15">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-theme-primary to-theme-secondary flex items-center justify-center text-white text-sm font-black shadow-lg shadow-theme-secondary/15 transition-colors duration-500">
                 {userName.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
@@ -207,8 +208,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       </aside>
 
-      <main className="flex-1 overflow-y-auto relative">
-        {children}
+      <main className="flex-1 overflow-y-auto relative" style={{ perspective: '1100px' }}>
+        <Particles />
+        <AmbientOrbs />
+        <div
+          className="animate-page-in-r"
+          key={pathname}
+          style={{
+            transformStyle: 'preserve-3d',
+            width: '100%',
+            minHeight: '100vh',
+          }}
+        >
+          {children}
+        </div>
       </main>
     </div>
   );
