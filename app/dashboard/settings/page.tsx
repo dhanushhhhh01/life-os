@@ -4,7 +4,7 @@ import { Settings, Palette, User, Bell, Shield, ChevronRight, Check, Sparkles, B
 import { supabase } from "../../../lib/supabase";
 import { requestNotificationPermission, registerServiceWorker, scheduleDaily, getNotificationPermission } from "../../../lib/notifications";
 
-import { useTheme } from "../../../components/ThemeProvider";
+import { useTheme } from "../../../lib/ThemeProvider";
 
 var THEMES = [
   {
