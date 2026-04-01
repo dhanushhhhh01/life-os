@@ -4,30 +4,30 @@ import { Target, Plus, X, Award, Clock, TrendingUp, BarChart2 } from "lucide-rea
 import { supabase } from "../../../lib/supabase";
 
 var defaultGoals = [
-  { name: "Master FastAPI & LLMs", progress: 45, category: "Tech", deadline: "Jun 2026", color: "from-[#46F0D2] to-pink-500", ring: "#a855f7" },
+  { name: "Master FastAPI & LLMs", progress: 45, category: "Tech", deadline: "Jun 2026", color: "from-theme-primary to-pink-500", ring: "#a855f7" },
   { name: "German to B1 Level", progress: 30, category: "Language", deadline: "Aug 2026", color: "from-yellow-500 to-orange-500", ring: "#f97316" },
   { name: "Land AI Internship", progress: 20, category: "Career", deadline: "May 2026", color: "from-orange-500 to-red-500", ring: "#ef4444" },
   { name: "Build Portfolio Projects", progress: 60, category: "Tech", deadline: "Apr 2026", color: "from-green-500 to-teal-500", ring: "#14b8a6" },
-  { name: "Complete Master Thesis", progress: 10, category: "Academic", deadline: "Dec 2026", color: "from-blue-500 to-[#FBE2B4]", ring: "#FBE2B4" },
-  { name: "Read 24 Books This Year", progress: 25, category: "Learning", deadline: "Dec 2026", color: "from-[#46F0D2] to-[#46F0D2]", ring: "#46F0D2" },
+  { name: "Complete Master Thesis", progress: 10, category: "Academic", deadline: "Dec 2026", color: "from-blue-500 to-theme-secondary", ring: "var(--app-secondary)" },
+  { name: "Read 24 Books This Year", progress: 25, category: "Learning", deadline: "Dec 2026", color: "from-theme-primary to-theme-primary", ring: "var(--app-primary)" },
 ];
 
 var ringColors = {
-  "from-[#46F0D2] to-pink-500": "#a855f7",
+  "from-theme-primary to-pink-500": "#a855f7",
   "from-yellow-500 to-orange-500": "#f97316",
   "from-orange-500 to-red-500": "#ef4444",
   "from-green-500 to-teal-500": "#14b8a6",
-  "from-blue-500 to-[#FBE2B4]": "#FBE2B4",
-  "from-[#46F0D2] to-[#46F0D2]": "#46F0D2",
-  "from-[#FBE2B4] to-blue-500": "#FBE2B4",
+  "from-blue-500 to-theme-secondary": "var(--app-secondary)",
+  "from-theme-primary to-theme-primary": "var(--app-primary)",
+  "from-theme-secondary to-blue-500": "var(--app-secondary)",
 };
 
 var categoryColors = {
-  Tech: { bg: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20", bar: "#46F0D2" },
+  Tech: { bg: "bg-theme-primary/15 text-theme-primary border-theme-primary/20", bar: "var(--app-primary)" },
   Career: { bg: "bg-orange-500/15 text-orange-400 border-orange-500/20", bar: "#f97316" },
   Language: { bg: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20", bar: "#eab308" },
   Academic: { bg: "bg-blue-500/15 text-blue-400 border-blue-500/20", bar: "#3b82f6" },
-  Learning: { bg: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20", bar: "#46F0D2" },
+  Learning: { bg: "bg-theme-primary/15 text-theme-primary border-theme-primary/20", bar: "var(--app-primary)" },
   Health: { bg: "bg-green-500/15 text-green-400 border-green-500/20", bar: "#22c55e" },
 };
 
@@ -35,7 +35,7 @@ function CircularProgress(props) {
   var size = props.size || 56;
   var strokeWidth = props.strokeWidth || 4;
   var progress = props.progress || 0;
-  var color = props.color || "#46F0D2";
+  var color = props.color || "var(--app-primary)";
   var radius = (size - strokeWidth) / 2;
   var circumference = radius * 2 * Math.PI;
   var offset = circumference - (progress / 100) * circumference;
@@ -112,14 +112,14 @@ function GoalProgressChart(props) {
   return (
     <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-5">
       <div className="flex items-center gap-2">
-        <BarChart2 size={15} className="text-[#46F0D2]" />
-        <span className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em]">Progress Breakdown</span>
+        <BarChart2 size={15} className="text-theme-primary" />
+        <span className="text-xs font-semibold text-theme-primary uppercase tracking-[0.15em]">Progress Breakdown</span>
       </div>
 
       {/* Horizontal bar chart — all goals */}
       <div className="space-y-2.5">
         {sorted.map(function(goal) {
-          var barColor = goal.ring || "#46F0D2";
+          var barColor = goal.ring || "var(--app-primary)";
           var pct = mounted ? goal.progress : 0;
           var isComplete = goal.progress === 100;
           return (
@@ -151,7 +151,7 @@ function GoalProgressChart(props) {
         <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-3">By Category</div>
         <div className="space-y-2">
           {cats.map(function(cat) {
-            var catStyle = categoryColors[cat.name] || { bar: "#46F0D2", bg: "bg-white/10 text-gray-400" };
+            var catStyle = categoryColors[cat.name] || { bar: "var(--app-primary)", bg: "bg-white/10 text-gray-400" };
             var pct = mounted ? cat.avg : 0;
             return (
               <div key={cat.name} className="flex items-center gap-3">
@@ -176,7 +176,7 @@ function GoalProgressChart(props) {
       <div className="grid grid-cols-3 gap-2 pt-1">
         {[
           { label: "Not started", value: goals.filter(function(g) { return g.progress === 0; }).length, color: "text-gray-600" },
-          { label: "In progress", value: goals.filter(function(g) { return g.progress > 0 && g.progress < 100; }).length, color: "text-[#46F0D2]" },
+          { label: "In progress", value: goals.filter(function(g) { return g.progress > 0 && g.progress < 100; }).length, color: "text-theme-primary" },
           { label: "Completed", value: goals.filter(function(g) { return g.progress === 100; }).length, color: "text-yellow-400" },
         ].map(function(item) {
           return (
@@ -226,9 +226,9 @@ export default function GoalsPage() {
         return Object.assign({}, g, { user_id: uid, color: colorKey, ring: ringColors[colorKey] });
       });
       var seed = await supabase.from("goals").insert(inserts).select();
-      if (!seed.error) setGoals(seed.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#46F0D2" }); }));
+      if (!seed.error) setGoals(seed.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "var(--app-primary)" }); }));
     } else if (!result.error) {
-      setGoals(result.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "#46F0D2" }); }));
+      setGoals(result.data.map(function(g) { return Object.assign({}, g, { ring: ringColors[g.color] || "var(--app-primary)" }); }));
     }
     setLoading(false);
   }
@@ -267,7 +267,7 @@ export default function GoalsPage() {
     return (
       <div className="p-6 flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-[#46F0D2]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-theme-primary/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-500 text-sm">Loading goals...</p>
         </div>
       </div>
@@ -279,14 +279,14 @@ export default function GoalsPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Target size={18} className="text-[#46F0D2]" />
+            <Target size={18} className="text-theme-primary" />
             <h1 className="text-3xl font-black text-white">Goals</h1>
           </div>
           <p className="text-gray-500 text-sm">Track every target on the path to AI Engineer</p>
         </div>
         <button
           onClick={function() { setShowAdd(!showAdd); }}
-          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showAdd ? "bg-white/10" : "bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] shadow-[#46F0D2]/20")}
+          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showAdd ? "bg-white/10" : "bg-gradient-to-r from-theme-primary to-theme-secondary shadow-theme-primary/20")}
         >
           {showAdd ? <><X size={14} /> Cancel</> : <><Plus size={14} /> New Goal</>}
         </button>
@@ -296,7 +296,7 @@ export default function GoalsPage() {
       <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
         <div className="flex items-center gap-6">
           <div className="relative">
-            <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="#46F0D2" />
+            <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="var(--app-primary)" />
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-xl font-black text-gradient-gold font-display">{avgProgress}%</span>
             </div>
@@ -317,8 +317,8 @@ export default function GoalsPage() {
 
       {/* Add Goal Form */}
       {showAdd && (
-        <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 animate-slide-up">
-          <h2 className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em] mb-4">New Goal</h2>
+        <div className="glass-card p-6 rounded-2xl border border-theme-primary/20 animate-slide-up">
+          <h2 className="text-xs font-semibold text-theme-primary uppercase tracking-[0.15em] mb-4">New Goal</h2>
           <div className="space-y-3">
             <input
               value={newGoal.name}
@@ -346,7 +346,7 @@ export default function GoalsPage() {
                 className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm transition-all"
               />
             </div>
-            <button onClick={addGoal} disabled={saving} className="w-full py-3 bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50">
+            <button onClick={addGoal} disabled={saving} className="w-full py-3 bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-theme-primary/20 disabled:opacity-50">
               {saving ? "Saving..." : "Add Goal"}
             </button>
           </div>
@@ -391,7 +391,7 @@ export default function GoalsPage() {
                   >-10</button>
                   <button
                     onClick={function() { updateProgress(goal.id, 10); }}
-                    className="px-3 py-1.5 bg-[#46F0D2]/10 hover:bg-[#46F0D2]/20 text-[#46F0D2] rounded-lg text-xs transition-all"
+                    className="px-3 py-1.5 bg-theme-primary/10 hover:bg-theme-primary/20 text-theme-primary rounded-lg text-xs transition-all"
                   >+10</button>
                   <button
                     onClick={function() { deleteGoal(goal.id); }}

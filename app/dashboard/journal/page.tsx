@@ -6,9 +6,9 @@ import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var TAG_COLORS = {
   Berlin: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Life: "bg-[#46F0D2]/15 text-[#46F0D2] border-[#46F0D2]/20",
+  Life: "bg-theme-primary/15 text-theme-primary border-theme-primary/20",
   Growth: "bg-green-500/15 text-green-400 border-green-500/20",
-  Tech: "bg-[#FBE2B4]/15 text-[#FBE2B4] border-[#FBE2B4]/20",
+  Tech: "bg-theme-secondary/15 text-theme-secondary border-theme-secondary/20",
   Win: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
   FastAPI: "bg-orange-500/15 text-orange-400 border-orange-500/20",
   German: "bg-red-500/15 text-red-400 border-red-500/20",
@@ -32,7 +32,7 @@ function MoodSparkline(props) {
     return x + "," + y;
   });
   var lastMood = data[data.length - 1];
-  var color = lastMood >= 8 ? "#46F0D2" : lastMood >= 6 ? "#86efac" : lastMood >= 4 ? "#fde047" : "#f87171";
+  var color = lastMood >= 8 ? "var(--app-primary)" : lastMood >= 6 ? "#86efac" : lastMood >= 4 ? "#fde047" : "#f87171";
   return (
     <div className="flex items-center gap-2">
       <svg width={W} height={H} viewBox={"0 0 " + W + " " + H}>
@@ -50,7 +50,7 @@ function MoodSparkline(props) {
 }
 
 function getMoodColor(m) {
-  if (m >= 9) return "text-[#46F0D2]";
+  if (m >= 9) return "text-theme-primary";
   if (m >= 7) return "text-green-400";
   if (m >= 5) return "text-yellow-400";
   return "text-red-400";
@@ -158,7 +158,7 @@ export default function JournalPage() {
     return (
       <div className="p-6 flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-[#46F0D2]/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-theme-primary/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-500 text-sm">Loading journal...</p>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function JournalPage() {
             {!dexInsight && !loadingInsight && (
               <button
                 onClick={function() { askDexAboutEntry(selectedEntry); }}
-                className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2]/10 to-[#FBE2B4]/10 border border-[#46F0D2]/20 hover:border-[#46F0D2]/40 text-[#46F0D2] text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(70,240,210,0.12)]"
+                className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-gradient-to-r from-theme-primary/10 to-theme-secondary/10 border border-theme-primary/20 hover:border-theme-primary/40 text-theme-primary text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(70,240,210,0.12)]"
               >
                 <Sparkles size={15} />
                 Ask Dex about this entry
@@ -208,24 +208,24 @@ export default function JournalPage() {
             )}
             {loadingInsight && (
               <div className="flex items-center gap-3 text-gray-500 text-sm">
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center">
-                  <Sparkles size={12} className="text-[#46F0D2] animate-pulse" />
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-theme-primary/20 to-theme-secondary/20 border border-theme-primary/20 flex items-center justify-center">
+                  <Sparkles size={12} className="text-theme-primary animate-pulse" />
                 </div>
                 Dex is thinking...
                 <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1.5 h-1.5 bg-[#46F0D2] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <span className="w-1.5 h-1.5 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-theme-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
               </div>
             )}
             {dexInsight && (
-              <div className="p-4 rounded-xl bg-[#46F0D2]/[0.04] border border-[#46F0D2]/15 animate-slide-up">
+              <div className="p-4 rounded-xl bg-theme-primary/[0.04] border border-theme-primary/15 animate-slide-up">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center">
-                    <Sparkles size={12} className="text-[#46F0D2]" />
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-theme-primary/20 to-theme-secondary/20 border border-theme-primary/20 flex items-center justify-center">
+                    <Sparkles size={12} className="text-theme-primary" />
                   </div>
-                  <span className="text-xs font-semibold text-[#46F0D2]">Dex's Reflection</span>
+                  <span className="text-xs font-semibold text-theme-primary">Dex's Reflection</span>
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">{dexInsight}</p>
                 <button onClick={function() { setDexInsight(""); }} className="mt-3 text-[10px] text-gray-700 hover:text-gray-500 transition-colors">
@@ -243,7 +243,7 @@ export default function JournalPage() {
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-theme-primary to-theme-primary text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">⚡</span>
           {xpToast}
         </div>
@@ -251,7 +251,7 @@ export default function JournalPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <BookOpen size={18} className="text-[#46F0D2]" />
+            <BookOpen size={18} className="text-theme-primary" />
             <h1 className="text-3xl font-black text-white">Journal</h1>
           </div>
           <p className="text-gray-500 text-sm">Capture your thoughts, wins, and reflections</p>
@@ -263,7 +263,7 @@ export default function JournalPage() {
         </div>
         <button
           onClick={function() { setShowNew(!showNew); }}
-          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showNew ? "bg-white/10" : "bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] shadow-[#46F0D2]/20")}
+          className={"px-4 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center gap-2 " + (showNew ? "bg-white/10" : "bg-gradient-to-r from-theme-primary to-theme-primary shadow-theme-primary/20")}
         >
           {showNew ? <><X size={14} /> Cancel</> : <><Plus size={14} /> New Entry</>}
         </button>
@@ -271,8 +271,8 @@ export default function JournalPage() {
 
       {/* New Entry Form */}
       {showNew && (
-        <div className="glass-card p-6 rounded-2xl border border-[#46F0D2]/20 space-y-4 animate-slide-up">
-          <h2 className="text-xs font-semibold text-[#46F0D2] uppercase tracking-[0.15em]">New Journal Entry</h2>
+        <div className="glass-card p-6 rounded-2xl border border-theme-primary/20 space-y-4 animate-slide-up">
+          <h2 className="text-xs font-semibold text-theme-primary uppercase tracking-[0.15em]">New Journal Entry</h2>
           <input
             value={newEntry.title}
             onChange={function(e) { setNewEntry(Object.assign({}, newEntry, { title: e.target.value })); }}
@@ -306,7 +306,7 @@ export default function JournalPage() {
               />
             </div>
           </div>
-          <button onClick={saveEntry} disabled={saving} className="w-full py-3 bg-gradient-to-r from-[#46F0D2] to-[#46F0D2] text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50">
+          <button onClick={saveEntry} disabled={saving} className="w-full py-3 bg-gradient-to-r from-theme-primary to-theme-primary text-white font-semibold rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-theme-primary/20 disabled:opacity-50">
             {saving ? "Saving..." : "Save Entry"}
           </button>
         </div>
@@ -323,7 +323,7 @@ export default function JournalPage() {
               style={{ animationDelay: (index * 0.05) + "s" }}
             >
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-bold text-white group-hover:text-[#46F0D2] transition-colors">{entry.title}</h3>
+                <h3 className="font-bold text-white group-hover:text-theme-primary transition-colors">{entry.title}</h3>
                 <span className={"text-sm font-bold font-display shrink-0 ml-4 " + getMoodColor(entry.mood)}>{entry.mood}/10</span>
               </div>
               <p className="text-sm text-gray-600 line-clamp-2 mb-3">{entry.body}</p>

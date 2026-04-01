@@ -57,7 +57,7 @@ function renderMarkdown(text: string): string {
   // Bullet list lines
   processed = processed.replace(
     /^- (.*?)$/gm,
-    "<div class='flex gap-2 my-0.5 leading-relaxed'><span class='text-[#46F0D2] shrink-0 mt-0.5'>&#x25B8;</span><span>$1</span></div>"
+    "<div class='flex gap-2 my-0.5 leading-relaxed'><span class='text-theme-primary shrink-0 mt-0.5'>&#x25B8;</span><span>$1</span></div>"
   );
   // Line breaks
   processed = processed.replace(/\n\n/g, "<div class='my-2'></div>");
@@ -573,23 +573,23 @@ export default function CoachPage() {
         {/* Dex 3D Animated Orb */}
         <div className="relative w-12 h-12 flex items-center justify-center shrink-0 group">
           {/* Outer glow */}
-          <div className={"absolute inset-0 rounded-full blur-md transition-all duration-500 " + (isListening ? 'bg-orange-500/60 animate-pulse' : speakingId ? 'bg-[#46F0D2]/50 animate-pulse-mint' : 'bg-[#46F0D2]/20 animate-breathe group-hover:bg-[#46F0D2]/40')} />
+          <div className={"absolute inset-0 rounded-full blur-md transition-all duration-500 " + (isListening ? 'bg-orange-500/60 animate-pulse' : speakingId ? 'bg-theme-primary/50 animate-pulse-mint' : 'bg-theme-primary/20 animate-breathe group-hover:bg-theme-primary/40')} />
           
           {/* Orb core */}
           <div className="absolute inset-0 rounded-full overflow-hidden bg-gradient-to-br from-[#13122c] to-[#1a1932] border border-white/10 flex items-center justify-center shadow-[inset_0_0_15px_rgba(70,240,210,0.15)] transition-all duration-300">
             {/* Inner energy fields */}
-            <div className={"absolute w-[160%] h-[160%] mix-blend-screen opacity-60 animate-spin-slow transition-all duration-700 " + (speakingId ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#46F0D2]/40 via-transparent to-transparent' : isListening ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-500/40 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#46F0D2]/10 via-transparent to-transparent')} />
+            <div className={"absolute w-[160%] h-[160%] mix-blend-screen opacity-60 animate-spin-slow transition-all duration-700 " + (speakingId ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-theme-primary/40 via-transparent to-transparent' : isListening ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-500/40 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-theme-primary/10 via-transparent to-transparent')} />
             
-            <div className={"absolute w-[130%] h-[130%] mix-blend-screen animate-morph transition-all duration-700 " + (speakingId ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-pink-500/30 via-transparent to-transparent' : isListening ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-500/30 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FBE2B4]/15 via-transparent to-transparent')} />
+            <div className={"absolute w-[130%] h-[130%] mix-blend-screen animate-morph transition-all duration-700 " + (speakingId ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-pink-500/30 via-transparent to-transparent' : isListening ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-500/30 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-theme-secondary/15 via-transparent to-transparent')} />
             
             {/* Center Icon */}
             {isListening ? (
               <Mic size={18} className="text-orange-400 relative z-10 animate-pulse drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
             ) : speakingId ? (
               <span className="relative z-10 flex items-center gap-0.5 h-4">
-                <span className="w-1 h-3 bg-[#46F0D2] rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "0ms" }} />
-                <span className="w-1 h-4 bg-[#46F0D2] rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "150ms" }} />
-                <span className="w-1 h-2 bg-[#46F0D2] rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "300ms" }} />
+                <span className="w-1 h-3 bg-theme-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "0ms" }} />
+                <span className="w-1 h-4 bg-theme-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "150ms" }} />
+                <span className="w-1 h-2 bg-theme-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(70,240,210,0.8)]" style={{ animationDelay: "300ms" }} />
               </span>
             ) : (
               <Brain size={18} className="text-white/80 relative z-10 transition-transform group-hover:scale-110" />
@@ -604,7 +604,7 @@ export default function CoachPage() {
           <div className="font-bold text-white text-sm flex items-center gap-2">
             Dex
             {dataLoaded && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#46F0D2]/10 border border-[#46F0D2]/20 text-[#46F0D2] font-normal">
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-theme-primary/10 border border-theme-primary/20 text-theme-primary font-normal">
                 Live data
               </span>
             )}
@@ -618,7 +618,7 @@ export default function CoachPage() {
                     return (
                       <span
                         key={i}
-                        className="w-0.5 bg-[#46F0D2] rounded-full animate-bounce"
+                        className="w-0.5 bg-theme-primary rounded-full animate-bounce"
                         style={{
                           height: [6, 10, 7, 12, 5][i] + "px",
                           animationDelay: delay + "ms",
@@ -676,7 +676,7 @@ export default function CoachPage() {
             className={
               "p-2.5 rounded-xl border transition-all " +
               (ttsEnabled
-                ? "bg-[#46F0D2]/10 border-[#46F0D2]/30 text-[#46F0D2] shadow-[0_0_12px_rgba(70,240,210,0.15)]"
+                ? "bg-theme-primary/10 border-theme-primary/30 text-theme-primary shadow-[0_0_12px_rgba(70,240,210,0.15)]"
                 : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-gray-400")
             }
           >
@@ -690,10 +690,10 @@ export default function CoachPage() {
         (context.recentCheckin || context.profile || topStreak) && (
           <div className="px-5 py-2.5 border-b border-white/[0.04] flex gap-2 flex-wrap bg-[#080814]/60 shrink-0">
             {context.profile && (
-              <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-[#46F0D2]/10 border border-[#46F0D2]/20 text-[#46F0D2]">
+              <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/20 text-theme-primary">
                 <Star size={9} />
                 Lv {context.profile.level}
-                <span className="text-[#46F0D2]/60 ml-0.5">
+                <span className="text-theme-primary/60 ml-0.5">
                   {context.profile.xp} XP
                 </span>
               </span>
@@ -759,10 +759,10 @@ export default function CoachPage() {
               {!isUser && (
                 <div
                   className={
-                    "w-8 h-8 rounded-lg bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border flex items-center justify-center text-[#46F0D2] shrink-0 mr-2.5 mt-0.5 transition-all " +
+                    "w-8 h-8 rounded-lg bg-gradient-to-br from-theme-primary/20 to-theme-secondary/20 border flex items-center justify-center text-theme-primary shrink-0 mr-2.5 mt-0.5 transition-all " +
                     (isSpeaking
-                      ? "border-[#46F0D2]/60 shadow-[0_0_14px_rgba(70,240,210,0.3)]"
-                      : "border-[#46F0D2]/20")
+                      ? "border-theme-primary/60 shadow-[0_0_14px_rgba(70,240,210,0.3)]"
+                      : "border-theme-primary/20")
                   }
                 >
                   <Sparkles size={13} />
@@ -780,10 +780,10 @@ export default function CoachPage() {
                   className={
                     "px-4 py-3 rounded-2xl text-sm leading-relaxed transition-all " +
                     (isUser
-                      ? "bg-gradient-to-r from-[#46F0D2] to-[#3ad4bc] text-white rounded-br-sm shadow-lg shadow-[#46F0D2]/10"
+                      ? "bg-gradient-to-r from-theme-primary to-[#3ad4bc] text-white rounded-br-sm shadow-lg shadow-theme-primary/10"
                       : "bg-white/[0.04] border text-gray-300 rounded-bl-sm " +
                         (isSpeaking
-                          ? "border-[#46F0D2]/25 shadow-[0_0_18px_rgba(70,240,210,0.08)]"
+                          ? "border-theme-primary/25 shadow-[0_0_18px_rgba(70,240,210,0.08)]"
                           : "border-white/[0.07]"))
                   }
                 >
@@ -791,15 +791,15 @@ export default function CoachPage() {
                     // Streaming "thinking" dots
                     <div className="flex gap-1.5 py-0.5">
                       <span
-                        className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce"
+                        className="w-2 h-2 bg-theme-primary rounded-full animate-bounce"
                         style={{ animationDelay: "0ms" }}
                       />
                       <span
-                        className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce"
+                        className="w-2 h-2 bg-theme-primary rounded-full animate-bounce"
                         style={{ animationDelay: "150ms" }}
                       />
                       <span
-                        className="w-2 h-2 bg-[#46F0D2] rounded-full animate-bounce"
+                        className="w-2 h-2 bg-theme-primary rounded-full animate-bounce"
                         style={{ animationDelay: "300ms" }}
                       />
                     </div>
@@ -814,7 +814,7 @@ export default function CoachPage() {
                   )}
                   {/* Streaming cursor */}
                   {!isUser && isStreaming && msg.content && (
-                    <span className="inline-block w-0.5 h-4 bg-[#46F0D2] ml-0.5 animate-pulse rounded-full align-middle" />
+                    <span className="inline-block w-0.5 h-4 bg-theme-primary ml-0.5 animate-pulse rounded-full align-middle" />
                   )}
                 </div>
 
@@ -836,7 +836,7 @@ export default function CoachPage() {
                         className={
                           "text-[10px] flex items-center gap-1 transition-all " +
                           (isSpeaking
-                            ? "text-[#46F0D2]"
+                            ? "text-theme-primary"
                             : "text-gray-700 hover:text-gray-500")
                         }
                       >
@@ -855,7 +855,7 @@ export default function CoachPage() {
                         className={
                           "text-[10px] flex items-center gap-1 transition-all " +
                           (isCopied
-                            ? "text-[#46F0D2]"
+                            ? "text-theme-primary"
                             : "text-gray-700 hover:text-gray-500")
                         }
                         title="Copy message"
@@ -883,7 +883,7 @@ export default function CoachPage() {
                 setInput(prompt);
                 if (inputRef.current) inputRef.current.focus();
               }}
-              className="text-xs px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.07] text-gray-500 hover:text-white hover:border-[#46F0D2]/30 hover:bg-[#46F0D2]/[0.05] transition-all"
+              className="text-xs px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.07] text-gray-500 hover:text-white hover:border-theme-primary/30 hover:bg-theme-primary/[0.05] transition-all"
             >
               {prompt}
             </button>
@@ -901,7 +901,7 @@ export default function CoachPage() {
               "p-3 rounded-xl border transition-all shrink-0 " +
               (isListening
                 ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse"
-                : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-[#46F0D2] hover:border-[#46F0D2]/30")
+                : "bg-white/[0.04] border-white/[0.08] text-gray-600 hover:text-theme-primary hover:border-theme-primary/30")
             }
           >
             <Mic size={18} />
@@ -925,13 +925,13 @@ export default function CoachPage() {
                 : "Ask Dex anything about your goals, habits, or life..."
             }
             disabled={isStreaming}
-            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm transition-all focus:outline-none focus:border-[#46F0D2]/30 focus:bg-white/[0.06] disabled:opacity-50"
+            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm transition-all focus:outline-none focus:border-theme-primary/30 focus:bg-white/[0.06] disabled:opacity-50"
           />
 
           <button
             onClick={sendMessage}
             disabled={!input.trim() || isStreaming}
-            className="px-5 py-3 bg-gradient-to-r from-[#46F0D2] to-[#3ad4bc] text-[#080818] font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-30 text-sm shadow-lg shadow-[#46F0D2]/20 flex items-center gap-2 shrink-0"
+            className="px-5 py-3 bg-gradient-to-r from-theme-primary to-[#3ad4bc] text-[#080818] font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-30 text-sm shadow-lg shadow-theme-primary/20 flex items-center gap-2 shrink-0"
           >
             {isStreaming ? (
               <RefreshCw size={15} className="animate-spin" />

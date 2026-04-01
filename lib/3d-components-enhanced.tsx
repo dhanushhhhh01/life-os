@@ -18,7 +18,7 @@ export const EnhancedCard = React.forwardRef(
     { children, intensity = 12, className = '', glowIntensity = 0.6 }: EnhancedCardProps,
     ref: React.Ref
   ) => {
-    const cardRef = useRef(ref);
+    const cardRef = useRef(null);
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
     const [shadowOffset, setShadowOffset] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);

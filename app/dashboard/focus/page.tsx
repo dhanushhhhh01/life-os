@@ -5,9 +5,9 @@ import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var MODES = [
-  { label: "Focus", minutes: 25, color: "from-[#46F0D2] to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
+  { label: "Focus", minutes: 25, color: "from-theme-primary to-pink-500", glow: "rgba(168,85,247,0.3)", icon: Brain },
   { label: "Short Break", minutes: 5, color: "from-green-500 to-teal-500", glow: "rgba(20,184,166,0.3)", icon: Coffee },
-  { label: "Long Break", minutes: 15, color: "from-blue-500 to-[#FBE2B4]", glow: "rgba(251,226,180,0.3)", icon: BookOpen },
+  { label: "Long Break", minutes: 15, color: "from-blue-500 to-theme-secondary", glow: "rgba(251,226,180,0.3)", icon: BookOpen },
 ];
 
 var motivationalQuotes = [
@@ -81,16 +81,16 @@ function FocusHistoryChart(props) {
     <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Flame size={15} className="text-[#FBE2B4]" />
-          <span className="text-xs font-semibold text-[#FBE2B4] uppercase tracking-[0.15em]">7-Day Focus History</span>
+          <Flame size={15} className="text-theme-secondary" />
+          <span className="text-xs font-semibold text-theme-secondary uppercase tracking-[0.15em]">7-Day Focus History</span>
         </div>
         <div className="flex gap-4">
           <div className="text-right">
-            <div className="text-sm font-black bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] bg-clip-text text-transparent">{Math.round(totalWeek / 60 * 10) / 10}h</div>
+            <div className="text-sm font-black bg-gradient-to-r from-theme-primary to-theme-secondary bg-clip-text text-transparent">{Math.round(totalWeek / 60 * 10) / 10}h</div>
             <div className="text-[9px] text-gray-700 uppercase tracking-wider">This week</div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-black text-[#46F0D2]">{daysWithFocus}/7</div>
+            <div className="text-sm font-black text-theme-primary">{daysWithFocus}/7</div>
             <div className="text-[9px] text-gray-700 uppercase tracking-wider">Active days</div>
           </div>
         </div>
@@ -100,10 +100,10 @@ function FocusHistoryChart(props) {
       <div className="relative">
         {/* Goal line */}
         <div
-          className="absolute left-0 right-0 border-t border-dashed border-[#FBE2B4]/20 flex items-center"
+          className="absolute left-0 right-0 border-t border-dashed border-theme-secondary/20 flex items-center"
           style={{ bottom: (goalMin / chartMax * 100) + "%" }}
         >
-          <span className="text-[9px] text-[#FBE2B4]/40 ml-1 -mt-3">goal 100m</span>
+          <span className="text-[9px] text-theme-secondary/40 ml-1 -mt-3">goal 100m</span>
         </div>
 
         <div className="flex items-end gap-1.5 h-28">
@@ -111,9 +111,9 @@ function FocusHistoryChart(props) {
             var barH = mounted && day.minutes > 0 ? Math.max((day.minutes / chartMax) * 100, 3) : 0;
             var isGoalMet = day.minutes >= goalMin;
             var barColor = day.isToday
-              ? "linear-gradient(180deg, #46F0D2, #46F0D2aa)"
+              ? "linear-gradient(180deg, var(--app-primary), var(--app-primary)aa)"
               : isGoalMet
-              ? "linear-gradient(180deg, #FBE2B4, #FBE2B4aa)"
+              ? "linear-gradient(180deg, var(--app-secondary), var(--app-secondary)aa)"
               : "linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06))";
 
             return (
@@ -131,11 +131,11 @@ function FocusHistoryChart(props) {
                       height: barH + "%",
                       minHeight: day.minutes > 0 ? "4px" : "0px",
                       background: barColor,
-                      boxShadow: day.isToday ? "0 0 8px #46F0D2aa" : isGoalMet ? "0 0 8px #FBE2B4aa" : "none",
+                      boxShadow: day.isToday ? "0 0 8px var(--app-primary)aa" : isGoalMet ? "0 0 8px var(--app-secondary)aa" : "none",
                     }}
                   />
                 </div>
-                <div className={"text-[9px] text-center " + (day.isToday ? "text-[#46F0D2] font-semibold" : "text-gray-700")}>{day.label}</div>
+                <div className={"text-[9px] text-center " + (day.isToday ? "text-theme-primary font-semibold" : "text-gray-700")}>{day.label}</div>
               </div>
             );
           })}
@@ -146,7 +146,7 @@ function FocusHistoryChart(props) {
       {bestDay && bestDay.minutes > 0 && (
         <div className="flex items-center justify-between pt-1 border-t border-white/[0.04]">
           <span className="text-[10px] text-gray-600">Best day this week</span>
-          <span className="text-[10px] font-semibold text-[#FBE2B4]">{bestDay.label} — {bestDay.minutes}m ({Math.floor(bestDay.minutes / 25)} sessions)</span>
+          <span className="text-[10px] font-semibold text-theme-secondary">{bestDay.label} — {bestDay.minutes}m ({Math.floor(bestDay.minutes / 25)} sessions)</span>
         </div>
       )}
 
@@ -292,7 +292,7 @@ export default function FocusPage() {
     <div className="p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-[#FBE2B4] to-[#46F0D2] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-theme-secondary to-theme-primary text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">*</span>
           {xpToast}
         </div>
@@ -303,7 +303,7 @@ export default function FocusPage() {
           <p className="text-gray-500 text-sm mt-1">Deep work. No distractions. Just progress.</p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-black bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] bg-clip-text text-transparent">{sessionsCompleted}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-theme-primary to-theme-secondary bg-clip-text text-transparent">{sessionsCompleted}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-widest">Sessions Today</div>
         </div>
       </div>
@@ -346,8 +346,8 @@ export default function FocusPage() {
             />
             <defs>
               <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#46F0D2" />
-                <stop offset="100%" stopColor="#FBE2B4" />
+                <stop offset="0%" stopColor="var(--app-primary)" />
+                <stop offset="100%" stopColor="var(--app-secondary)" />
               </linearGradient>
             </defs>
           </svg>
@@ -376,7 +376,7 @@ export default function FocusPage() {
           </button>
           <button
             onClick={toggleSound}
-            className={"w-12 h-12 rounded-xl border flex items-center justify-center transition-all " + (soundOn ? "bg-[#46F0D2]/20 border-[#46F0D2]/40 text-[#46F0D2]" : "bg-white/[0.04] border-white/[0.08] text-gray-500 hover:text-white")}
+            className={"w-12 h-12 rounded-xl border flex items-center justify-center transition-all " + (soundOn ? "bg-theme-primary/20 border-theme-primary/40 text-theme-primary" : "bg-white/[0.04] border-white/[0.08] text-gray-500 hover:text-white")}
           >
             {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
           </button>
@@ -384,9 +384,9 @@ export default function FocusPage() {
       </div>
 
       {/* Motivational Quote */}
-      <div className="glass-card p-5 rounded-2xl border border-[#46F0D2]/15 bg-[#46F0D2]/[0.03]">
+      <div className="glass-card p-5 rounded-2xl border border-theme-primary/15 bg-theme-primary/[0.03]">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#46F0D2]/20 to-[#FBE2B4]/20 border border-[#46F0D2]/20 flex items-center justify-center text-[#46F0D2] shrink-0 mt-0.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-theme-primary/20 to-theme-secondary/20 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0 mt-0.5">
             <Brain size={14} />
           </div>
           <p className="text-sm text-gray-400 italic leading-relaxed">"{quote}"</p>
@@ -396,11 +396,11 @@ export default function FocusPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black bg-gradient-to-r from-[#46F0D2] to-pink-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-theme-primary to-pink-400 bg-clip-text text-transparent">{sessionsCompleted}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Sessions</div>
         </div>
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black bg-gradient-to-r from-[#FBE2B4] to-blue-400 bg-clip-text text-transparent">{totalFocusMinutes}</div>
+          <div className="text-2xl font-black bg-gradient-to-r from-theme-secondary to-blue-400 bg-clip-text text-transparent">{totalFocusMinutes}</div>
           <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Minutes</div>
         </div>
         <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
@@ -416,7 +416,7 @@ export default function FocusPage() {
       {typeof Notification !== "undefined" && Notification.permission === "default" && (
         <button
           onClick={function() { Notification.requestPermission(); }}
-          className="w-full py-2.5 text-xs text-gray-500 hover:text-[#46F0D2] transition-colors text-center"
+          className="w-full py-2.5 text-xs text-gray-500 hover:text-theme-primary transition-colors text-center"
         >
           Enable notifications for session alerts
         </button>

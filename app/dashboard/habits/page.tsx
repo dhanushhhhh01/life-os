@@ -5,12 +5,12 @@ import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
 
 var defaultHabits = [
-  { name: "Morning Coding", streak: 12, done_today: false, color: "from-[#46F0D2] to-pink-500" },
+  { name: "Morning Coding", streak: 12, done_today: false, color: "from-theme-primary to-pink-500" },
   { name: "Exercise", streak: 5, done_today: false, color: "from-orange-500 to-red-500" },
-  { name: "Read 30min", streak: 8, done_today: false, color: "from-blue-500 to-[#FBE2B4]" },
+  { name: "Read 30min", streak: 8, done_today: false, color: "from-blue-500 to-theme-secondary" },
   { name: "German Practice", streak: 3, done_today: false, color: "from-yellow-500 to-orange-500" },
   { name: "Meditate", streak: 2, done_today: false, color: "from-teal-500 to-green-500" },
-  { name: "Cold Shower", streak: 7, done_today: false, color: "from-[#FBE2B4] to-blue-500" },
+  { name: "Cold Shower", streak: 7, done_today: false, color: "from-theme-secondary to-blue-500" },
 ];
 
 // 28-day heatmap built from streak count
@@ -41,7 +41,7 @@ function HabitHeatmap(props) {
             x={x} y={y}
             width={cellSize} height={cellSize}
             rx="2" ry="2"
-            fill={isDone ? "#46F0D2" : "rgba(255,255,255,0.04)"}
+            fill={isDone ? "var(--app-primary)" : "rgba(255,255,255,0.04)"}
             style={isDone ? { filter: "drop-shadow(0 0 2px rgba(70,240,210,0.5))" } : {}}
           />
         );
@@ -58,7 +58,7 @@ function getStreakEmoji(streak) {
 }
 
 function getStreakColor(streak) {
-  if (streak >= 14) return "text-[#46F0D2]";
+  if (streak >= 14) return "text-theme-primary";
   if (streak >= 7) return "text-orange-400";
   if (streak >= 3) return "text-yellow-400";
   return "text-gray-500";
@@ -98,7 +98,7 @@ export default function HabitsPage() {
     var today = new Date().toISOString().split("T")[0];
     var result = await supabase.from("habits").select("*").eq("user_id", uid).order("created_at", { ascending: true });
     if (!result.error && result.data.length === 0) {
-      var colors = ["from-[#46F0D2] to-pink-500", "from-orange-500 to-red-500", "from-blue-500 to-[#FBE2B4]", "from-yellow-500 to-orange-500", "from-teal-500 to-green-500", "from-[#FBE2B4] to-blue-500"];
+      var colors = ["from-theme-primary to-pink-500", "from-orange-500 to-red-500", "from-blue-500 to-theme-secondary", "from-yellow-500 to-orange-500", "from-teal-500 to-green-500", "from-theme-secondary to-blue-500"];
       var inserts = defaultHabits.map(function(h, i) {
         return Object.assign({}, h, { user_id: uid, color: colors[i % colors.length] });
       });
@@ -140,7 +140,7 @@ export default function HabitsPage() {
   async function addHabit() {
     if (!newHabit.trim() || !userId) return;
     setSaving(true);
-    var colors = ["from-[#46F0D2] to-pink-500", "from-[#FBE2B4] to-blue-500", "from-green-500 to-teal-500", "from-orange-500 to-red-500"];
+    var colors = ["from-theme-primary to-pink-500", "from-theme-secondary to-blue-500", "from-green-500 to-teal-500", "from-orange-500 to-red-500"];
     var color = colors[Math.floor(Math.random() * colors.length)];
     var data = { user_id: userId, name: newHabit.trim(), streak: 0, done_today: false, color: color };
     var result = await supabase.from("habits").insert(data).select();
@@ -193,7 +193,7 @@ export default function HabitsPage() {
     <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 stagger-children">
       {/* XP Toast */}
       {xpToast && (
-        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-[#46F0D2] text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-theme-primary text-white text-sm font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <span className="text-yellow-300">⚡</span>
           {xpToast}
         </div>
@@ -230,7 +230,7 @@ export default function HabitsPage() {
         </div>
         <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] rounded-full transition-all duration-700"
+            className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-700"
             style={{ width: mounted ? completionRate + "%" : "0%" }}
           />
         </div>
@@ -267,7 +267,7 @@ export default function HabitsPage() {
                       {habit.name}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <Flame size={11} className={"transition-all " + (habit.streak >= 7 ? "text-orange-400" : "text-gray-700")} />
+                      <Flame size={11} className={"transition-all " + (habit.streak >= 7 ? "text-orange-400 animate-streak-fire" : "text-gray-700")} />
                       <span className="text-xs text-gray-600 font-display">{habit.streak} days</span>
                       <span className={"text-[10px] font-medium " + getStreakColor(habit.streak)}>{getStreakEmoji(habit.streak)}</span>
                     </div>
@@ -324,7 +324,7 @@ export default function HabitsPage() {
           <button
             onClick={addHabit}
             disabled={saving}
-            className="px-6 py-3 bg-gradient-to-r from-[#46F0D2] to-[#FBE2B4] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#46F0D2]/20 disabled:opacity-50"
+            className="px-6 py-3 bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-theme-primary/20 disabled:opacity-50"
           >
             {saving ? "..." : "Add"}
           </button>
