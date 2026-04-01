@@ -218,6 +218,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             transformStyle: 'preserve-3d',
             width: '100%',
             minHeight: '100vh',
+            position: 'relative',
+            zIndex: 10,
           }}
         >
           {children}

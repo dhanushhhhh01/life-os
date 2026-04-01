@@ -341,7 +341,7 @@ export const EnhancedParticles = ({
         height: '100%',
         pointerEvents: 'none',
         opacity: 0.72,
-        zIndex: 1,
+        zIndex: -10,
       }}
     />
   );
@@ -361,7 +361,7 @@ export const EnhancedAmbientOrbs = () => {
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        zIndex: 2,
+        zIndex: -10,
       }}
     >
       {/* Orb 1 - Top Left */}
