@@ -340,7 +340,7 @@ export const EnhancedParticles = ({
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        opacity: 0.4,
+        opacity: 0.65,
         zIndex: 1,
       }}
     />
@@ -361,7 +361,7 @@ export const EnhancedAmbientOrbs = () => {
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        zIndex: 0,
+        zIndex: 2,
       }}
     >
       {/* Orb 1 - Top Left */}
@@ -371,11 +371,11 @@ export const EnhancedAmbientOrbs = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(70, 240, 210, 0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(70, 240, 210, 0.35) 0%, rgba(70, 240, 210, 0.15) 40%, transparent 70%)',
           top: '-100px',
           left: '-100px',
           animation: 'floatA 8s ease-in-out infinite',
-          filter: 'blur(60px)',
+          filter: 'blur(40px)',
         }}
       />
 
@@ -386,11 +386,11 @@ export const EnhancedAmbientOrbs = () => {
           width: '500px',
           height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(251, 226, 180, 0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(251, 226, 180, 0.28) 0%, rgba(251, 226, 180, 0.12) 40%, transparent 70%)',
           bottom: '-150px',
           right: '-100px',
           animation: 'floatB 10s ease-in-out infinite',
-          filter: 'blur(70px)',
+          filter: 'blur(45px)',
         }}
       />
 
@@ -401,12 +401,12 @@ export const EnhancedAmbientOrbs = () => {
           width: '300px',
           height: '300px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(147, 112, 219, 0.1) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(147, 112, 219, 0.25) 0%, rgba(147, 112, 219, 0.1) 40%, transparent 70%)',
           top: '20%',
           left: '50%',
           transform: 'translateX(-50%)',
           animation: 'floatA 12s ease-in-out infinite reverse',
-          filter: 'blur(50px)',
+          filter: 'blur(35px)',
         }}
       />
     </div>
