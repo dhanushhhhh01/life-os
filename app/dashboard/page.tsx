@@ -514,12 +514,11 @@ export default function DashboardPage() {
             </Link>
           </div>
           <p className="text-xs text-gray-500 mb-3 flex-1">Track your daily mood (1-10) and energy levels to understand your emotional patterns and get personalized insights from Dex.</p>
-            {!hasCheckinToday && (
-              <Link href="/dashboard/checkin" className="text-[10px] text-green-400 hover:text-green-300 bg-green-500/10 px-2 py-1 rounded-full transition-colors">
-                Check in now
-              </Link>
-            )}
-          </div>
+          {!hasCheckinToday && (
+            <Link href="/dashboard/checkin" className="text-[10px] text-green-400 hover:text-green-300 bg-green-500/10 px-2 py-1 rounded-full transition-colors">
+              Check in now
+            </Link>
+          )}
           {hasCheckinToday ? (
             <div className="flex items-center gap-6">
               <div className="text-center">
@@ -763,6 +762,7 @@ export default function DashboardPage() {
               Talk to Dex <ChevronRight size={12} />
             </Link>
           </div>
+        </div>
         </div>
       </EnhancedCard>
     </div>
