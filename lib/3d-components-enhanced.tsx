@@ -227,8 +227,8 @@ export const EnhancedParticles = ({
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.3,
       vy: (Math.random() - 0.5) * 0.3,
-      size: Math.random() * 2 + 1,
-      opacity: Math.random() * 0.5 + 0.3,
+      size: Math.random() * 3.5 + 1.5,
+      opacity: Math.random() * 0.6 + 0.5,
     }));
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -240,7 +240,7 @@ export const EnhancedParticles = ({
     }
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(10, 10, 25, 0.05)';
+      ctx.fillStyle = 'rgba(10, 10, 25, 0.02)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
@@ -303,12 +303,12 @@ export const EnhancedParticles = ({
               particles[j].x,
               particles[j].y
             );
-            gradient.addColorStop(0, `rgba(70, 240, 210, ${opacity * 0.6})`);
-            gradient.addColorStop(0.5, `rgba(251, 226, 180, ${opacity * 0.3})`);
-            gradient.addColorStop(1, `rgba(70, 240, 210, ${opacity * 0.6})`);
+            gradient.addColorStop(0, `rgba(70, 240, 210, ${opacity * 1.0})`);
+            gradient.addColorStop(0.5, `rgba(251, 226, 180, ${opacity * 0.6})`);
+            gradient.addColorStop(1, `rgba(70, 240, 210, ${opacity * 1.0})`);
 
             ctx.strokeStyle = gradient;
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -340,7 +340,7 @@ export const EnhancedParticles = ({
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        opacity: 0.65,
+        opacity: 0.9,
         zIndex: 1,
       }}
     />
