@@ -303,9 +303,9 @@ export const EnhancedParticles = ({
               particles[j].x,
               particles[j].y
             );
-            gradient.addColorStop(0, `rgba(70, 240, 210, ${opacity * 1.0})`);
-            gradient.addColorStop(0.5, `rgba(251, 226, 180, ${opacity * 0.6})`);
-            gradient.addColorStop(1, `rgba(70, 240, 210, ${opacity * 1.0})`);
+            gradient.addColorStop(0, `rgba(70, 240, 210, ${opacity * 0.75})`);
+            gradient.addColorStop(0.5, `rgba(251, 226, 180, ${opacity * 0.45})`);
+            gradient.addColorStop(1, `rgba(70, 240, 210, ${opacity * 0.75})`);
 
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 2.2;
@@ -340,7 +340,7 @@ export const EnhancedParticles = ({
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        opacity: 0.9,
+        opacity: 0.72,
         zIndex: 1,
       }}
     />
@@ -371,7 +371,7 @@ export const EnhancedAmbientOrbs = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(70, 240, 210, 0.35) 0%, rgba(70, 240, 210, 0.15) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(70, 240, 210, 0.25) 0%, rgba(70, 240, 210, 0.1) 40%, transparent 70%)',
           top: '-100px',
           left: '-100px',
           animation: 'floatA 8s ease-in-out infinite',
@@ -386,7 +386,7 @@ export const EnhancedAmbientOrbs = () => {
           width: '500px',
           height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(251, 226, 180, 0.28) 0%, rgba(251, 226, 180, 0.12) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(251, 226, 180, 0.20) 0%, rgba(251, 226, 180, 0.08) 40%, transparent 70%)',
           bottom: '-150px',
           right: '-100px',
           animation: 'floatB 10s ease-in-out infinite',
@@ -401,7 +401,7 @@ export const EnhancedAmbientOrbs = () => {
           width: '300px',
           height: '300px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(147, 112, 219, 0.25) 0%, rgba(147, 112, 219, 0.1) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(147, 112, 219, 0.18) 0%, rgba(147, 112, 219, 0.07) 40%, transparent 70%)',
           top: '20%',
           left: '50%',
           transform: 'translateX(-50%)',
