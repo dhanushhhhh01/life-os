@@ -58,7 +58,7 @@ export default function LandingPage() {
       directionalLight.position.set(50, 50, 50);
       this.scene.add(directionalLight);
     };
-    (engineRef.current.setupLighting as any)();
+    engineRef.current.setupLighting();
 
     switch (section) {
       case 'goals':
@@ -108,7 +108,7 @@ export default function LandingPage() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
             <Link
-              href="/login"
+              href="/dashboard"
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold rounded-full hover:from-cyan-400 hover:to-cyan-300 transition-all transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
             >
               Enter Dex
@@ -218,7 +218,7 @@ export default function LandingPage() {
             Join thousands already using Dex to achieve their goals and build lasting habits.
           </p>
           <Link
-            href="/login"
+            href="/dashboard"
             className="inline-block px-10 py-5 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg rounded-full hover:from-cyan-400 hover:to-cyan-300 transition-all transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
           >
             Get Started Free
