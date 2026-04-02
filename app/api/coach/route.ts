@@ -108,9 +108,9 @@ export async function POST(request: Request) {
     var body = await request.json();
     var messages = body.messages || [];
     var context = body.context || {};
-    var apiKey = process.env.ANTHROPIC_API_KEY;
+    var apiKey = process.env.OPENAI_API_KEY;
 
-    if (!apiKey || apiKey === "your_anthropic_api_key_here") {
+    if (!apiKey || apiKey === "sk-") {
       return NextResponse.json({
         response: getFallbackResponse(
           messages[messages.length - 1]?.content || "",
@@ -121,34 +121,33 @@ export async function POST(request: Request) {
 
     var systemPrompt = buildSystemPrompt(context);
 
-    var anthropicMessages = messages
+    var openaiMessages = messages
       .filter((m: any) => m.content && m.content.trim())
       .map((m: any) => ({
         role: m.role === "dex" ? "assistant" : "user",
         content: m.content,
       }));
 
-    var anthropicBody = {
-      model: "claude-haiku-4-5-20251001",
+    var openaiBody = {
+      model: "gpt-4o",
       max_tokens: 650,
       stream: true,
       system: systemPrompt,
-      messages: anthropicMessages,
+      messages: openaiMessages,
     };
 
-    var response = await fetch("https://api.anthropic.com/v1/messages", {
+    var response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        Authorization: "Bearer " + apiKey,
       },
-      body: JSON.stringify(anthropicBody),
+      body: JSON.stringify(openaiBody),
     });
 
     if (!response.ok || !response.body) {
       var errText = await response.text();
-      console.error("Anthropic error:", errText);
+      console.error("OpenAI error:", errText);
       return NextResponse.json({
         response: getFallbackResponse(
           messages[messages.length - 1]?.content || "",
@@ -157,7 +156,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Transform Anthropic SSE -> plain text stream (one chunk per text delta)
+    // Transform OpenAI SSE -> plain text stream
     var decoder = new TextDecoder();
     var encoder = new TextEncoder();
     var lineBuffer = "";
@@ -175,12 +174,12 @@ export async function POST(request: Request) {
           try {
             var parsed = JSON.parse(data);
             if (
-              parsed.type === "content_block_delta" &&
-              parsed.delta &&
-              parsed.delta.type === "text_delta" &&
-              parsed.delta.text
+              parsed.choices &&
+              parsed.choices[0] &&
+              parsed.choices[0].delta &&
+              parsed.choices[0].delta.content
             ) {
-              controller.enqueue(encoder.encode(parsed.delta.text));
+              controller.enqueue(encoder.encode(parsed.choices[0].delta.content));
             }
           } catch (_e) {
             // ignore parse errors
@@ -192,12 +191,12 @@ export async function POST(request: Request) {
           try {
             var parsed = JSON.parse(lineBuffer.slice(6).trim());
             if (
-              parsed.type === "content_block_delta" &&
-              parsed.delta &&
-              parsed.delta.type === "text_delta" &&
-              parsed.delta.text
+              parsed.choices &&
+              parsed.choices[0] &&
+              parsed.choices[0].delta &&
+              parsed.choices[0].delta.content
             ) {
-              controller.enqueue(encoder.encode(parsed.delta.text));
+              controller.enqueue(encoder.encode(parsed.choices[0].delta.content));
             }
           } catch (_e) {
             // ignore
