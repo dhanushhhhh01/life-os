@@ -14,6 +14,14 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+
+  // Handle Three.js as external to prevent build-time issues
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.externals = [...(config.externals || []), 'three'];
+    }
+    return config;
+  },
 }
 
 module.exports = nextConfig
