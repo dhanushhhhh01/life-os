@@ -1,23 +1,35 @@
-import * as THREE from 'three';
+'use client';
 
 /**
  * Three.js Engine Setup
- * Provides utilities for WebGL/3D rendering on Dex landing page
+ * Client-side only WebGL/3D rendering for Dex landing page
  */
 
 export class DexThreeEngine {
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
+  scene: any;
+  camera: any;
+  renderer: any;
   canvas: HTMLCanvasElement;
   width: number;
   height: number;
   animationId: number | null = null;
+  THREE: any;
 
   constructor(canvas: HTMLCanvasElement) {
+    // Lazy load THREE only on client
+    import('three').then((threeModule) => {
+      this.THREE = threeModule;
+      this.initScene();
+    });
+
     this.canvas = canvas;
     this.width = canvas.clientWidth;
     this.height = canvas.clientHeight;
+  }
+
+  private initScene() {
+    const THREE = this.THREE;
+    if (!THREE) return;
 
     // Scene setup
     this.scene = new THREE.Scene();
@@ -25,15 +37,21 @@ export class DexThreeEngine {
     this.scene.fog = new THREE.Fog(0x0a0e27, 100, 1000);
 
     // Camera setup
-    this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(
+      75,
+      this.width / this.height,
+      0.1,
+      1000
+    );
     this.camera.position.z = 30;
 
     // Renderer setup
     this.renderer = new THREE.WebGLRenderer({
-      canvas,
+      canvas: this.canvas,
       antialias: true,
       alpha: true,
     });
+
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
@@ -44,11 +62,12 @@ export class DexThreeEngine {
   }
 
   private setupLighting() {
-    // Ambient light
+    const THREE = this.THREE;
+    if (!THREE || !this.scene) return;
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
 
-    // Directional light for shadows
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(50, 50, 50);
     directionalLight.castShadow = true;
@@ -56,7 +75,6 @@ export class DexThreeEngine {
     directionalLight.shadow.mapSize.height = 2048;
     this.scene.add(directionalLight);
 
-    // Point lights for accent colors (cyan & violet)
     const cyanLight = new THREE.PointLight(0x00d9ff, 0.5);
     cyanLight.position.set(-20, 10, 20);
     this.scene.add(cyanLight);
@@ -70,16 +88,24 @@ export class DexThreeEngine {
     window.addEventListener('resize', () => {
       this.width = this.canvas.clientWidth;
       this.height = this.canvas.clientHeight;
-      this.camera.aspect = this.width / this.height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(this.width, this.height);
+
+      if (this.camera) {
+        this.camera.aspect = this.width / this.height;
+        this.camera.updateProjectionMatrix();
+      }
+
+      if (this.renderer) {
+        this.renderer.setSize(this.width, this.height);
+      }
     });
   }
 
-  createNeuralNetwork(particleCount: number = 150): THREE.Group {
+  createNeuralNetwork(particleCount: number = 150): any {
+    const THREE = this.THREE;
+    if (!THREE) return null;
+
     const group = new THREE.Group();
 
-    // Create particles
     const particles = new THREE.Points(
       new THREE.BufferGeometry(),
       new THREE.PointsMaterial({
@@ -102,11 +128,14 @@ export class DexThreeEngine {
       velocities[i + 2] = (Math.random() - 0.5) * 0.1;
     }
 
-    particles.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particles.geometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(positions, 3)
+    );
     particles.userData.velocities = velocities;
+    particles.userData.particleCount = particleCount;
     group.add(particles);
 
-    // Store animation data
     group.userData.animate = (time: number) => {
       const pos = particles.geometry.attributes.position.array as Float32Array;
       const vels = particles.userData.velocities as Float32Array;
@@ -116,7 +145,6 @@ export class DexThreeEngine {
         pos[i + 1] += vels[i + 1];
         pos[i + 2] += vels[i + 2];
 
-        // Bounce off boundaries
         if (Math.abs(pos[i]) > 30) vels[i] *= -1;
         if (Math.abs(pos[i + 1]) > 30) vels[i + 1] *= -1;
         if (Math.abs(pos[i + 2]) > 30) vels[i + 2] *= -1;
@@ -130,7 +158,10 @@ export class DexThreeEngine {
     return group;
   }
 
-  createFloatingOrb(color: string = '#00d9ff', size: number = 5): THREE.Mesh {
+  createFloatingOrb(color: string = '#00d9ff', size: number = 5): any {
+    const THREE = this.THREE;
+    if (!THREE) return null;
+
     const geometry = new THREE.IcosahedronGeometry(size, 16);
     const material = new THREE.MeshPhongMaterial({
       color,
@@ -143,7 +174,6 @@ export class DexThreeEngine {
     orb.castShadow = true;
     orb.receiveShadow = true;
 
-    // Animation data
     orb.userData.floatAmount = Math.random() * 2;
     orb.userData.floatSpeed = 0.5 + Math.random() * 0.5;
     orb.userData.rotationSpeed = 0.001 + Math.random() * 0.002;
@@ -154,29 +184,31 @@ export class DexThreeEngine {
 
   createDataVisualization(
     type: 'goals' | 'habits' | 'journal' | 'mood'
-  ): THREE.Group {
+  ): any {
+    const THREE = this.THREE;
+    if (!THREE) return null;
+
     const group = new THREE.Group();
 
     switch (type) {
       case 'goals':
-        this.createGoalsVisualization(group);
+        this.createGoalsVisualization(group, THREE);
         break;
       case 'habits':
-        this.createHabitsVisualization(group);
+        this.createHabitsVisualization(group, THREE);
         break;
       case 'journal':
-        this.createJournalVisualization(group);
+        this.createJournalVisualization(group, THREE);
         break;
       case 'mood':
-        this.createMoodVisualization(group);
+        this.createMoodVisualization(group, THREE);
         break;
     }
 
     return group;
   }
 
-  private createGoalsVisualization(group: THREE.Group) {
-    // Create ascending spheres representing goal progress
+  private createGoalsVisualization(group: any, THREE: any) {
     const colors = [0x00d9ff, 0x7c3aed, 0xa78bfa];
 
     for (let i = 0; i < 5; i++) {
@@ -196,8 +228,7 @@ export class DexThreeEngine {
     }
   }
 
-  private createHabitsVisualization(group: THREE.Group) {
-    // Create boxes in a grid representing habits
+  private createHabitsVisualization(group: any, THREE: any) {
     const size = 2;
     for (let x = -2; x <= 2; x++) {
       for (let z = -2; z <= 2; z++) {
@@ -219,8 +250,7 @@ export class DexThreeEngine {
     }
   }
 
-  private createJournalVisualization(group: THREE.Group) {
-    // Create scrolling paper-like planes
+  private createJournalVisualization(group: any, THREE: any) {
     for (let i = 0; i < 3; i++) {
       const geometry = new THREE.PlaneGeometry(8, 12);
       const material = new THREE.MeshPhongMaterial({
@@ -239,8 +269,7 @@ export class DexThreeEngine {
     }
   }
 
-  private createMoodVisualization(group: THREE.Group) {
-    // Create a torus knot representing mood states
+  private createMoodVisualization(group: any, THREE: any) {
     const geometry = new THREE.TorusKnotGeometry(3, 1, 100, 16);
     const material = new THREE.MeshPhongMaterial({
       color: 0xff00ff,
@@ -259,28 +288,27 @@ export class DexThreeEngine {
     const renderFrame = (time: number) => {
       this.animationId = requestAnimationFrame(renderFrame);
 
-      // Animate scene objects
-      this.scene.children.forEach((child) => {
-        if (child.userData.animate) {
-          child.userData.animate(time);
-        }
+      if (this.scene && this.renderer && this.camera) {
+        this.scene.children.forEach((child: any) => {
+          if (child.userData.animate) {
+            child.userData.animate(time);
+          }
 
-        // Apply rotations
-        if (child.userData.rotationSpeed) {
-          child.rotation.x += child.userData.rotationSpeed;
-          child.rotation.y += child.userData.rotationSpeed * 1.5;
-        }
+          if (child.userData.rotationSpeed) {
+            child.rotation.x += child.userData.rotationSpeed;
+            child.rotation.y += child.userData.rotationSpeed * 1.5;
+          }
 
-        // Apply floating
-        if (child.userData.floatAmount !== undefined) {
-          child.position.y =
-            (child.userData.originalY || 0) +
-            Math.sin(time * child.userData.floatSpeed * 0.001) *
-              child.userData.floatAmount;
-        }
-      });
+          if (child.userData.floatAmount !== undefined) {
+            child.position.y =
+              (child.userData.originalY || 0) +
+              Math.sin(time * child.userData.floatSpeed * 0.001) *
+                child.userData.floatAmount;
+          }
+        });
 
-      this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera);
+      }
 
       if (callback) callback();
     };
@@ -292,15 +320,21 @@ export class DexThreeEngine {
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
     }
-    this.renderer.dispose();
+    if (this.renderer) {
+      this.renderer.dispose();
+    }
   }
 
-  addObject(object: THREE.Object3D) {
-    this.scene.add(object);
+  addObject(object: any) {
+    if (this.scene) {
+      this.scene.add(object);
+    }
   }
 
-  removeObject(object: THREE.Object3D) {
-    this.scene.remove(object);
+  removeObject(object: any) {
+    if (this.scene) {
+      this.scene.remove(object);
+    }
   }
 
   getScene() {
