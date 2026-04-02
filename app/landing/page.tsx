@@ -46,10 +46,6 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Scroll Indicator - Subtle */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce opacity-60">
-            <div className="text-cyan-400/70 text-xl">↓</div>
-          </div>
         </div>
       </section>
 
