@@ -1,99 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import type { DexThreeEngine } from '@/lib/three-engine';
+import { useState } from 'react';
 
 export default function LandingPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineRef = useRef<DexThreeEngine | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    // Dynamically import DexThreeEngine to avoid build-time Three.js loading
-    import('@/lib/three-engine').then(({ DexThreeEngine }) => {
-      const engine = new DexThreeEngine(canvasRef.current!);
-      engineRef.current = engine;
-
-      // Create hero neural network
-      const neuralNet = engine.createNeuralNetwork(200);
-      engine.addObject(neuralNet);
-
-      // Create floating orbs
-      const orbPositions = [
-        { x: -15, y: 10, z: 10 },
-        { x: 15, y: -5, z: -10 },
-        { x: 0, y: 15, z: 20 },
-      ];
-      const orbColors = ['#00d9ff', '#a78bfa', '#7c3aed'];
-
-      orbPositions.forEach((pos, i) => {
-        const orb = engine.createFloatingOrb(orbColors[i], 4);
-        orb.position.set(pos.x, pos.y, pos.z);
-        orb.userData.originalY = pos.y;
-        engine.addObject(orb);
-      });
-
-      // Animation loop
-      engine.animate();
-
-      // Cleanup
-      return () => {
-        engine.dispose();
-      };
-    });
-  }, []);
-
-  const handleSectionChange = (section: string) => {
-    setActiveSection(section);
-
-    if (!engineRef.current) return;
-
-    // Clear and recreate scene based on section
-    engineRef.current.getScene().children = [];
-    engineRef.current.setupLighting = function() {
-      const THREE = (this as any).THREE;
-      if (!THREE) return;
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-      this.scene.add(ambientLight);
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      directionalLight.position.set(50, 50, 50);
-      this.scene.add(directionalLight);
-    };
-    engineRef.current.setupLighting();
-
-    switch (section) {
-      case 'goals':
-        const goalsViz = engineRef.current.createDataVisualization('goals');
-        engineRef.current.addObject(goalsViz);
-        break;
-      case 'habits':
-        const habitsViz = engineRef.current.createDataVisualization('habits');
-        engineRef.current.addObject(habitsViz);
-        break;
-      case 'journal':
-        const journalViz = engineRef.current.createDataVisualization('journal');
-        engineRef.current.addObject(journalViz);
-        break;
-      case 'mood':
-        const moodViz = engineRef.current.createDataVisualization('mood');
-        engineRef.current.addObject(moodViz);
-        break;
-    }
-  };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#0a0e27] via-[#1a1f3a] to-[#0a0e27] text-white overflow-hidden">
       {/* Hero Section */}
-      <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-        {/* 3D Canvas Background */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full"
-          style={{ display: 'block' }}
-        />
+      <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0e27] to-[#1a1f3a]">
+        {/* Animated Background Gradient */}
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl"></div>
+        </div>
 
         {/* Content Overlay */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
@@ -112,13 +33,13 @@ export default function LandingPage() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
             <Link
-              href="/dashboard"
+              href="/login"
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold rounded-full hover:from-cyan-400 hover:to-cyan-300 transition-all transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
             >
               Enter Dex
             </Link>
             <button
-              onClick={() => handleSectionChange('goals')}
+              onClick={() => setActiveSection('goals')}
               className="px-8 py-4 border-2 border-violet-500 text-violet-400 font-bold rounded-full hover:bg-violet-500/10 transition-all"
             >
               Explore Features
@@ -142,7 +63,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Goals Feature */}
-            <div className="group cursor-pointer" onClick={() => handleSectionChange('goals')}>
+            <div className="group cursor-pointer" onClick={() => setActiveSection('goals')}>
               <div className="bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 rounded-2xl p-8 hover:border-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
                 <div className="text-4xl mb-4">🎯</div>
                 <h3 className="text-2xl font-bold mb-3 text-cyan-300">Smart Goals</h3>
@@ -153,7 +74,7 @@ export default function LandingPage() {
             </div>
 
             {/* Habits Feature */}
-            <div className="group cursor-pointer" onClick={() => handleSectionChange('habits')}>
+            <div className="group cursor-pointer" onClick={() => setActiveSection('habits')}>
               <div className="bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-violet-500/30 rounded-2xl p-8 hover:border-violet-400 transition-all hover:shadow-lg hover:shadow-violet-500/20">
                 <div className="text-4xl mb-4">⚡</div>
                 <h3 className="text-2xl font-bold mb-3 text-violet-300">Habit Tracking</h3>
@@ -164,7 +85,7 @@ export default function LandingPage() {
             </div>
 
             {/* Journal Feature */}
-            <div className="group cursor-pointer" onClick={() => handleSectionChange('journal')}>
+            <div className="group cursor-pointer" onClick={() => setActiveSection('journal')}>
               <div className="bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 rounded-2xl p-8 hover:border-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
                 <div className="text-4xl mb-4">📝</div>
                 <h3 className="text-2xl font-bold mb-3 text-cyan-300">Smart Journaling</h3>
@@ -175,7 +96,7 @@ export default function LandingPage() {
             </div>
 
             {/* Mood Check-in Feature */}
-            <div className="group cursor-pointer" onClick={() => handleSectionChange('mood')}>
+            <div className="group cursor-pointer" onClick={() => setActiveSection('mood')}>
               <div className="bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-violet-500/30 rounded-2xl p-8 hover:border-violet-400 transition-all hover:shadow-lg hover:shadow-violet-500/20">
                 <div className="text-4xl mb-4">💫</div>
                 <h3 className="text-2xl font-bold mb-3 text-violet-300">Daily Check-ins</h3>
@@ -222,7 +143,7 @@ export default function LandingPage() {
             Join thousands already using Dex to achieve their goals and build lasting habits.
           </p>
           <Link
-            href="/dashboard"
+            href="/login"
             className="inline-block px-10 py-5 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg rounded-full hover:from-cyan-400 hover:to-cyan-300 transition-all transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
           >
             Get Started Free
