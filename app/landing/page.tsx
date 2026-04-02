@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import type { DexThreeEngine } from '@/lib/three-engine';
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
