@@ -15,13 +15,8 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
 
-  // Handle Three.js as external to prevent build-time issues
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.externals = [...(config.externals || []), 'three'];
-    }
-    return config;
-  },
+  // Use Turbopack (Next.js 16 default) - required for compatibility
+  turbopack: {},
 }
 
 module.exports = nextConfig
