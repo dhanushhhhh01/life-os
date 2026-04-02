@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { DexThreeEngine } from '@/lib/three-engine';
-import * as THREE from 'three';
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,6 +51,8 @@ export default function LandingPage() {
     // Clear and recreate scene based on section
     engineRef.current.getScene().children = [];
     engineRef.current.setupLighting = function() {
+      const THREE = (this as any).THREE;
+      if (!THREE) return;
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
       this.scene.add(ambientLight);
       const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
