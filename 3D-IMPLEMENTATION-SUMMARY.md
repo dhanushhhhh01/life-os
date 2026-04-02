@@ -1,4 +1,4 @@
-# Life OS 3D Animation Implementation Summary
+# Dex 3D Animation Implementation Summary
 
 ## ✅ Completed Tasks
 

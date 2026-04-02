@@ -397,7 +397,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Life OS Overview */}
+      {/* Dex Overview */}
       <EnhancedCard intensity={8}>
         <div className="glass-card p-6 rounded-2xl border border-theme-primary/20 bg-gradient-to-br from-theme-primary/10 to-theme-secondary/5">
           <div className="flex gap-4">
@@ -405,9 +405,9 @@ export default function DashboardPage() {
               <Sparkles size={24} className="text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-bold text-white mb-2">Your Personal Life OS</h2>
+              <h2 className="text-lg font-bold text-white mb-2">Your AI Life Coach</h2>
               <p className="text-sm text-gray-300 leading-relaxed mb-3">
-                Life OS is your personalized AI-powered life operating system designed to help you achieve your goals, build lasting habits, and optimize your wellbeing. Track everything that matters, get intelligent insights from Dex (your AI coach), and watch your life score grow as you progress.
+                Dex is your personalized AI-powered life coach designed to help you achieve your goals, build lasting habits, and optimize your wellbeing. Track everything that matters, get intelligent insights, and watch your life score grow as you progress toward your vision.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                 <div className="flex items-center gap-2 text-theme-primary">

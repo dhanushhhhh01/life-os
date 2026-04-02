@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { ThemeProvider } from "../lib/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Life OS | Your Personal Second Brain",
-  description: "AI-powered personal dashboard for goals, mood, habits, and life coaching",
+  title: "Dex | Your AI Life Coach",
+  description: "AI-powered life coaching for goals, habits, mood tracking, and personal growth",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="var(--app-primary)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Life OS" />
+        <meta name="apple-mobile-web-app-title" content="Dex" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className="min-h-screen font-sans antialiased text-white transition-colors duration-500">

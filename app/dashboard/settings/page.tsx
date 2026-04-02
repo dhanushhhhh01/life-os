@@ -91,13 +91,13 @@ export default function SettingsPage() {
       setNotifPermission("granted");
       // Schedule daily reminders
       if (notifToggles.checkin) {
-        await scheduleDaily(9, 0, "Life OS - Daily Check-in", "Good morning Dhanush! How are you feeling today?", "/dashboard/checkin", "checkin-reminder");
+        await scheduleDaily(9, 0, "Dex - Daily Check-in", "Good morning Dhanush! How are you feeling today?", "/dashboard/checkin", "checkin-reminder");
       }
       if (notifToggles.habits) {
-        await scheduleDaily(20, 0, "Life OS - Habit Tracker", "Don't forget your habits today! Keep that streak alive.", "/dashboard/habits", "habit-reminder");
+        await scheduleDaily(20, 0, "Dex - Habit Tracker", "Don't forget your habits today! Keep that streak alive.", "/dashboard/habits", "habit-reminder");
       }
       if (notifToggles.weekly) {
-        await scheduleDaily(18, 0, "Life OS - Weekly Report", "Your weekly progress report is ready. Check your grades!", "/dashboard", "weekly-reminder");
+        await scheduleDaily(18, 0, "Dex - Weekly Report", "Your weekly progress report is ready. Check your grades!", "/dashboard", "weekly-reminder");
       }
       setNotifSaved(true);
       setTimeout(function() { setNotifSaved(false); }, 3000);
@@ -112,10 +112,10 @@ export default function SettingsPage() {
       return;
     }
     if (notifToggles.checkin) {
-      await scheduleDaily(9, 0, "Life OS - Daily Check-in", "Good morning Dhanush! Time for your daily check-in.", "/dashboard/checkin", "checkin-reminder");
+      await scheduleDaily(9, 0, "Dex - Daily Check-in", "Good morning Dhanush! Time for your daily check-in.", "/dashboard/checkin", "checkin-reminder");
     }
     if (notifToggles.habits) {
-      await scheduleDaily(20, 0, "Life OS - Habit Tracker", "Evening check: how many habits did you crush today?", "/dashboard/habits", "habit-reminder");
+      await scheduleDaily(20, 0, "Dex - Habit Tracker", "Evening check: how many habits did you crush today?", "/dashboard/habits", "habit-reminder");
     }
     setNotifSaved(true);
     setTimeout(function() { setNotifSaved(false); }, 3000);
@@ -138,7 +138,7 @@ export default function SettingsPage() {
         <Settings size={18} className="text-theme-secondary" />
         <h1 className="text-3xl font-black text-theme-text">Settings</h1>
       </div>
-      <p className="text-theme-textMuted text-sm -mt-4">Customize your Life OS experience</p>
+      <p className="text-theme-textMuted text-sm -mt-4">Customize your Dex experience</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
         {/* Sidebar nav */}

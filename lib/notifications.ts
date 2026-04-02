@@ -1,4 +1,4 @@
-// Life OS - Daily Reminder Notification System
+// Dex - Daily Reminder Notification System
 
 export async function registerServiceWorker() {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return null;
@@ -76,7 +76,7 @@ export function checkOverdueReminders(lastCheckinAt: string | null, lastHabitAt:
   if (lastCheckinAt) {
     var checkinAge = now - new Date(lastCheckinAt).getTime();
     if (checkinAge > DAY) {
-      new Notification("Life OS - Daily Check-in", {
+      new Notification("Dex - Daily Check-in", {
         body: "You haven't checked in today, Dhanush. How are you feeling? Take 2 minutes to log your mood.",
         tag: "overdue-checkin",
         icon: "/icon-192.png",
@@ -87,7 +87,7 @@ export function checkOverdueReminders(lastCheckinAt: string | null, lastHabitAt:
   if (lastHabitAt) {
     var habitAge = now - new Date(lastHabitAt).getTime();
     if (habitAge > DAY) {
-      new Notification("Life OS - Habit Check", {
+      new Notification("Dex - Habit Check", {
         body: "Your habits are waiting! Log today's progress and keep your streak alive.",
         tag: "overdue-habit",
         icon: "/icon-192.png",

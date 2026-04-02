@@ -1,5 +1,5 @@
-// Life OS Service Worker - Daily Reminders
-var CACHE_NAME = "life-os-v1";
+// Dex Service Worker - Daily Reminders
+var CACHE_NAME = "dex-v1";
 
 self.addEventListener("install", function(event) {
   self.skipWaiting();
@@ -16,11 +16,11 @@ self.addEventListener("message", function(event) {
     var delay = data.delay || 0;
     if (delay > 0) {
       setTimeout(function() {
-        self.registration.showNotification(data.title || "Life OS", {
+        self.registration.showNotification(data.title || "Dex", {
           body: data.body || "Time for your daily check-in!",
           icon: "/icon-192.png",
           badge: "/icon-96.png",
-          tag: data.tag || "life-os-reminder",
+          tag: data.tag || "dex-reminder",
           renotify: true,
           vibrate: [200, 100, 200],
           data: { url: data.url || "/dashboard/checkin" }

@@ -108,8 +108,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Sparkles size={16} className="text-white" />
               </div>
               <div>
-                <div className="text-base font-bold text-gradient-gold font-display">Life OS</div>
-                <div className="text-[10px] text-gray-700 uppercase tracking-[0.2em]">Second Brain</div>
+                <div className="text-base font-bold text-gradient-gold font-display">Dex</div>
+                <div className="text-[10px] text-gray-700 uppercase tracking-[0.2em]">AI Coach</div>
               </div>
             </div>
           )}

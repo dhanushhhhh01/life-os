@@ -1,11 +1,11 @@
 {
-  "name": "Life OS",
-  "short_name": "Life OS",
-  "description": "Your Personal Second Brain & AI Life Coach",
+  "name": "Dex",
+  "short_name": "Dex",
+  "description": "Your AI Life Coach - Goals, Habits & Personal Growth",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#131321",
-  "theme_color": "#46F0D2",
+  "theme_color": "#00d9ff",
   "orientation": "portrait",
   "categories": ["productivity", "lifestyle"],
   "icons": [

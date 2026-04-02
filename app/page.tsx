@@ -66,10 +66,10 @@ export default function LoginPage() {
         {/* Title area matching reference image aesthetic */}
         <div className="absolute top-12 left-1/2 -translate-x-1/2 md:translate-x-0 md:static md:mb-auto md:mt-12 text-center md:-ml-[400px]">
           <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-md">
-            Life OS
+            Dex
           </h1>
           <p className="text-white/90 text-sm mt-1 font-medium drop-shadow">
-            Your Premium Second Brain
+            Your AI Life Coach
           </p>
         </div>
 
