@@ -22,7 +22,7 @@ export const EnhancedCard = React.forwardRef(
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
     const [shadowOffset, setShadowOffset] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
-    const [glowColor, setGlowColor] = useState('rgba(70, 240, 210, 0)');
+    const [glowColor, setGlowColor] = useState('rgba(0, 217, 255, 0)');
 
     const handleMouseMove = (e: React.MouseEvent) => {
       const card = cardRef.current as HTMLElement;
@@ -51,13 +51,13 @@ export const EnhancedCard = React.forwardRef(
           Math.pow((clientY - centerY) / centerY, 2)
       );
       const glowAlpha = Math.max(0, (1 - distance) * glowIntensity);
-      setGlowColor(`rgba(70, 240, 210, ${glowAlpha})`);
+      setGlowColor(`rgba(0, 217, 255, ${glowAlpha})`);
     };
 
     const handleMouseLeave = () => {
       setTilt({ x: 0, y: 0 });
       setShadowOffset({ x: 0, y: 0 });
-      setGlowColor('rgba(70, 240, 210, 0)');
+      setGlowColor('rgba(0, 217, 255, 0)');
       setIsHovering(false);
     };
 
@@ -88,10 +88,10 @@ export const EnhancedCard = React.forwardRef(
             boxShadow: `
               ${shadowOffset.x}px ${shadowOffset.y}px 40px rgba(0, 0, 0, 0.3),
               0 0 60px ${glowColor},
-              inset 0 0 30px rgba(70, 240, 210, 0.1)
+              inset 0 0 30px rgba(0, 217, 255, 0.1)
             `,
             backdropFilter: 'blur(10px)',
-            border: `1px solid rgba(70, 240, 210, ${0.2 + (isHovering ? 0.2 : 0)})`,
+            border: `1px solid rgba(0, 217, 255, ${0.2 + (isHovering ? 0.2 : 0)})`,
           }}
           className="relative rounded-2xl bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-6"
         >
@@ -105,7 +105,7 @@ export const EnhancedCard = React.forwardRef(
               bottom: 0,
               background: `radial-gradient(
                 circle at ${50 + (tilt.y / 2)}% ${50 + (tilt.x / 2)}%,
-                rgba(70, 240, 210, 0.1) 0%,
+                rgba(0, 217, 255, 0.1) 0%,
                 transparent 70%
               )`,
               borderRadius: 'inherit',
@@ -273,13 +273,13 @@ export const EnhancedParticles = ({
         }
 
         // Draw particle with glow
-        ctx.fillStyle = `rgba(70, 240, 210, ${p.opacity})`;
+        ctx.fillStyle = `rgba(0, 217, 255, ${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
 
         // Glow effect
-        ctx.fillStyle = `rgba(70, 240, 210, ${p.opacity * 0.3})`;
+        ctx.fillStyle = `rgba(0, 217, 255, ${p.opacity * 0.3})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
         ctx.fill();
@@ -303,9 +303,9 @@ export const EnhancedParticles = ({
               particles[j].x,
               particles[j].y
             );
-            gradient.addColorStop(0, `rgba(70, 240, 210, ${opacity * 0.75})`);
-            gradient.addColorStop(0.5, `rgba(251, 226, 180, ${opacity * 0.45})`);
-            gradient.addColorStop(1, `rgba(70, 240, 210, ${opacity * 0.75})`);
+            gradient.addColorStop(0, `rgba(0, 217, 255, ${opacity * 0.75})`);
+            gradient.addColorStop(0.5, `rgba(167, 139, 250, ${opacity * 0.45})`);
+            gradient.addColorStop(1, `rgba(0, 217, 255, ${opacity * 0.75})`);
 
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 2.2;
@@ -371,7 +371,7 @@ export const EnhancedAmbientOrbs = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(70, 240, 210, 0.25) 0%, rgba(70, 240, 210, 0.1) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(0, 217, 255, 0.25) 0%, rgba(0, 217, 255, 0.1) 40%, transparent 70%)',
           top: '-100px',
           left: '-100px',
           animation: 'floatA 8s ease-in-out infinite',
@@ -386,7 +386,7 @@ export const EnhancedAmbientOrbs = () => {
           width: '500px',
           height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(251, 226, 180, 0.20) 0%, rgba(251, 226, 180, 0.08) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(167, 139, 250, 0.20) 0%, rgba(167, 139, 250, 0.08) 40%, transparent 70%)',
           bottom: '-150px',
           right: '-100px',
           animation: 'floatB 10s ease-in-out infinite',

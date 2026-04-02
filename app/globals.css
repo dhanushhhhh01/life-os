@@ -3,29 +3,51 @@
 @tailwind utilities;
 
 :root, [data-theme="antigravity"] {
-  --app-bg: #000000;
+  /* Dark Background */
+  --app-bg: #0a0a0e;
+
+  /* Primary Accent - Cyan/Teal */
+  --accent-primary: #00d9ff;
+  --accent-primary-dim: rgba(0, 217, 255, 0.3);
+  --accent-primary-glow: rgba(0, 217, 255, 0.2);
+
+  /* Secondary - Violet/Indigo */
+  --accent-secondary: #a78bfa;
+  --accent-secondary-dim: rgba(167, 139, 250, 0.2);
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #707070;
+
+  /* Glass & Surface */
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.05);
+
+  /* Legacy aliases for backward compatibility */
   --app-glass: rgba(15, 15, 15, 0.5);
   --app-glass-hover: rgba(255, 255, 255, 0.04);
   --app-glass-border: rgba(255, 255, 255, 0.08);
-  --app-primary: #ffffff;
-  --app-secondary: #a1a1aa;
+  --app-primary: #00d9ff;
+  --app-secondary: #a78bfa;
   --app-text: #ffffff;
-  --app-text-muted: #888888;
-  --app-card-border: rgba(255, 255, 255, 0.1);
+  --app-text-muted: #707070;
+  --app-card-border: rgba(0, 217, 255, 0.1);
 
-  /* Legacy aliases for incremental migration */
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-card: rgba(20, 20, 20, 0.5);
-  --accent-mint: #ffffff;
-  --accent-champagne: #a1a1aa;
-  --accent-mint-dim: rgba(255, 255, 255, 0.3);
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glow-mint: rgba(255, 255, 255, 0.15);
-  --glow-champagne: rgba(255, 255, 255, 0.08);
+  /* Card Background */
+  --bg-primary: #0a0a0e;
+  --bg-secondary: #0f0f15;
+  --bg-card: rgba(20, 20, 30, 0.5);
+
+  /* Accent aliases */
+  --accent-mint: #00d9ff;
+  --accent-champagne: #a78bfa;
+  --accent-mint-dim: rgba(0, 217, 255, 0.3);
+
+  /* Glow effects */
+  --glow-mint: rgba(0, 217, 255, 0.2);
+  --glow-champagne: rgba(167, 139, 250, 0.15);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,17 +70,17 @@ body {
 
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px var(--glow-mint); }
-  50% { box-shadow: 0 0 45px var(--glow-mint), 0 0 90px rgba(70, 240, 210, 0.08); }
+  50% { box-shadow: 0 0 45px var(--glow-mint), 0 0 90px rgba(0, 217, 255, 0.08); }
 }
 
 @keyframes pulse-mint {
-  0%, 100% { box-shadow: 0 0 16px rgba(70,240,210,0.3); }
-  50% { box-shadow: 0 0 32px rgba(70,240,210,0.5), 0 0 64px rgba(70,240,210,0.12); }
+  0%, 100% { box-shadow: 0 0 16px rgba(0, 217, 255, 0.3); }
+  50% { box-shadow: 0 0 32px rgba(0, 217, 255, 0.5), 0 0 64px rgba(0, 217, 255, 0.12); }
 }
 
 @keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 16px rgba(251,226,180,0.2); }
-  50% { box-shadow: 0 0 32px rgba(251,226,180,0.4), 0 0 60px rgba(251,226,180,0.08); }
+  0%, 100% { box-shadow: 0 0 16px rgba(167, 139, 250, 0.2); }
+  50% { box-shadow: 0 0 32px rgba(167, 139, 250, 0.4), 0 0 60px rgba(167, 139, 250, 0.08); }
 }
 
 @keyframes gradient-shift {
@@ -215,8 +237,8 @@ body {
 }
 
 @keyframes cardHoverGlow {
-  0%, 100% { filter: drop-shadow(0 0 20px rgba(70, 240, 210, 0.2)); }
-  50% { filter: drop-shadow(0 0 40px rgba(70, 240, 210, 0.4)); }
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.2)); }
+  50% { filter: drop-shadow(0 0 40px rgba(0, 217, 255, 0.4)); }
 }
 
 @keyframes subtleBounce {
@@ -271,11 +293,11 @@ body {
 
 .glass-card:hover {
   background: rgba(30, 26, 60, 0.78);
-  border-color: rgba(70, 240, 210, 0.15);
+  border-color: rgba(0, 217, 255, 0.15);
   transform: translateY(-2px);
   box-shadow:
-    0 12px 40px rgba(70, 240, 210, 0.07),
-    0 0 0 1px rgba(251, 226, 180, 0.04),
+    0 12px 40px rgba(0, 217, 255, 0.07),
+    0 0 0 1px rgba(167, 139, 250, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -303,28 +325,28 @@ body {
 /* === TEXT GRADIENTS === */
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #46F0D2 0%, #FBE2B4 55%, #ffffff 100%);
+  background: linear-gradient(135deg, #00d9ff 0%, #a78bfa 55%, #ffffff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-indigo {
-  background: linear-gradient(135deg, #FBE2B4 0%, #46F0D2 100%);
+  background: linear-gradient(135deg, #a78bfa 0%, #00d9ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-cyan {
-  background: linear-gradient(135deg, #46F0D2 0%, #FBE2B4 100%);
+  background: linear-gradient(135deg, #00d9ff 0%, #a78bfa 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-purple {
-  background: linear-gradient(135deg, #c7d2fe 0%, #FBE2B4 100%);
+  background: linear-gradient(135deg, #a78bfa 0%, #00d9ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -334,8 +356,8 @@ body {
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(70, 240, 210, 0.15); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(70, 240, 210, 0.3); }
+::-webkit-scrollbar-thumb { background: rgba(0, 217, 255, 0.15); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 217, 255, 0.3); }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -370,20 +392,20 @@ input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #46F0D2, #FBE2B4);
+  background: linear-gradient(135deg, #00d9ff, #a78bfa);
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(70, 240, 210, 0.5);
+  box-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 0 20px rgba(70, 240, 210, 0.7);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.7);
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: rgba(70, 240, 210, 0.4) !important;
-  box-shadow: 0 0 0 3px rgba(70, 240, 210, 0.08);
+  border-color: rgba(0, 217, 255, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.08);
 }
 
 button:active:not(:disabled) {
