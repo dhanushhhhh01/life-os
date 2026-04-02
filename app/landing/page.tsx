@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { DexThreeEngine } from '@/lib/three-engine';
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,35 +11,38 @@ export default function LandingPage() {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const engine = new DexThreeEngine(canvasRef.current);
-    engineRef.current = engine;
+    // Dynamically import DexThreeEngine to avoid build-time Three.js loading
+    import('@/lib/three-engine').then(({ DexThreeEngine }) => {
+      const engine = new DexThreeEngine(canvasRef.current!);
+      engineRef.current = engine;
 
-    // Create hero neural network
-    const neuralNet = engine.createNeuralNetwork(200);
-    engine.addObject(neuralNet);
+      // Create hero neural network
+      const neuralNet = engine.createNeuralNetwork(200);
+      engine.addObject(neuralNet);
 
-    // Create floating orbs
-    const orbPositions = [
-      { x: -15, y: 10, z: 10 },
-      { x: 15, y: -5, z: -10 },
-      { x: 0, y: 15, z: 20 },
-    ];
-    const orbColors = ['#00d9ff', '#a78bfa', '#7c3aed'];
+      // Create floating orbs
+      const orbPositions = [
+        { x: -15, y: 10, z: 10 },
+        { x: 15, y: -5, z: -10 },
+        { x: 0, y: 15, z: 20 },
+      ];
+      const orbColors = ['#00d9ff', '#a78bfa', '#7c3aed'];
 
-    orbPositions.forEach((pos, i) => {
-      const orb = engine.createFloatingOrb(orbColors[i], 4);
-      orb.position.set(pos.x, pos.y, pos.z);
-      orb.userData.originalY = pos.y;
-      engine.addObject(orb);
+      orbPositions.forEach((pos, i) => {
+        const orb = engine.createFloatingOrb(orbColors[i], 4);
+        orb.position.set(pos.x, pos.y, pos.z);
+        orb.userData.originalY = pos.y;
+        engine.addObject(orb);
+      });
+
+      // Animation loop
+      engine.animate();
+
+      // Cleanup
+      return () => {
+        engine.dispose();
+      };
     });
-
-    // Animation loop
-    engine.animate();
-
-    // Cleanup
-    return () => {
-      engine.dispose();
-    };
   }, []);
 
   const handleSectionChange = (section: string) => {
