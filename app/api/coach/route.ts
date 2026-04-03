@@ -11,79 +11,64 @@ const supabase = createClient(
 // ─── Tool Definitions ───────────────────────────────────────────────────────
 const TOOLS = [
   {
-    type: "function",
-    function: {
-      name: "create_goal",
-      description: "Create a new goal for Dhanush",
-      parameters: {
-        type: "object",
-        properties: {
-          name: { type: "string", description: "Goal name" },
-          category: { type: "string", description: "Category (e.g., career, learning, health)" },
-          deadline: { type: "string", description: "Deadline in YYYY-MM-DD format (optional)" },
-          description: { type: "string", description: "Goal description" },
-        },
-        required: ["name", "category"],
+    name: "create_goal",
+    description: "Create a new goal for Dhanush",
+    input_schema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Goal name" },
+        category: { type: "string", description: "Category (e.g., career, learning, health)" },
+        deadline: { type: "string", description: "Deadline in YYYY-MM-DD format (optional)" },
+        description: { type: "string", description: "Goal description" },
       },
+      required: ["name", "category"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "update_goal_progress",
-      description: "Update progress on an existing goal",
-      parameters: {
-        type: "object",
-        properties: {
-          goal_id: { type: "string", description: "Goal ID" },
-          progress: { type: "number", description: "Progress percentage (0-100)" },
-        },
-        required: ["goal_id", "progress"],
+    name: "update_goal_progress",
+    description: "Update progress on an existing goal",
+    input_schema: {
+      type: "object",
+      properties: {
+        goal_id: { type: "string", description: "Goal ID" },
+        progress: { type: "number", description: "Progress percentage (0-100)" },
       },
+      required: ["goal_id", "progress"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "log_habit",
-      description: "Mark a habit as done for today",
-      parameters: {
-        type: "object",
-        properties: {
-          habit_id: { type: "string", description: "Habit ID" },
-        },
-        required: ["habit_id"],
+    name: "log_habit",
+    description: "Mark a habit as done for today",
+    input_schema: {
+      type: "object",
+      properties: {
+        habit_id: { type: "string", description: "Habit ID" },
       },
+      required: ["habit_id"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "create_journal_entry",
-      description: "Create a new journal entry",
-      parameters: {
-        type: "object",
-        properties: {
-          content: { type: "string", description: "Journal entry content" },
-        },
-        required: ["content"],
+    name: "create_journal_entry",
+    description: "Create a new journal entry",
+    input_schema: {
+      type: "object",
+      properties: {
+        content: { type: "string", description: "Journal entry content" },
       },
+      required: ["content"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "update_checkin",
-      description: "Update mood and energy check-in",
-      parameters: {
-        type: "object",
-        properties: {
-          mood: { type: "number", description: "Mood rating 1-10" },
-          energy: { type: "number", description: "Energy rating 1-10" },
-          note: { type: "string", description: "Optional note" },
-        },
-        required: ["mood", "energy"],
+    name: "update_checkin",
+    description: "Update mood and energy check-in",
+    input_schema: {
+      type: "object",
+      properties: {
+        mood: { type: "number", description: "Mood rating 1-10" },
+        energy: { type: "number", description: "Energy rating 1-10" },
+        note: { type: "string", description: "Optional note" },
       },
+      required: ["mood", "energy"],
     },
   },
 ];
@@ -235,7 +220,7 @@ export async function POST(request: Request) {
     var messages = body.messages || [];
     var context = body.context || {};
     var userId = body.userId || "unknown";
-    var apiKey = process.env.OPENAI_API_KEY;
+    var apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({
@@ -245,14 +230,14 @@ export async function POST(request: Request) {
 
     var systemPrompt = buildSystemPrompt(context);
 
-    var openaiMessages = messages
+    var claudeMessages = messages
       .filter((m: any) => m.content && m.content.trim())
       .map((m: any) => ({
         role: m.role === "dex" ? "assistant" : "user",
         content: m.content,
       }));
 
-    var conversationMessages: any[] = [...openaiMessages];
+    var conversationMessages: any[] = [...claudeMessages];
     var maxIterations = 5;
     var iteration = 0;
     var finalResponse = "";
@@ -261,54 +246,65 @@ export async function POST(request: Request) {
     while (iteration < maxIterations) {
       iteration++;
 
-      var response = await fetch("https://api.openai.com/v1/chat/completions", {
+      var response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + apiKey,
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
         },
         body: JSON.stringify({
-          model: "gpt-4o",
-          messages: [{ role: "system", content: systemPrompt }, ...conversationMessages],
-          tools: TOOLS,
-          tool_choice: "auto",
+          model: "claude-3-5-haiku-20241022",
           max_tokens: 1500,
+          tools: TOOLS,
+          messages: conversationMessages,
+          system: systemPrompt,
         }),
       });
 
       if (!response.ok) {
         var errText = await response.text();
-        console.error("OpenAI error:", errText);
+        console.error("Claude error:", errText);
         return NextResponse.json({ response: "Connection error - try again!" });
       }
 
       var data = await response.json();
-      var message = data.choices[0].message;
+      var contentBlocks = data.content || [];
 
       // Add assistant message to conversation
-      conversationMessages.push(message);
+      conversationMessages.push({
+        role: "assistant",
+        content: contentBlocks,
+      });
 
-      // Check for tool calls
-      if (message.tool_calls && message.tool_calls.length > 0) {
+      // Check for tool use blocks
+      var toolUseBlocks = contentBlocks.filter((block: any) => block.type === "tool_use");
+
+      if (toolUseBlocks.length > 0) {
         var toolResults: any[] = [];
 
-        for (var toolCall of message.tool_calls) {
-          var args = typeof toolCall.function.arguments === "string"
-            ? JSON.parse(toolCall.function.arguments)
-            : toolCall.function.arguments;
-          var result = await executeToolCall(toolCall.function.name, args, userId);
+        for (var toolUse of toolUseBlocks) {
+          var result = await executeToolCall(toolUse.name, toolUse.input, userId);
           toolResults.push({
-            tool_call_id: toolCall.id,
-            role: "tool",
+            type: "tool_result",
+            tool_use_id: toolUse.id,
             content: result,
           });
         }
 
         // Add tool results to conversation
-        conversationMessages.push(...toolResults);
+        conversationMessages.push({
+          role: "user",
+          content: toolResults,
+        });
       } else {
-        // No more tool calls, we have the final response
-        finalResponse = message.content || "Done!";
+        // No more tool calls, extract final text response
+        var textBlocks = contentBlocks.filter((block: any) => block.type === "text");
+        if (textBlocks.length > 0) {
+          finalResponse = textBlocks[0].text || "Done!";
+        } else {
+          finalResponse = "Done!";
+        }
         break;
       }
     }
