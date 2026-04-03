@@ -428,12 +428,16 @@ export default function CoachPage() {
     });
 
     try {
+      var sessionRes = await supabase.auth.getSession();
+      var userId = sessionRes.data.session?.user?.id || "unknown";
+
       var res = await fetch("/api/coach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: updatedMessages,
           context: contextRef.current,
+          userId: userId,
         }),
       });
 
