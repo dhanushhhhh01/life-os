@@ -84,9 +84,11 @@ export const Scene3D = ({ children }: { children?: React.ReactNode }) => {
 
     // Add glowing ring around platform
     const ringGeometry = new THREE.TorusGeometry(3.2, 0.1, 16, 100);
-    const ringMaterial = new THREE.MeshBasicMaterial({
+    const ringMaterial = new THREE.MeshStandardMaterial({
       color: 0x00d4ff,
       emissive: 0x00d4ff,
+      metalness: 0.8,
+      roughness: 0.2,
     });
     const ring = new THREE.Mesh(ringGeometry, ringMaterial);
     ring.position.y = -1.75;
