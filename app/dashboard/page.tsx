@@ -20,6 +20,8 @@ import {
   Timer,
   CalendarCheck,
   Star,
+  Briefcase,
+  Activity
 } from "lucide-react";
 
 function CircularProgress(props) {
@@ -211,10 +213,19 @@ export default function DashboardPage() {
   var [briefingLoading, setBriefingLoading] = useState(false);
   var [briefingDismissed, setBriefingDismissed] = useState(false);
 
+  // Job Applications Tracker
+  var [jobStats, setJobStats] = useState({ applications: 0, recent: 0, rejections: 0, days: 30, status: "loading" });
+
   useEffect(function() {
     setMounted(true);
     var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     setQuote(DAILY_QUOTES[dayOfYear % DAILY_QUOTES.length]);
+
+    // Fetch Job Stats
+    fetch("/api/jobs")
+      .then(res => res.json())
+      .then(data => setJobStats(data))
+      .catch(() => setJobStats({ applications: 0, recent: 0, rejections: 0, days: 30, status: "error" }));
 
     supabase.auth.getSession().then(async function(res) {
       if (!res.data.session) return;
@@ -741,6 +752,50 @@ export default function DashboardPage() {
           </div>
         </EnhancedCard>
       </div>
+
+      {/* Centurion Job Tracker */}
+      <EnhancedCard className="w-full" intensity={8}>
+        <div className="glass-card p-6 rounded-2xl border border-blue-500/15 bg-blue-500/[0.02] animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Briefcase size={16} className="text-blue-400" />
+              <h2 className="text-lg font-bold text-white">Centurion Job Pipeline</h2>
+            </div>
+            {jobStats.status === "active" ? (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Active
+              </span>
+            ) : jobStats.status === "loading" ? (
+              <span className="text-xs text-gray-500 animate-pulse">Loading...</span>
+            ) : (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">Offline</span>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-3 gap-4">
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-t from-theme-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="text-2xl font-black text-white font-display mb-1">{jobStats.applications}</div>
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider">Total Applied</div>
+              <div className="text-[9px] text-theme-primary mt-1">+{jobStats.recent} recent</div>
+            </div>
+            
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="text-2xl font-black text-white font-display mb-1">{jobStats.rejections}</div>
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider">Rejections</div>
+              <div className="text-[9px] text-orange-400 mt-1">Last {jobStats.days} days</div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center relative overflow-hidden group flex flex-col justify-center">
+              <div className="flex items-center justify-center gap-2 text-theme-secondary mb-1">
+                <Activity size={18} className="animate-pulse" />
+              </div>
+              <div className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">AI Agent Running</div>
+            </div>
+          </div>
+        </div>
+      </EnhancedCard>
 
       {/* Dex Insight */}
       <EnhancedCard className="w-full" intensity={8}>

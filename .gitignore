@@ -35,3 +35,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+\nnode_modules\n__pycache__\nvenv\n.venv\n*.key\ncredentials.json

@@ -21,6 +21,7 @@ import {
   Trophy,
   Zap,
   Settings,
+  Brain,
 } from "lucide-react";
 
 var navItems = [
@@ -30,7 +31,8 @@ var navItems = [
   { href: "/dashboard/journal", label: "Journal", icon: BookOpen },
   { href: "/dashboard/habits", label: "Habits", icon: Flame },
   { href: "/dashboard/focus", label: "Focus", icon: Timer },
-  { href: "/dashboard/coach", label: "AI Coach", icon: Bot },
+  { href: "/dex",             label: "Dex Agent", icon: Brain },
+  { href: "/dashboard/coach", label: "AI Coach",  icon: Bot },
   { href: "/dashboard/achievements", label: "Achievements", icon: Trophy },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
