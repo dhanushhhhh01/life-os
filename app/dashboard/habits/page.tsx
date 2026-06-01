@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Flame, Plus, Check, Trophy, TrendingUp, X, Snowflake } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { awardXP, checkAndAwardBadges, XP_AWARDS } from "../../../lib/xp";
+import { Card } from "../../../lib/3d-components";
 
 var defaultHabits = [
   { name: "Morning Coding", streak: 12, done_today: false, color: "from-theme-primary to-pink-500" },
@@ -206,53 +207,61 @@ export default function HabitsPage() {
 
       {/* Stats Banner */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black text-gradient-gold font-display">{doneCount}/{habits.length}</div>
-          <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Done Today</div>
-        </div>
-        <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black font-display" style={{ color: "#f97316" }}>{longestStreak}</div>
-          <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Best Streak</div>
-        </div>
-        <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
-          <div className="text-2xl font-black text-gradient font-display">{completionRate}%</div>
-          <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Completion</div>
-        </div>
+        <Card intensity={10}>
+          <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
+            <div className="text-2xl font-black text-gradient-gold font-display">{doneCount}/{habits.length}</div>
+            <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Done Today</div>
+          </div>
+        </Card>
+        <Card intensity={10}>
+          <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
+            <div className="text-2xl font-black font-display" style={{ color: "#f97316" }}>{longestStreak}</div>
+            <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Best Streak</div>
+          </div>
+        </Card>
+        <Card intensity={10}>
+          <div className="glass-card p-4 rounded-2xl border border-white/[0.06] text-center">
+            <div className="text-2xl font-black text-gradient font-display">{completionRate}%</div>
+            <div className="text-[10px] text-gray-600 uppercase tracking-[0.15em] mt-1">Completion</div>
+          </div>
+        </Card>
       </div>
 
       {/* Progress Bar */}
-      <div className="glass-card p-5 rounded-2xl border border-white/[0.06]">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-400 flex items-center gap-2">
-            <TrendingUp size={14} /> Today&apos;s Progress
-          </span>
-          <span className="text-lg font-black text-gradient-gold font-display">{completionRate}%</span>
-        </div>
-        <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-700"
-            style={{ width: mounted ? completionRate + "%" : "0%" }}
-          />
-        </div>
-        {completionRate === 100 && (
-          <div className="mt-3 text-center text-green-400 font-semibold text-sm flex items-center justify-center gap-2 animate-slide-up">
-            <Trophy size={16} /> All habits done! Outstanding day, Dhanush!
+      <Card className="w-full" intensity={8}>
+        <div className="glass-card p-5 rounded-2xl border border-white/[0.06]">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-400 flex items-center gap-2">
+              <TrendingUp size={14} /> Today&apos;s Progress
+            </span>
+            <span className="text-lg font-black text-gradient-gold font-display">{completionRate}%</span>
           </div>
-        )}
-      </div>
+          <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-theme-primary to-theme-secondary rounded-full transition-all duration-700"
+              style={{ width: mounted ? completionRate + "%" : "0%" }}
+            />
+          </div>
+          {completionRate === 100 && (
+            <div className="mt-3 text-center text-green-400 font-semibold text-sm flex items-center justify-center gap-2 animate-slide-up">
+              <Trophy size={16} /> All habits done! Outstanding day, Dhanush!
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Habits List */}
       <div className="space-y-2.5">
         {habits.map(function(habit) {
           return (
-            <div
-              key={habit.id}
-              className={"w-full p-4 rounded-2xl border text-left transition-all duration-300 group " + (
-                habit.done
-                  ? "border-green-500/25 bg-green-500/[0.04]"
-                  : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1]"
-              )}
-            >
+            <Card key={habit.id} className="w-full" intensity={6}>
+              <div
+                className={"w-full p-4 rounded-2xl border text-left transition-all duration-300 group " + (
+                  habit.done
+                    ? "border-green-500/25 bg-green-500/[0.04]"
+                    : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1]"
+                )}
+              >
               <div className="flex items-center justify-between">
                 <button className="flex items-center gap-4 flex-1" onClick={function() { toggleHabit(habit.id); }}>
                   <div className={"w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 " + (
@@ -304,6 +313,7 @@ export default function HabitsPage() {
                 <span className="text-[9px] text-gray-700 uppercase tracking-[0.1em]">28d</span>
               </div>
             </div>
+          </Card>
           );
         })}
       </div>

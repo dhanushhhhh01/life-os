@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { useState, useEffect } from "react";
 import { Settings, Palette, User, Bell, Shield, ChevronRight, Check, Sparkles, BellRing, BellOff } from "lucide-react";

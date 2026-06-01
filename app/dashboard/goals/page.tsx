@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Target, Plus, X, Award, Clock, TrendingUp, BarChart2 } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { Card } from "../../../lib/3d-components";
 
 var defaultGoals = [
   { name: "Master FastAPI & LLMs", progress: 45, category: "Tech", deadline: "Jun 2026", color: "from-theme-primary to-pink-500", ring: "#a855f7" },
@@ -110,8 +111,9 @@ function GoalProgressChart(props) {
   }).sort(function(a, b) { return b.avg - a.avg; });
 
   return (
-    <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-5">
-      <div className="flex items-center gap-2">
+    <Card className="w-full" intensity={6}>
+      <div className="glass-card p-6 rounded-2xl border border-white/[0.06] space-y-5">
+        <div className="flex items-center gap-2">
         <BarChart2 size={15} className="text-theme-primary" />
         <span className="text-xs font-semibold text-theme-primary uppercase tracking-[0.15em]">Progress Breakdown</span>
       </div>
@@ -173,6 +175,7 @@ function GoalProgressChart(props) {
       </div>
 
       {/* Mini milestone row */}
+      {/* Mini milestone row */}
       <div className="grid grid-cols-3 gap-2 pt-1">
         {[
           { label: "Not started", value: goals.filter(function(g) { return g.progress === 0; }).length, color: "text-gray-600" },
@@ -188,7 +191,8 @@ function GoalProgressChart(props) {
         })}
       </div>
     </div>
-  );
+  </Card>
+);
 }
 
 export default function GoalsPage() {
@@ -293,24 +297,26 @@ export default function GoalsPage() {
       </div>
 
       {/* Overall Progress */}
-      <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="var(--app-primary)" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xl font-black text-gradient-gold font-display">{avgProgress}%</span>
+      <Card className="w-full" intensity={10}>
+        <div className="glass-card p-6 rounded-2xl border border-white/[0.06]">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <CircularProgress size={80} strokeWidth={6} progress={mounted ? avgProgress : 0} color="var(--app-primary)" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-xl font-black text-gradient-gold font-display">{avgProgress}%</span>
+              </div>
             </div>
-          </div>
-          <div className="flex-1">
-            <div className="text-sm text-gray-400 mb-2">Overall Progress</div>
-            <div className="flex gap-4 text-xs text-gray-600">
-              <span className="flex items-center gap-1"><Target size={11} /> {goals.length} total</span>
-              <span className="flex items-center gap-1"><Award size={11} /> {goals.filter(function(g) { return g.progress === 100; }).length} complete</span>
-              <span className="flex items-center gap-1"><TrendingUp size={11} /> {goals.filter(function(g) { return g.progress > 0 && g.progress < 100; }).length} active</span>
+            <div className="flex-1">
+              <div className="text-sm text-gray-400 mb-2">Overall Progress</div>
+              <div className="flex gap-4 text-xs text-gray-600">
+                <span className="flex items-center gap-1"><Target size={11} /> {goals.length} total</span>
+                <span className="flex items-center gap-1"><Award size={11} /> {goals.filter(function(g) { return g.progress === 100; }).length} complete</span>
+                <span className="flex items-center gap-1"><TrendingUp size={11} /> {goals.filter(function(g) { return g.progress > 0 && g.progress < 100; }).length} active</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Progress Chart */}
       {goals.length > 0 && <GoalProgressChart goals={goals} mounted={showChart} />}
@@ -358,7 +364,8 @@ export default function GoalsPage() {
         {goals.map(function(goal) {
           var catStyle = categoryColors[goal.category] || { bg: "bg-white/10 text-gray-400 border-white/10" };
           return (
-            <div key={goal.id} className="glass-card p-5 rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all group">
+            <Card key={goal.id} className="w-full" intensity={8}>
+              <div className="glass-card p-5 rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all group">
               <div className="flex items-center gap-4">
                 <div className="relative shrink-0">
                   <CircularProgress size={56} strokeWidth={4} progress={mounted ? goal.progress : 0} color={goal.ring} />
@@ -405,6 +412,7 @@ export default function GoalsPage() {
                 </div>
               )}
             </div>
+          </Card>
           );
         })}
       </div>

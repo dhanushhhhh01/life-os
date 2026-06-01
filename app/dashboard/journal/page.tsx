@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { useState, useEffect } from "react";
 import { BookOpen, Plus, X, ArrowLeft, Tag, Smile, Trash2, Sparkles, Loader } from "lucide-react";

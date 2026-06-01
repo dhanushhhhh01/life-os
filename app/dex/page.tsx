@@ -21,6 +21,8 @@ import {
   Trash2,
   RefreshCw,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -38,20 +40,6 @@ type Context = {
   recentCheckin: any;
   profile:       any;
 };
-
-// ─── Markdown renderer (minimal, safe) ───────────────────────────────────────
-
-function renderMarkdown(raw: string): string {
-  return raw
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\*\*(.*?)\*\*/g, "<strong class='text-white font-semibold'>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em class='text-gray-300'>$1</em>")
-    .replace(/^- (.*?)$/gm, "<div class='flex gap-2 items-start my-0.5'><span class='text-cyan-400 mt-1 shrink-0'>›</span><span>$1</span></div>")
-    .replace(/\n\n/g, "<div class='my-2'></div>")
-    .replace(/\n/g, "<br/>");
-}
 
 // ─── State label + colour ─────────────────────────────────────────────────────
 
@@ -297,174 +285,214 @@ export default function DexPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col h-screen bg-[#080810] text-white overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#080810] text-white overflow-hidden relative">
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-5 py-3 border-b border-white/5 shrink-0">
-        <a
-          href="/dashboard"
-          className="flex items-center gap-1.5 text-gray-500 hover:text-white transition-colors text-sm"
-        >
-          <ChevronLeft size={16} />
-          Dashboard
-        </a>
+      {/* ── Animated Background ────────────────────────────────────────────── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center items-center z-0">
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[10%] left-[10%] w-[40vw] h-[40vw] bg-cyan-500/10 rounded-full blur-[100px] mix-blend-screen" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[5%] right-[5%] w-[45vw] h-[45vw] bg-purple-500/10 rounded-full blur-[120px] mix-blend-screen" 
+        />
+      </div>
 
-        {/* Centre badge */}
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-xs font-semibold tracking-widest text-cyan-400 uppercase">
-            Dex Agent
-          </span>
-          {memCount > 0 && (
-            <span
-              className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/20"
-              title={`${memCount} memories stored`}
-            >
-              <Brain size={10} />
-              {memCount}
+      {/* ── Content Wrapper ──────────────────────────────────────────────── */}
+      <div className="relative z-10 flex flex-col h-full w-full">
+        {/* ── Header ──────────────────────────────────────────────────────── */}
+        <header className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-white/5 backdrop-blur-md shrink-0">
+          <a
+            href="/dashboard"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors text-sm"
+          >
+            <ChevronLeft size={16} />
+            Dashboard
+          </a>
+
+          {/* Centre badge */}
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(0,212,255,0.8)]" />
+            <span className="text-xs font-semibold tracking-widest text-cyan-400 uppercase">
+              Dex Agent
             </span>
-          )}
-        </div>
+            {memCount > 0 && (
+              <span
+                className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/20 shadow-[0_0_8px_rgba(168,85,247,0.3)]"
+                title={`${memCount} memories stored`}
+              >
+                <Brain size={10} />
+                {memCount}
+              </span>
+            )}
+          </div>
 
-        {/* Controls */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={clearChat}
-            className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
-            title="Clear chat"
-          >
-            <Trash2 size={15} />
-          </button>
-          {voice.isSupported && (
+          {/* Controls */}
+          <div className="flex items-center gap-2">
             <button
-              onClick={toggleVoice}
-              className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                voiceEnabled
-                  ? "bg-cyan-500/15 text-cyan-400 border-cyan-500/30"
-                  : "text-gray-600 border-white/10 hover:text-gray-300"
-              }`}
+              onClick={clearChat}
+              className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"
+              title="Clear chat"
             >
-              {voiceEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
-              {voiceEnabled ? "Voice" : "Mute"}
+              <Trash2 size={15} />
             </button>
-          )}
+            {voice.isSupported && (
+              <button
+                onClick={toggleVoice}
+                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                  voiceEnabled
+                    ? "bg-cyan-500/20 text-cyan-400 border-cyan-500/30 shadow-[0_0_10px_rgba(0,212,255,0.2)]"
+                    : "bg-white/5 text-gray-400 border-white/10 hover:text-gray-200"
+                }`}
+              >
+                {voiceEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
+                {voiceEnabled ? "Voice" : "Mute"}
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* ── Avatar + state ───────────────────────────────────────────────── */}
+        <div className="flex flex-col items-center pt-6 pb-2 shrink-0">
+          <DexAvatar state={dexState} size={220} />
+          <p className={`text-xs font-medium mt-2 transition-all duration-500 tracking-wide uppercase ${STATE_COLOR[dexState]}`}>
+            {STATE_LABEL[dexState]}
+          </p>
         </div>
-      </header>
 
-      {/* ── Avatar + state ───────────────────────────────────────────────── */}
-      <div className="flex flex-col items-center pt-5 pb-1 shrink-0">
-        <DexAvatar state={dexState} size={200} />
-        <p className={`text-xs font-medium mt-1.5 transition-all duration-500 ${STATE_COLOR[dexState]}`}>
-          {STATE_LABEL[dexState]}
-        </p>
-      </div>
-
-      {/* ── Chat ─────────────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.map(msg => (
-          <div
-            key={msg.id}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                msg.role === "user"
-                  ? "bg-cyan-600/70 text-white rounded-br-sm"
-                  : "bg-white/[0.06] border border-white/[0.08] text-gray-100 rounded-bl-sm"
-              }`}
-            >
-              {msg.role === "dex" ? (
+        {/* ── Chat ─────────────────────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+          <AnimatePresence initial={false}>
+            {messages.map(msg => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
                 <div
-                  className="space-y-0.5"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
-                />
-              ) : (
-                <p className="whitespace-pre-wrap">{msg.content}</p>
-              )}
+                  className={`max-w-[85%] rounded-2xl px-5 py-4 text-sm leading-relaxed backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.3)] ${
+                    msg.role === "user"
+                      ? "bg-cyan-500/15 text-white rounded-br-sm border border-cyan-400/20"
+                      : "bg-white/5 border border-white/10 text-gray-200 rounded-bl-sm"
+                  }`}
+                >
+                  {msg.role === "dex" ? (
+                    <div className="markdown-body space-y-2 prose prose-invert max-w-none prose-p:leading-relaxed prose-a:text-cyan-400 prose-strong:text-white prose-ul:my-2 prose-li:my-0.5">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  )}
 
-              {/* Tool tags */}
-              {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-                <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
-                  {msg.toolsUsed.map(tool => (
-                    <span
-                      key={tool}
-                      className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/20"
-                    >
-                      <Zap size={8} />
-                      {TOOL_LABELS[tool] || tool.replace(/_/g, " ")}
-                    </span>
-                  ))}
+                  {/* Tool tags */}
+                  {msg.toolsUsed && msg.toolsUsed.length > 0 && (
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
+                      {msg.toolsUsed.map(tool => (
+                        <span
+                          key={tool}
+                          className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-[0_0_8px_rgba(168,85,247,0.2)]"
+                        >
+                          <Zap size={9} className="text-purple-400" />
+                          {TOOL_LABELS[tool] || tool.replace(/_/g, " ")}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
-        {/* Thinking indicator */}
-        {loading && (
-          <div className="flex justify-start">
-            <div className="bg-white/[0.06] border border-white/[0.08] rounded-2xl rounded-bl-sm px-4 py-3">
-              <div className="flex gap-1.5 items-center h-4">
-                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:300ms]" />
-              </div>
-            </div>
-          </div>
-        )}
+          {/* Thinking indicator */}
+          <AnimatePresence>
+            {loading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="flex justify-start"
+              >
+                <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl rounded-bl-sm px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+                  <div className="flex gap-1.5 items-center h-4">
+                    <motion.div 
+                      animate={{ y: [0, -5, 0] }} 
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                      className="w-1.5 h-1.5 bg-purple-400 rounded-full" 
+                    />
+                    <motion.div 
+                      animate={{ y: [0, -5, 0] }} 
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
+                      className="w-1.5 h-1.5 bg-purple-400 rounded-full" 
+                    />
+                    <motion.div 
+                      animate={{ y: [0, -5, 0] }} 
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+                      className="w-1.5 h-1.5 bg-purple-400 rounded-full" 
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <div ref={chatEndRef} />
-      </div>
-
-      {/* ── Input bar ────────────────────────────────────────────────────── */}
-      <div className="px-4 pb-5 pt-3 border-t border-white/[0.05] shrink-0">
-        <div className="flex items-end gap-2.5 bg-white/[0.05] border border-white/[0.1] rounded-2xl px-4 py-3">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Talk to Dex..."
-            rows={1}
-            className="flex-1 bg-transparent text-sm text-white placeholder-gray-600 resize-none outline-none leading-relaxed"
-            style={{ height: "22px", maxHeight: "120px" }}
-            disabled={loading}
-          />
-
-          {/* Mic button */}
-          {voice.isSupported && (
-            <button
-              onClick={toggleMic}
-              disabled={loading}
-              className={`p-1.5 rounded-xl transition-all shrink-0 ${
-                voice.isListening
-                  ? "bg-orange-500/20 text-orange-400 animate-pulse"
-                  : "text-gray-600 hover:text-gray-300 disabled:opacity-30"
-              }`}
-              title={voice.isListening ? "Stop listening" : "Speak to Dex"}
-            >
-              {voice.isListening ? <MicOff size={17} /> : <Mic size={17} />}
-            </button>
-          )}
-
-          {/* Send button */}
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={!input.trim() || loading}
-            className="p-1.5 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed shrink-0"
-            title="Send"
-          >
-            {loading
-              ? <RefreshCw size={17} className="animate-spin" />
-              : <Send size={17} />
-            }
-          </button>
+          <div ref={chatEndRef} />
         </div>
 
-        <p className="text-[10px] text-gray-700 text-center mt-2">
-          Enter to send · Shift+Enter for new line
-          {voice.isSupported && " · Mic for voice"}
-        </p>
+        {/* ── Input bar ────────────────────────────────────────────────────── */}
+        <div className="px-4 pb-6 pt-4 shrink-0 bg-gradient-to-t from-[#080810] to-transparent">
+          <div className="flex items-end gap-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] focus-within:border-cyan-500/50 focus-within:shadow-[0_0_15px_rgba(0,212,255,0.15)] transition-all">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Talk to Dex..."
+              rows={1}
+              className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 resize-none outline-none leading-relaxed py-1"
+              style={{ height: "28px", maxHeight: "120px" }}
+              disabled={loading}
+            />
+
+            {/* Mic button */}
+            {voice.isSupported && (
+              <button
+                onClick={toggleMic}
+                disabled={loading}
+                className={`p-2 rounded-xl transition-all shrink-0 flex items-center justify-center ${
+                  voice.isListening
+                    ? "bg-orange-500/20 text-orange-400 border border-orange-500/30 shadow-[0_0_12px_rgba(249,115,22,0.3)] animate-pulse"
+                    : "text-gray-500 hover:text-gray-300 hover:bg-white/5 disabled:opacity-30"
+                }`}
+                title={voice.isListening ? "Stop listening" : "Speak to Dex"}
+              >
+                {voice.isListening ? <MicOff size={18} /> : <Mic size={18} />}
+              </button>
+            )}
+
+            {/* Send button */}
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || loading}
+              className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 hover:shadow-[0_0_12px_rgba(0,212,255,0.3)] border border-cyan-500/20 transition-all disabled:opacity-25 disabled:cursor-not-allowed shrink-0 flex items-center justify-center"
+              title="Send"
+            >
+              {loading
+                ? <RefreshCw size={18} className="animate-spin" />
+                : <Send size={18} />
+              }
+            </button>
+          </div>
+
+          <p className="text-[10px] text-gray-500 text-center mt-3 tracking-wide">
+            Enter to send · Shift+Enter for new line
+            {voice.isSupported && " · Mic for voice"}
+          </p>
+        </div>
       </div>
     </div>
   );
