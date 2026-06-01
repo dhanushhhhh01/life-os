@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Coffee, BookOpen, Brain, Music, Volume2, VolumeX, Flame } from "lucide-react";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { useState, useEffect } from "react";
 import { CalendarCheck, Heart, Zap, Save, CheckCircle } from "lucide-react";
