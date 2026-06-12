@@ -47,11 +47,11 @@ export const Scene3D = ({ children }: { children?: React.ReactNode }) => {
     directionalLight.shadow.camera.far = 50;
     scene.add(directionalLight);
 
-    const cyanGlow = new THREE.PointLight(0x00d4ff, 14, 24);
+    const cyanGlow = new THREE.PointLight(0x5d99a8, 14, 24);
     cyanGlow.position.set(0, 1, 0);
     scene.add(cyanGlow);
 
-    const purpleGlow = new THREE.PointLight(0x7c3aed, 10, 30);
+    const purpleGlow = new THREE.PointLight(0x6f64a0, 10, 30);
     purpleGlow.position.set(-6, 4, -4);
     scene.add(purpleGlow);
 
@@ -66,7 +66,7 @@ export const Scene3D = ({ children }: { children?: React.ReactNode }) => {
     }
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const particleMaterial = new THREE.PointsMaterial({
-      color: 0x00d4ff,
+      color: 0x5d99a8,
       size: 0.12,
       sizeAttenuation: true,
       transparent: true,
@@ -91,8 +91,8 @@ export const Scene3D = ({ children }: { children?: React.ReactNode }) => {
     // Glowing rings (inner + slow outer)
     const ringGeometry = new THREE.TorusGeometry(3.2, 0.1, 16, 100);
     const ringMaterial = new THREE.MeshStandardMaterial({
-      color: 0x00d4ff,
-      emissive: 0x00d4ff,
+      color: 0x5d99a8,
+      emissive: 0x5d99a8,
       emissiveIntensity: 1.6,
       metalness: 0.8,
       roughness: 0.2,
@@ -104,8 +104,8 @@ export const Scene3D = ({ children }: { children?: React.ReactNode }) => {
 
     const outerRingGeometry = new THREE.TorusGeometry(4.4, 0.04, 12, 100);
     const outerRingMaterial = new THREE.MeshStandardMaterial({
-      color: 0x7c3aed,
-      emissive: 0x7c3aed,
+      color: 0x6f64a0,
+      emissive: 0x6f64a0,
       emissiveIntensity: 1.2,
       metalness: 0.8,
       roughness: 0.3,
