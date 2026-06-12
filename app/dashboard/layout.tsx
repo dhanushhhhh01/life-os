@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { getLevel, getXpProgress, getLevelTitle } from "../../lib/xp";
@@ -48,6 +49,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(function() {
     setMounted(true);
+    try {
+      if (localStorage.getItem("dex-sidebar-collapsed") === "1") setCollapsed(true);
+    } catch (e) {}
     supabase.auth.getSession().then(async function(result) {
       if (!result.data.session) {
         router.push("/");
@@ -121,7 +125,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           )}
           <button
-            onClick={function() { setCollapsed(!collapsed); }}
+            onClick={function() {
+              var next = !collapsed;
+              setCollapsed(next);
+              try { localStorage.setItem("dex-sidebar-collapsed", next ? "1" : "0"); } catch (e) {}
+            }}
             className="p-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] text-gray-600 hover:text-white transition-all"
           >
             {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -161,25 +169,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={"flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 group " + (
+                title={collapsed ? item.label : undefined}
+                className={"relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 group " + (
                   isActive
-                    ? "bg-theme-glassBg border border-theme-glassBorder text-white shadow-lg shadow-theme-primary/10"
+                    ? "text-white"
                     : "text-gray-500 hover:text-white hover:bg-theme-glassBg"
                 )}
               >
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    className="absolute inset-0 rounded-xl bg-theme-glassBg border border-theme-glassBorder shadow-lg shadow-theme-primary/10"
+                  />
+                )}
                 <Icon
                   size={17}
-                  className={"transition-colors duration-200 " + (
+                  className={"relative z-10 transition-colors duration-200 " + (
                     isActive
                       ? (isAchievements ? "text-theme-secondary drop-shadow-[0_0_8px_rgba(var(--app-secondary),0.6)]" : isSettings ? "text-gray-300" : "text-theme-primary drop-shadow-[0_0_8px_rgba(var(--app-primary),0.6)]")
                       : (isAchievements ? "group-hover:text-theme-secondary" : isSettings ? "group-hover:text-gray-300" : "group-hover:text-theme-primary")
                   )}
                 />
                 {!collapsed && (
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="relative z-10 text-sm font-medium">{item.label}</span>
                 )}
                 {!collapsed && isActive && (
-                  <span className={"ml-auto w-1.5 h-1.5 rounded-full " + (isAchievements ? "bg-theme-secondary shadow-[0_0_8px_rgba(var(--app-secondary),0.6)]" : "bg-theme-primary shadow-[0_0_8px_rgba(var(--app-primary),0.6)]")} />
+                  <span className={"relative z-10 ml-auto w-1.5 h-1.5 rounded-full " + (isAchievements ? "bg-theme-secondary shadow-[0_0_8px_rgba(var(--app-secondary),0.6)]" : "bg-theme-primary shadow-[0_0_8px_rgba(var(--app-primary),0.6)]")} />
                 )}
               </Link>
             );
