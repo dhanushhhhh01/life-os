@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import Hub3D from '@/components/3D/Hub';
+import dynamic from 'next/dynamic';
+
+const Hub3D = dynamic(() => import('@/components/3D/Hub'), { ssr: false });
 import Link from 'next/link';
 
 export default function ThreeDDashboard() {

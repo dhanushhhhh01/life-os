@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@next/swc-darwin-arm64": "^16.2.1",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@supabase/supabase-js": "^2.100.0",

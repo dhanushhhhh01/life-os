@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Scene3D from '@/components/3D/Scene';
+import dynamic from 'next/dynamic';
+
+const Scene3D = dynamic(() => import('@/components/3D/Scene'), { ssr: false });
 import Link from 'next/link';
 
 export default function ThreeDLanding() {

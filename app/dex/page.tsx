@@ -7,7 +7,12 @@ import React, {
   useCallback,
 } from "react";
 import { supabase } from "../../lib/supabase";
-import DexAvatar, { DexState } from "../../components/DexAvatar";
+import dynamic from "next/dynamic";
+import type { DexState } from "../../components/DexAvatar";
+
+const DexAvatar = dynamic(() => import("../../components/DexAvatar"), {
+  ssr: false,
+});
 import { useDexVoice }         from "../../hooks/useDexVoice";
 import {
   Send,
